@@ -194,6 +194,15 @@ html[data-design=nothing] h1.abt{font-size:28px;line-height:1.15;letter-spacing:
 /* Update 18 */
 .hr{display:flex;align-items:center;gap:8px}.hr .chip{min-width:46px;font-size:15px;padding:2px 6px}
 html[data-design=nothing] .hr .chip{font-size:16px;min-width:52px}
+/* Update 19 */
+.hp .sep{display:none}
+html[data-design=nothing] h2.hp{font-family:inherit;text-transform:none;letter-spacing:0;font-size:21px;font-weight:800;color:var(--tx);margin-top:28px}
+html[data-design=nothing] h2.hp::before{display:none}
+html[data-design=nothing] h2.hp>span:first-child{display:flex;align-items:center;gap:0}
+html[data-design=nothing] h2.hp>span:first-child::before{content:"";width:9px;height:9px;border-radius:50%;background:#ff3b3b;margin-right:10px;flex:none}
+html[data-design=nothing] h2.hp .sep{display:inline;margin:0 8px;color:var(--mu);font-weight:700}
+html[data-design=nothing] h2.hp .m{font-size:15px;font-family:inherit;letter-spacing:0;font-weight:600}
+html[data-design=nothing] h2.hp .hr .m{font-size:14px}
 </style></head><body><main id="app"></main>
 <script>
 const K='musikratings_leer';let D;
@@ -359,11 +368,12 @@ const sk=x=>{const k=(x.n||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g
 let hq='',hxs=new Set();
 const fold_=t=>(t||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
 /* Highlights: gleiche Songs (gleicher Künstler + gleicher Titel) nur einmal zählen */
+const lbl=(b,s)=>b.n+(s.d?' ('+s.d+')':'');
 const hlList=(F,q)=>{const T=fold_(q).split(/\s+/).filter(Boolean);
   return D.artists.map(a=>{const m=new Map();
   a.albums.forEach(b=>b.songs.forEach(s=>{const k=sk(s),e=m.get(k);
-    if(!e)m.set(k,{b,s,h:!!s.h,t:isTen(s),al:[b.n]});
-    else{e.h=e.h||!!s.h;e.t=e.t||isTen(s);if(!e.al.includes(b.n))e.al.push(b.n);if((+s.r||0)>(+e.s.r||0)){e.b=b;e.s=s}}}));
+    if(!e)m.set(k,{b,s,h:!!s.h,t:isTen(s),al:[lbl(b,s)]});
+    else{e.h=e.h||!!s.h;e.t=e.t||isTen(s);if(!e.al.includes(lbl(b,s)))e.al.push(lbl(b,s));if((+s.r||0)>(+e.s.r||0)){e.b=b;e.s=s}}}));
   return {a,l:[...m.values()].filter(e=>(F==='h'?e.h:F==='t'?e.t:(e.h||e.t))&&(!T.length||T.every(t=>fold_([e.s.n,e.al.join(' '),a.n,genreOf(a)].join(' ')).includes(t))))}}).filter(x=>x.l.length)};
 const hlKeys=()=>{const all=hlList(D.hf||'a',''),G=D.hg||'a';return G==='g'?[...new Set(all.map(x=>'g:'+((genreObj(x.a)||{}).id||'_')))]:all.map(x=>'a:'+x.a.id)};
 const hlParts=()=>{const F=D.hf||'a',G=D.hg||'a',all=hlList(F,hq),srch=!!hq.trim(),tot=all.reduce((t,x)=>t+x.l.length,0),open=k=>srch||hxs.has(k);
@@ -484,8 +494,9 @@ const designView=()=>{const d=dsg(),m=mode(),ac=D.ac||'off',b=(on,a,i,t)=>`<butt
     const ex=D.artists.slice(0,3);h+=`<h2>Vorschau</h2>`+(ex.length?ex.map(a=>`<div class="row"><div class="grow"><div class="t">${anm(a)}</div><div class="m">${a.albums.length} Alben${genreOf(a)?' · '+esc(genreOf(a)):''}</div></div></div>`).join(''):'<p class="m">Noch keine Künstler.</p>')}
   return h};
 const backupView=()=>`<button class="back" data-a="tab" data-i="rate">‹ Zurück</button><h1>Sicherung</h1><p class="sub">Sichere deine Bewertungen in einer Datei oder spiele eine Sicherung wieder ein.</p>`+backupBlock();
-const VER='18';
+const VER='19';
 const UPD=[
+{v:'19',t:'Design-Feinschliff',d:'Präsentere Überschriften im Nothing-Design und Disc-Angaben bei den 10 von 10.',n:['Disc-Angabe bei den Songs mit 10 und in den Highlights: Liegt ein Song auf einer Disc, steht sie hinter dem Albumnamen, zum Beispiel „Meteora (Disc 2)“.'],c:['Die Abschnitte „Alben“, „EPs“ und „Singles“ auf der Künstlerseite sind im Nothing-Design größer und kräftiger wie im Standard-Design, mit einem Punkt zwischen Name und Zahl („Alben · 3“) und der Titel sitzt wieder links.','Im Menü steht bei Statistiken nur noch „Statistiken“.']},
 {v:'18',t:'10 von 10 pro Künstler, Durchschnitt je Art, Zurück-Geste',d:'Schnellere Übersicht beim Künstler und natürlichere Navigation.',n:['Auf der Künstlerseite gibt es oben die Umschaltung „Alben | 10 von 10“. Die zweite Ansicht zeigt alle Songs mit 10 dieses Künstlers, doppelte Songs zählen einmal. Antippen öffnet den Song im Album.','Rechts neben „Alben“, „EPs“ und „Singles“ steht der Durchschnitt der jeweiligen Art (bei Singles der Durchschnitt aller Single-Songs). In der Ansicht „Nach Durchschnitt“ steht er als Zeile darüber.','Zurück-Geste: Wischen vom Rand oder die Zurück-Taste des Handys gehen in der App einen Schritt zurück (zum Beispiel vom Album zum Künstler) statt die App zu schließen. Ein offenes Menü schließt sich zuerst.','Die Scroll-Position bleibt erhalten: Wer weit unten ein Album öffnet und zurückgeht, landet wieder an derselben Stelle.'],c:['Beim Öffnen eines neuen Bereichs beginnt die Seite jetzt oben, statt an der alten Stelle zu bleiben.']},
 {v:'17',t:'Aufgeräumtes Menü, Statistiken-Tab, Sortierauswahl',d:'Weniger im Menü, mehr Übersicht oben.',n:['Menü lässt sich jetzt nach unten wegwischen.','News haben einen eigenen Knopf oben rechts zwischen Suche und Menü, mit der Zahl der Neuigkeiten.','Neuer Bereich „Statistiken“ im Menü mit drei Reitern: Rückblick, Herzen und 10 von 10, Album-Vergleich.','Auf der Künstlerseite gibt es statt zwei Knöpfen eine Auswahl: Durchschnitt, Genre, Anzahl Singles, Anzahl Alben oder Alphabet.'],c:['Singles haben kein graues Cover-Feld mehr, nur noch Alben und EPs.','Das Menü enthält nur noch Statistiken, Design, Sicherung und das Archiv.'],
  sub:[{v:'17.1',t:'Skits ausblenden, Genre-Überschriften, Pixel-Zahlen',n:['In den News lassen sich bei „Angefangen, aber unbewertet“ einzelne Songs oder alle Songs eines Albums mit ✕ ausblenden, zum Beispiel Skits. Sie zählen dann nicht mehr als unbewertet. Im Album gibt es „Wieder anzeigen“, und „Rückgängig“ erscheint kurz nach dem Ausblenden.','Neue Einstellung im Design-Tab (nur Nothing): Zahlen-Schrift mit „Pixel“, „Pixel + Songs“ und „Normal“.'],c:['Die Genre-Überschriften auf der Künstlerseite sind heller und haben eine Linie, damit sie zwischen den farbigen Künstlern nicht untergehen.']},{v:'17.2',t:'Albumtitel bearbeiten',c:['Der Titel eines Albums wird nur noch im Album selbst bearbeitet (Stift neben dem Titel). Dort öffnet sich unter dem Kopf eine große Fläche mit Titel, Art und Jahr, ohne dass etwas hochrückt. In der Albumübersicht eines Künstlers gibt es den kleinen Stift nicht mehr.','Lange Titel wie „A Thousand Suns (Bonus Edition)“ sind im Nothing-Design kleiner dargestellt und laufen nicht mehr über den Bildschirm.']}]},
@@ -637,7 +648,7 @@ const topbar=()=>`<div class="top"><span class="brand"><i></i>Coda</span><span c
 const menuHtml=()=>{if(!menuOpen)return '';const d=dsg(),m=mode(),b=(on,a,i,t)=>`<button class="${on?'btn':'ghost'}" data-a="${a}" data-i="${i}">${t}</button>`;
   const tot=hlList('a','').reduce((t,x)=>t+x.l.length,0);
   return `<div class="sc" data-a="mclose"></div><div class="sh"><div class="gr"></div>
-  <button class="ghost mi" data-a="mst"><span>Statistiken</span><span class="m">Rückblick · Highlights · Vergleich</span></button><button class="ghost mi" data-a="mds"><span>Design</span><span class="m">${d==='nothing'?'Nothing':'Standard'} · ${m==='auto'?'Auto':m==='light'?'Hell':'Dunkel'}</span></button><button class="ghost mi" data-a="mbk"><span>Sicherung</span><span class="m">${D.lb?new Date(D.lb).toLocaleDateString('de-DE'):'noch nie'}</span></button>
+  <button class="ghost mi" data-a="mst"><span>Statistiken</span></button><button class="ghost mi" data-a="mds"><span>Design</span><span class="m">${d==='nothing'?'Nothing':'Standard'} · ${m==='auto'?'Auto':m==='light'?'Hell':'Dunkel'}</span></button><button class="ghost mi" data-a="mbk"><span>Sicherung</span><span class="m">${D.lb?new Date(D.lb).toLocaleDateString('de-DE'):'noch nie'}</span></button>
   <button class="btn" data-a="mclose" style="width:100%;margin-top:14px">Fertig</button><button class="lnk" data-a="mar">Archiv · Update ${VER}</button></div>`};
 const backupBlock=()=>{let h=`<h2>Sicherung</h2><p class="m">${D.lb?'Letzte Sicherung: '+new Date(D.lb).toLocaleDateString('de-DE'):'Noch keine Sicherung gemacht.'}</p><div class="add" style="margin-top:0"><button class="btn" data-a="bdl">Sicherung speichern</button>${canShare()?'<button class="ghost" data-a="bsh">Teilen</button>':''}<label class="ghost">Sicherung laden<input id="bf" type="file" accept=".json,application/json" hidden></label></div>`;
   if(bpend)h+=`<div class="bn">Die Sicherung enthält ${bpend.artists.length} Künstler und ${cntSongs(bpend)} Songs. Deine aktuellen Daten werden dabei ersetzt.<div class="add" style="margin:0"><button class="btn" data-a="bapply">Einspielen</button><button class="ghost" data-a="bcancel">Abbrechen</button></div></div>`;
@@ -680,7 +691,7 @@ function R(){
     const h0=h;h='';
     h+=`<div class="tabs"><button class="${D.as?'ghost':'btn'}" data-a="as" data-i="0">Nach Reihenfolge</button><button class="${D.as?'btn':'ghost'}" data-a="as" data-i="1">Nach Durchschnitt</button></div>`;
     h+=`<div class="add" style="margin:0 0 8px"><button class="ghost" data-a="vlt">📈 Verlauf ${D.vo?'ausblenden':'anzeigen'}</button></div>`+(D.vo?`<div class="vl">${verlauf(A)}</div>`:'');
-    h+=D.as?quickAdd()+`<p class="m" style="margin:0 0 4px">Ø ${['Alben','EPs','Singles'].map((n,k)=>kavg(A,k)!=null?n+' '+fmt(kavg(A,k)):'').filter(Boolean).join(' · ')}</p><h2>Alle Alben nach Durchschnitt</h2>`+sortBy(A.albums,albAvg).map((x,i)=>albRow(x,i,null,true,['Album','EP','Single'][x.k||0])).join(''):['Alben','EPs','Singles'].map((nm,kk)=>{const g=A.albums.filter(x=>(x.k||0)===kk);return `<h2 class="hp"><span>${nm} <span class="m">${kk===2?g.reduce((t,x)=>t+x.songs.length,0)+' Songs':g.length}</span></span><span class="hr">${kavg(A,kk)!=null?'<span class="m">Ø</span>'+chip(kavg(A,kk)):''}<button class="ghost pl" data-a="addk" data-i="${kk}" aria-label="${KN[kk]} hinzufügen">${addK===kk?'✕':'+'}</button></span></h2>`+(addK===kk?addForm(kk):'')+g.map((x,i)=>albRow(x,i,g,false,'')).join('')+(!g.length&&addK!==kk?'<p class="m" style="margin:0 0 8px">Noch nichts.</p>':'')}).join('');
+    h+=D.as?quickAdd()+`<p class="m" style="margin:0 0 4px">Ø ${['Alben','EPs','Singles'].map((n,k)=>kavg(A,k)!=null?n+' '+fmt(kavg(A,k)):'').filter(Boolean).join(' · ')}</p><h2>Alle Alben nach Durchschnitt</h2>`+sortBy(A.albums,albAvg).map((x,i)=>albRow(x,i,null,true,['Album','EP','Single'][x.k||0])).join(''):['Alben','EPs','Singles'].map((nm,kk)=>{const g=A.albums.filter(x=>(x.k||0)===kk);return `<h2 class="hp"><span><span>${nm}</span><span class="sep">·</span><span class="m">${kk===2?g.reduce((t,x)=>t+x.songs.length,0)+' Songs':g.length}</span></span><span class="hr">${kavg(A,kk)!=null?'<span class="m">Ø</span>'+chip(kavg(A,kk)):''}<button class="ghost pl" data-a="addk" data-i="${kk}" aria-label="${KN[kk]} hinzufügen">${addK===kk?'✕':'+'}</button></span></h2>`+(addK===kk?addForm(kk):'')+g.map((x,i)=>albRow(x,i,g,false,'')).join('')+(!g.length&&addK!==kk?'<p class="m" style="margin:0 0 8px">Noch nichts.</p>':'')}).join('');
     h=h0+avTabs(A)+(D.av==='t'?tensView(A):h);
     h+=impBox();
     h+=del('art','Künstler löschen');
