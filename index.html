@@ -78,6 +78,17 @@ html[data-design=nothing] .hb.on,html[data-design=nothing] .warn{color:#ff3b3b;b
 html[data-design=nothing] .hl{outline:1.5px solid #ff3b3b;background:color-mix(in srgb,#ff3b3b 12%,var(--card))}
 html[data-design=nothing] .dsn-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#ff3b3b;margin-right:6px}
 
+/* Archiv */
+.pill{display:inline-block;padding:2px 10px;border-radius:999px;font-size:12px;font-weight:700;background:var(--ac);color:var(--bg);white-space:nowrap}
+.arc{margin:0 0 8px}.arc .body{padding:4px 4px 8px}
+.ah{font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--mu);margin:12px 0 4px;display:flex;align-items:center;gap:7px}
+.ah::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--mu)}
+.ah.n::before{background:var(--g)}.ah.c::before{background:var(--o)}.ah.f::before{background:var(--r)}
+.al{margin:0;padding-left:20px}.al li{margin:3px 0}
+.subu{margin:12px 0 4px;padding:10px 12px;border-left:3px solid var(--ac);background:color-mix(in srgb,var(--ac) 8%,var(--card));border-radius:10px}
+.lnk{display:block;margin:14px auto 0;background:none;border:0;color:var(--mu);font:inherit;font-size:13px;padding:8px;cursor:pointer}
+html[data-design=nothing] .pill{font-family:"Space Mono",ui-monospace,monospace}
+html[data-design=nothing] .subu{border-radius:18px}
 /* Highlights ein-/ausklappen, Farben, Swatches */
 .fold{display:flex;align-items:center;gap:8px;padding:10px 12px;margin:8px 0 6px;border:1px solid var(--bd);border-radius:12px;background:var(--card);cursor:pointer;font-weight:700}
 .chev{width:14px;color:var(--mu);flex:none}
@@ -399,6 +410,37 @@ const designView=()=>{const d=dsg(),m=mode(),ac=D.ac||'off',b=(on,a,i,t)=>`<butt
     const ex=D.artists.slice(0,3);h+=`<h2>Vorschau</h2>`+(ex.length?ex.map(a=>`<div class="row"><div class="grow"><div class="t">${anm(a)}</div><div class="m">${a.albums.length} Alben${genreOf(a)?' · '+esc(genreOf(a)):''}</div></div></div>`).join(''):'<p class="m">Noch keine Künstler.</p>')}
   return h};
 const backupView=()=>`<button class="back" data-a="tab" data-i="rate">‹ Zurück</button><h1>Sicherung</h1><p class="sub">Sichere deine Bewertungen in einer Datei oder spiele eine Sicherung wieder ein.</p>`+backupBlock();
+const VER='13';
+const UPD=[
+{v:'13',t:'Archiv',d:'Alle Updates an einem Ort, von Anfang an nachlesbar.',n:['Neues Archiv ganz unten im Menü (☰) mit allen Patch Notes.','Nummerierung: große Neuerungen zählen hoch (Update 12, 13 …), Verbesserungen laufen als Unternummer (12.1, 12.2 …).','Aufklappbare Einträge, der neueste ist offen. Mit „Alle aufklappen“ siehst du alles.','Die frühen Einträge wurden nachträglich aus dem Verlauf rekonstruiert.']},
+{v:'12',t:'Design-Tab, Highlights & News-Hinweis',d:'Mehr Übersicht bei vielen Songs und ein eigener Bereich für das Aussehen.',n:['Der News-Hinweis auf der Startseite hat ein ✕. Er kommt erst wieder, wenn mehr Neuigkeiten da sind als beim Schließen.','Highlights lassen sich pro Künstler oder Genre auf- und zuklappen, dazu „Alle aufklappen“ und „Alle zuklappen“.','Suche in den Highlights über Song, Album, Künstler und Genre. Treffer klappen automatisch auf.','Eigener Design-Tab im Menü mit Stil (Standard oder Nothing) und Darstellung (Automatisch, Hell, Dunkel).','Künstler hervorheben: Aus, Lila, Rot oder Eigene Farben pro Genre (9 Farben), wahlweise unterstrichen oder markiert, mit Vorschau.'],c:['Stil und Darstellung sind aus dem Menü in den Design-Tab gewandert.'],
+ sub:[{v:'12.1',t:'Menü im Nothing-Design deckend',f:['Das Menü und die Karten im Nothing-Design waren durchsichtig, weil ein Farbwert ungültig war. Jetzt sind sie deckend, im Dunkel- wie im Hellmodus.','Der Hintergrund hinter dem Menü wird stärker abgedunkelt.']}]},
+{v:'11',t:'Neuerscheinungen',d:'Die App erkennt, wenn deine Künstler etwas Neues veröffentlichen, und legt es auf Wunsch fertig an.',n:['Bis zu 5 Künstler lassen sich mit der Musikdatenbank MusicBrainz verknüpfen.','Die App prüft beim Öffnen (höchstens alle 6 Stunden), ob es Alben, EPs oder Singles gibt, die noch nicht bei dir stehen.','„Hinzufügen“ legt ein Album oder eine EP mit vollständiger Tracklist an, bei mehreren Discs mit Disc-Überschriften. Singles landen im Singles-Album des Jahres, zum Beispiel „Singles 2026“.','Live, Remix und Sampler lassen sich weglassen oder anzeigen. Die Prüfung kann komplett aus- und eingeschaltet werden.','Neu angelegte Alben zeigen ihr Erscheinungsjahr.'],
+ sub:[{v:'11.1',t:'News-Seite, Sicherungs-Fenster, Sortierung nach Alben',c:['Aus „Neuerscheinungen“ wurde die Seite „News“ mit zwei Tabs: News und Einstellungen.','Die App zeigt jetzt alles, was du noch nicht bewertet hast, nicht nur das, was nach dem Verknüpfen neu erschien. Der Abgleich ignoriert Zusätze wie „Deluxe Edition“.'],n:['Liste „Angefangen, aber unbewertet“ für Alben mit Songs ohne Note.','Die Sicherung hat ein eigenes Fenster im Menü. Auf der Startseite steht sie nicht mehr.','Künstler lassen sich nach Anzahl der Alben sortieren. Die Einstellung steckt im Menü, die zwei Knöpfe auf der Startseite bleiben.','Mit „Alle ausblenden“ räumst du lange Listen mit einem Tipp auf.']}]},
+{v:'10',t:'Menü, Hell/Dunkel & Highlights',d:'Eine Menüleiste mit allem Wichtigen und eine Übersicht deiner besten Songs.',n:['Feste Kopfleiste mit ☰-Menü. Es öffnet ein Fenster von unten.','Darstellung Automatisch, Hell oder Dunkel in beiden Designs, auch ein helles Nothing.','Highlights mit allen ♥-Songs und allen 10/10-Songs. Filter: Alle, Herzen oder 10/10. Sortierung: nach Künstler oder Genre. Ein Tipp springt ins Album.','Alben lassen sich direkt in der Künstler-Ansicht löschen (✕ mit Rückfrage).'],c:['Der ♥-Tab wurde zu Highlights im Menü. Die Tab-Leiste hat jetzt drei Tabs.','Startseite heißt „Künstler“.'],
+ sub:[{v:'10.1',t:'Keine doppelten Songs in den Highlights',f:['Ein Song, der als Single und im Album vorkommt, erscheint in den Highlights nur noch einmal. Es gilt die höchste Note, und ein Herz an einer Version reicht.','Die Zähler zählen ebenfalls nur noch einmal.']}]},
+{v:'9',t:'Design-Umschalter',d:'Zwei Looks, zwischen denen du wechseln kannst.',n:['Neuer Look „Nothing“: Schwarz, Punktraster, Punktschrift (Doto), rote Akzente und abgerundete Pillen.','Umschalter zwischen Klassisch und Nothing. Die Wahl bleibt gespeichert.']},
+{v:'8',t:'Coda wird eine echte App',d:'Aus der Seite wurde eine installierbare App mit eigenem Namen und Logo.',n:['Installierbar auf dem Homescreen über GitHub Pages (PWA), mit eigenem Fenster ohne Browserleiste.','Neuer Name: Coda. Neues Logo im Nothing-Stil: ein C aus weißen Punkten auf Schwarz mit rotem Punkt.','Läuft auch ohne Internet. Updates kommen durch Austausch der Dateien bei GitHub.','Für dich und deinen besten Freund dieselbe App, jeder mit eigenen Daten auf dem eigenen Handy.'],c:['Deine Daten zogen per Sicherungsdatei in die installierte App um.']},
+{v:'7',t:'Suche, Herzen-Liste & Sicherung',d:'Mehr Überblick und Schutz vor Datenverlust.',n:['Suche über alle Songs, Alben und Künstler, auch mit mehreren Wörtern. Ein Tipp springt ins Album und markiert den Song.','Tab mit allen Songs, die ein ♥ haben.','Schalter im Album: „Nach Note“ oder „Eingabe-Reihenfolge“. Bei gleicher Note ordnest du mit ▲▼ selbst.','Sicherung als eine Datei, mit Vorschau vor dem Einspielen und Erinnerung nach 14 Tagen. Text-Sicherung als Notlösung.'],
+ sub:[{v:'7.1',t:'Sicherung speichern in der Claude-App',f:['Das Speichern der Sicherungsdatei ging in der Claude-App nicht. Jetzt läuft es über die Download-Freigabe der App.']}]},
+{v:'6',t:'Import & Bearbeiten',d:'Songs und Alben schneller eintragen und Fehler selbst korrigieren.',n:['Import-Feld: ein ganzes Album oder mehrere Alben einfügen. Die App erkennt Titel und Noten.','Word-Dateien (.docx) hochladen, auch mit mehreren Künstlern in einer Datei, mit Vorschau vor dem Übernehmen.','Eine 11 wird zur 10 mit Herz. Formate wie „Song: (7/10)“ werden erkannt.','Stift zum Bearbeiten von Künstler, Album und Song, auch Name und Typ eines Albums.']},
+{v:'5',t:'Genres, Notenfarben & Version für den Freund',d:'Mehr Ordnung und bessere Lesbarkeit.',n:['Künstler lassen sich nach Genre sortieren, neue Genres lassen sich anlegen.','Notenfarben: 10 bis 7 grün, 6 bis 4 orange, 3 bis 0 rot.','Leere Version für deinen besten Freund ohne deine Daten.']},
+{v:'4',t:'Künstler verketten',d:'Zusammengehörige Künstler stehen hintereinander.',n:['DAT ADAM, TJ_babybrain und TJ_beastboy lassen sich zu einer Kette verbinden, in dieser Reihenfolge.']},
+{v:'3',t:'Alle deine Künstler & Herzen',d:'Deine echten Bewertungen aus den Word-Dateien in der App.',n:['Alle Künstler und Alben aus deinen Word-Dateien eingespielt.','Herz-Funktion für Songs, die dir besonders gefallen.','Beim Hinzufügen wählst du Songs mit Note und Herz.'],
+ sub:[{v:'3.1',t:'Datenkorrekturen',f:['Mehrere Alben waren beim ersten Einspielen zusammengeführt oder abgeschnitten (zum Beispiel Billie Eilish, Isabel LaRosa, bbno$, Yung Gravy, Muse, Killstation, TJ_beastboy). Sie wurden einzeln korrigiert.','BABY GRAVY ist ein eigener Künstler. Doppelte Alben bleiben, wie gewünscht.','Die Erkennung der Tracknummern wurde gelockert, damit Dateien mit doppelter oder ungewöhnlicher Nummerierung richtig gelesen werden.']}]},
+{v:'2',t:'Reihenfolge beim Bewerten',d:'Bewerten in der Reihenfolge, in der du die Musik kennenlernst.',n:['Alben stehen chronologisch, das älteste zuerst.','Typen Album, EP und Single mit eigenen Abschnitten.','Alben mit mehreren Discs bekommen Zwischendurchschnitte pro Disc.']},
+{v:'1',t:'Erste Version',d:'Die Grundidee: Musikbewertungen mit automatischer Sortierung und Durchschnitt.',n:['Künstler, Alben und Songs mit Noten von 0 bis 10.','Durchschnitt pro Album und Künstler, automatische Sortierung nach Note.','Bei gleicher Note lässt sich die Platzierung mit ▲▼ selbst ändern.','Künstlerliste mit Kästchen zum Abhaken und Genres.','Linkin Park als erstes Beispiel.'],
+ sub:[{v:'1.1',t:'Leere Seite beim Start',f:['Die App startete leer, weil beim Laden eine Funktion zu früh benutzt wurde. Behoben.']}]}
+];
+let arx=new Set([UPD[0].v]);
+const arSec=(c,t,l)=>l&&l.length?`<div class="ah ${c}">${t}</div><ul class="al">${l.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:'';
+const arBody=u=>arSec('n','Neu',u.n)+arSec('c','Geändert',u.c)+arSec('f','Behoben',u.f);
+const archivView=()=>{let h=`<button class="back" data-a="tab" data-i="rate">‹ Zurück</button><h1>Archiv</h1><p class="sub">Alle Updates von Anfang an. Aktuell: Update ${VER}. Die frühen Einträge sind nachträglich rekonstruiert.</p>`;
+  h+=`<div class="tabs"><button class="ghost" data-a="axall" data-i="1">Alle aufklappen</button><button class="ghost" data-a="axall" data-i="0">Alle zuklappen</button></div>`;
+  UPD.forEach(u=>{const o=arx.has(u.v);h+=`<div class="arc"><div class="fold" data-a="axt" data-i="${u.v}"><span class="chev">${o?'▾':'▸'}</span><span class="pill">Update ${u.v}</span><span class="grow">${esc(u.t)}</span></div>`;
+    if(o){h+=`<div class="body"><p class="m" style="font-size:14px">${esc(u.d)}</p>${arBody(u)}`+(u.sub||[]).map(x=>`<div class="subu"><div><span class="pill">${x.v}</span> <b>${esc(x.t)}</b></div>${arBody(x)}</div>`).join('')+`</div>`}
+    h+=`</div>`});
+  return h};
 let menuOpen=false;
 const mode=()=>document.documentElement.dataset.mode||'auto',dsg=()=>document.documentElement.dataset.design||'classic';
 const topbar=()=>`<div class="top"><span class="brand"><i></i>Coda</span><button class="mb" data-a="menu" aria-label="Menü">☰${nwCount()?`<span class="bdg">${nwCount()}</span>`:''}</button></div>`;
@@ -407,7 +449,7 @@ const menuHtml=()=>{if(!menuOpen)return '';const d=dsg(),m=mode(),b=(on,a,i,t)=>
   return `<div class="sc" data-a="mclose"></div><div class="sh"><div class="gr"></div>
   <h3>Schnellzugriff</h3><button class="ghost mi" data-a="mnw"><span>News</span><span class="m">${nwCount()?nwCount()+' neu':(NW().on?'an':'aus')}</span></button><button class="ghost mi" data-a="mhl"><span>♥ Herzen &amp; 10 von 10</span><span class="m">${tot}</span></button><button class="ghost mi" data-a="mds"><span>Design</span><span class="m">${d==='nothing'?'Nothing':'Standard'} · ${m==='auto'?'Auto':m==='light'?'Hell':'Dunkel'}</span></button><button class="ghost mi" data-a="mbk"><span>Sicherung</span><span class="m">${D.lb?new Date(D.lb).toLocaleDateString('de-DE'):'noch nie'}</span></button>
   <h3>Künstler sortieren nach</h3><div class="tabs">${b(!D.sm,'sm',0,'Durchschnitt')}${b(!!D.sm,'sm',1,'Anzahl Alben')}</div>
-  <button class="btn" data-a="mclose" style="width:100%;margin-top:14px">Fertig</button></div>`};
+  <button class="btn" data-a="mclose" style="width:100%;margin-top:14px">Fertig</button><button class="lnk" data-a="mar">Archiv · Update ${VER}</button></div>`};
 const backupBlock=()=>{let h=`<h2>Sicherung</h2><p class="m">${D.lb?'Letzte Sicherung: '+new Date(D.lb).toLocaleDateString('de-DE'):'Noch keine Sicherung gemacht.'}</p><div class="add" style="margin-top:0"><button class="btn" data-a="bdl">Sicherung speichern</button><label class="ghost">Sicherung laden<input id="bf" type="file" accept=".json,application/json" hidden></label></div>`;
   if(bpend)h+=`<div class="bn">Die Sicherung enthält ${bpend.artists.length} Künstler und ${cntSongs(bpend)} Songs. Deine aktuellen Daten werden dabei ersetzt.<div class="add" style="margin:0"><button class="btn" data-a="bapply">Einspielen</button><button class="ghost" data-a="bcancel">Abbrechen</button></div></div>`;
   if(bmsg)h+=`<p class="m">${esc(bmsg)}</p>`;
@@ -423,6 +465,7 @@ function R(){
   else if(!A&&st.t==='hearts'){h=heartsView()}
   else if(!A&&st.t==='nw'){h=nwView()}
   else if(!A&&st.t==='bk'){h=backupView()}
+  else if(!A&&st.t==='ar'){h=archivView()}
   else if(!A&&st.t==='ds'){h=designView()}
   else if(!A){
     h=tabs()+'<h1>Künstler</h1><p class="sub">'+(D.sm?'Nach Anzahl der Alben sortiert':'Nach Durchschnitt sortiert')+'</p>'+nwNote()+bnote();
@@ -481,6 +524,9 @@ document.addEventListener('click',e=>{
   else if(a==='gc'){const g=t.dataset.g;D.gc=D.gc||{};if(i==='none')delete D.gc[g];else D.gc[g]=i}
   else if(a==='hxt'){if(hxs.has(i))hxs.delete(i);else hxs.add(i)}
   else if(a==='hxall'){if(+i)hlKeys().forEach(k=>hxs.add(k));else hxs.clear()}
+  else if(a==='mar'){menuOpen=false;st={t:'ar',a:null,b:null}}
+  else if(a==='axt'){if(arx.has(i))arx.delete(i);else arx.add(i)}
+  else if(a==='axall'){if(+i)UPD.forEach(u=>arx.add(u.v));else arx.clear()}
   else if(a==='mbk'){menuOpen=false;st={t:'bk',a:null,b:null}}
   else if(a==='sm'){D.sm=+i}
   else if(a==='nwtab'){nwTab=i}
