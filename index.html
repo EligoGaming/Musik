@@ -226,7 +226,7 @@ const impBox=()=>{const A=D.artists.find(x=>x.id===st.a);let pv='';
 
 const del=(k,txt)=>`<button class="ghost warn" data-a="del" data-k="${k}">${armed===k?'Sicher?':txt}</button>`;
 const groups=B=>{const m=new Map();B.songs.forEach(s=>{const d=s.d||'';if(!m.has(d))m.set(d,[]);m.get(d).push(s)});return [...m]};
-const artList=()=>{const seen={},out=[];sortBy(D.artists,artAvg).forEach(x=>{if(!x.ch)out.push(x);else if(!seen[x.ch]){seen[x.ch]=1;out.push(...D.artists.filter(y=>y.ch===x.ch).sort((p,q)=>p.co-q.co))}});return out};
+const artList=()=>{const seen={},out=[];sortBy(D.artists,D.sm?(a=>a.albums.length):artAvg).forEach(x=>{if(!x.ch)out.push(x);else if(!seen[x.ch]){seen[x.ch]=1;out.push(...D.artists.filter(y=>y.ch===x.ch).sort((p,q)=>p.co-q.co))}});return out};
 const genreOf=a=>{const g=D.genres.find(g=>g.items.some(i=>nz(i.n)===nz(a.n)));return g?g.n:''};
 const isEd=(k,i)=>ed&&ed.k===k&&ed.i===i;
 const pen=(k,i,g)=>`<button class="ghost ed" data-a="edit" data-k="${k}" data-i="${i}"${g?` data-g="${g}"`:''} aria-label="Bearbeiten">✎</button>`;
@@ -281,9 +281,9 @@ const bnote=()=>{if(!D.artists.some(a=>a.albums.length))return '';const d=D.lb?M
   return `<div class="bn">${d==null?'Du hast noch keine Sicherung gemacht.':'Deine letzte Sicherung ist '+d+' Tage alt.'}<div class="add" style="margin:0"><button class="ghost" data-a="bdl">Jetzt sichern</button></div></div>`};
 const dsnBlock=()=>{const n=document.documentElement.dataset.design==='nothing';return `<h2>Design</h2><div class="tabs"><button class="${n?'ghost':'btn'}" data-a="dsn" data-i="classic">Klassisch</button><button class="${n?'btn':'ghost'}" data-a="dsn" data-i="nothing">Nothing</button></div>`};
 
-/* ===== Neuerscheinungen (MusicBrainz) ===== */
-let nwBusy=false,nwMsg='',nwCand=null,nwFor='';
-const NW=()=>D.nw||(D.nw={on:0,live:0,a:[],it:[],last:0});
+/* ===== News (MusicBrainz) ===== */
+let nwBusy=false,nwMsg='',nwCand=null,nwFor='',nwTab='n';
+const NW=()=>{const N=D.nw||(D.nw={on:0,live:0,a:[],ign:[],last:0});if(!N.ign)N.ign=[];return N};
 let mbP=Promise.resolve(),mbLast=0;
 const mb=path=>{const run=async()=>{for(let t=0;t<2;t++){const w=Math.max(0,mbLast+1100-Date.now());if(w)await new Promise(r=>setTimeout(r,w));mbLast=Date.now();
   const r=await fetch('https://musicbrainz.org/ws/2/'+path+(path.includes('?')?'&':'?')+'fmt=json');
@@ -293,30 +293,39 @@ const mb=path=>{const run=async()=>{for(let t=0;t<2;t++){const w=Math.max(0,mbLa
 const past=d=>{if(!d)return false;const p=d.split('-').map(Number);return new Date(p[0],(p[1]||1)-1,p[2]||1)<=new Date()};
 async function mbRGs(id){const out=[];let off=0;
   for(let i=0;i<6;i++){const j=await mb('release-group?artist='+id+'&limit=100&offset='+off),l=j['release-groups']||[];out.push(...l);off+=l.length;if(!l.length||off>=(j['release-group-count']||0))break}
-  return out.filter(g=>['Album','EP','Single'].includes(g['primary-type'])).map(g=>({id:g.id,t:g['primary-type'],title:g.title,date:g['first-release-date']||'',sec:g['secondary-types']||[]}))}
+  return out.filter(g=>['Album','EP','Single'].includes(g['primary-type'])&&past(g['first-release-date'])).map(g=>({id:g.id,t:g['primary-type'],n:g.title,d:g['first-release-date'],s:g['secondary-types']||[]}))}
 async function mbSearch(name){const q=name.replace(/["\\]/g,' ').trim();
   let j=await mb('artist?query='+encodeURIComponent('artist:"'+q+'"')+'&limit=6');
   if(!(j.artists||[]).length)j=await mb('artist?query='+encodeURIComponent(q)+'&limit=6');
   return (j.artists||[]).map(a=>({id:a.id,n:a.name,d:[a.type,a.country,a.disambiguation].filter(Boolean).join(' · ')}))}
-const nwItems=()=>{const N=NW();return N.it.filter(x=>N.a.some(f=>f.id===x.ai)&&D.artists.some(a=>a.id===x.ai)&&(N.live||!(x.s&&x.s.length)))};
-const nwCount=()=>{const N=NW();return N.on?nwItems().length:0};
+/* Titel-Abgleich: Klammern, "Deluxe", "Edition" usw. ignorieren */
+const tk=t=>(t||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\([^)]*\)|\[[^\]]*\]/g,' ').replace(/\b(deluxe|edition|remaster(ed)?|bonus|expanded|version|anniversary)\b/g,' ').replace(/[^\p{L}\p{N}]/gu,'');
+/* Welche Veröffentlichungen deiner Künstler sind noch nicht in der App (also nicht bewertet)? */
+const nwItems=()=>{const N=NW(),out=[];
+  N.a.forEach(f=>{const A=D.artists.find(x=>x.id===f.id);if(!A||!f.rg)return;
+    const alb=new Set(A.albums.map(b=>tk(b.n))),sng=new Set(A.albums.flatMap(b=>b.songs.map(x=>tk(x.n))));
+    f.rg.forEach(x=>{if(N.ign.includes(x.id))return;if(!N.live&&x.s&&x.s.length)return;const t=tk(x.n);
+      if(t&&(alb.has(t)||(x.t==='Single'&&sng.has(t))))return;out.push({...x,ai:f.id})})});
+  return out.sort((p,q)=>(q.d||'').localeCompare(p.d||''))};
+/* Alben in der App, bei denen noch Songs ohne Note sind */
+const nwUnrated=()=>D.artists.flatMap(a=>a.albums.map(b=>({a,b,n:b.songs.filter(s=>s.r==null).length})).filter(x=>x.n>0));
+const nwCount=()=>{const N=NW();return N.on?nwItems().length+nwUnrated().length:0};
 async function nwSearchRun(aid){const A=D.artists.find(x=>x.id===aid);if(!A)return;nwBusy=true;nwMsg='Suche …';nwCand=null;nwFor=aid;R();
   try{const c=await mbSearch(A.n);nwCand=c;nwMsg=c.length?'':'Nichts gefunden. Der Künstler kann leider nicht verknüpft werden.'}catch(e){nwMsg='Suche nicht möglich. Bist du online?'}
   nwBusy=false;R()}
-async function nwFollow(c){const N=NW();if(N.a.length>=5||N.a.some(f=>f.id===nwFor))return;nwBusy=true;nwMsg='Lade bisherige Veröffentlichungen …';R();
-  try{const g=await mbRGs(c.id);N.a.push({id:nwFor,mb:c.id,n:c.n,seen:g.filter(x=>past(x.date)).map(x=>x.id)});save();nwMsg='';nwCand=null}catch(e){nwMsg='Das hat nicht geklappt. Bist du online?'}
+async function nwFollow(c){const N=NW();if(N.a.length>=5||N.a.some(f=>f.id===nwFor))return;nwBusy=true;nwMsg='Lade Veröffentlichungen …';R();
+  try{const g=await mbRGs(c.id);N.a.push({id:nwFor,mb:c.id,n:c.n,rg:g});N.last=Date.now();save();nwMsg='';nwCand=null}catch(e){nwMsg='Das hat nicht geklappt. Bist du online?'}
   nwBusy=false;R()}
-async function nwCheck(force){const N=NW();if(!N.on||!N.a.length||nwBusy)return;if(!force&&Date.now()-(N.last||0)<216e5)return;nwBusy=true;if(force){nwMsg='Prüfe …';R()}
-  try{for(const f of N.a){if(!D.artists.some(x=>x.id===f.id))continue;const g=await mbRGs(f.mb);
-      g.forEach(x=>{if(f.seen.includes(x.id)||!x.date||!past(x.date))return;f.seen.push(x.id);N.it.push({k:x.id,ai:f.id,t:x.t,n:x.title,d:x.date,s:x.sec})})}
+async function nwCheck(force){const N=NW();if(!N.on||!N.a.length||nwBusy)return;
+  const stale=N.a.some(f=>!f.rg);if(!force&&!stale&&Date.now()-(N.last||0)<216e5)return;nwBusy=true;if(force){nwMsg='Prüfe …';R()}
+  try{for(const f of N.a){if(!D.artists.some(x=>x.id===f.id))continue;f.rg=await mbRGs(f.mb)}
     N.last=Date.now();save();nwMsg=force?'Fertig.':''}
   catch(e){nwMsg='Prüfung nicht möglich. Bist du online?'}
   nwBusy=false;const ae=document.activeElement;if(!ae||!/INPUT|TEXTAREA|SELECT/.test(ae.tagName))R()}
-async function nwAdd(k){const N=NW(),it=N.it.find(x=>x.k===k);if(!it||nwBusy)return;const A=D.artists.find(x=>x.id===it.ai);if(!A)return;
-  const y=(it.d||'').slice(0,4)||String(new Date().getFullYear()),kind=it.t==='EP'?1:it.t==='Single'?2:0,done=(b,sid)=>{N.it=N.it.filter(x=>x.k!==k);hl=sid||null;st={t:'rate',a:A.id,b:b.id};menuOpen=false;nwMsg='';save();R()};
+async function nwAdd(k){const N=NW();if(nwBusy)return;const f=N.a.find(f=>(f.rg||[]).some(x=>x.id===k));if(!f)return;const it=f.rg.find(x=>x.id===k),A=D.artists.find(x=>x.id===f.id);if(!A)return;
+  const y=(it.d||'').slice(0,4)||String(new Date().getFullYear()),kind=it.t==='EP'?1:it.t==='Single'?2:0,done=(b,sid)=>{hl=sid||null;st={t:'rate',a:A.id,b:b.id};menuOpen=false;nwMsg='';save();R()};
   if(kind===2){let b=A.albums.find(x=>x.k===2&&x.n==='Singles '+y);if(!b){b={id:uid(),n:'Singles '+y,k:2,y:+y,songs:[]};A.albums.push(b)}
-    let s=b.songs.find(x=>sk(x)===sk({n:it.n,id:'-'}));if(!s){s={id:uid(),n:it.n,r:null};b.songs.push(s)}return done(b,s.id)}
-  const ex=A.albums.find(x=>(x.k||0)===kind&&sk(x)===sk({n:it.n,id:'-'}));if(ex)return done(ex,null);
+    let s=b.songs.find(x=>tk(x.n)===tk(it.n));if(!s){s={id:uid(),n:it.n,r:null};b.songs.push(s)}return done(b,s.id)}
   nwBusy=true;nwMsg='Lade Tracklist …';R();
   try{let j=await mb('release?release-group='+k+'&inc=recordings&status=official&limit=25'),rel=j.releases||[];
     if(!rel.length){j=await mb('release?release-group='+k+'&inc=recordings&limit=25');rel=j.releases||[]}
@@ -325,34 +334,45 @@ async function nwAdd(k){const N=NW(),it=N.it.find(x=>x.k===k);if(!it||nwBusy)ret
     r0.media.forEach((m,mi)=>(m.tracks||[]).forEach(t=>{const o={id:uid(),n:t.title||(t.recording&&t.recording.title)||'?',r:null};if(r0.media.length>1)o.d='Disc '+(mi+1);songs.push(o)}));
     if(!songs.length)throw 0;const b={id:uid(),n:it.n,k:kind,y:+y,songs};A.albums.push(b);nwBusy=false;done(b,null)}
   catch(e){nwBusy=false;nwMsg='Die Tracklist konnte nicht geladen werden. Versuch es später nochmal.';R()}}
-const nwNote=()=>{const c=nwCount();return c?`<div class="bn">${c===1?'1 Neuerscheinung':c+' Neuerscheinungen'} von deinen Künstlern.<div class="add" style="margin:0"><button class="btn" data-a="mnw">Ansehen</button></div></div>`:''};
-const nwView=()=>{const N=NW(),it=nwItems(),nm=id=>(D.artists.find(a=>a.id===id)||{}).n||'?';
+const nwNote=()=>{const c=nwCount();return c?`<div class="bn">${c===1?'1 Neuigkeit':c+' Neuigkeiten'}: Releases oder Alben, die du noch nicht bewertet hast.<div class="add" style="margin:0"><button class="btn" data-a="mnw">Ansehen</button></div></div>`:''};
+const nwView=()=>{const N=NW(),LIM=30;
   const sw=(on,a,i,t)=>`<button class="${on?'btn':'ghost'}" data-a="${a}" data-i="${i}">${t}</button>`;
-  let h=`<button class="back" data-a="tab" data-i="rate">‹ Zurück</button><h1>Neuerscheinungen</h1><p class="sub">Die App prüft beim Öffnen, ob deine ausgewählten Künstler etwas Neues veröffentlicht haben. Daten von MusicBrainz, nur mit Internet.</p>`;
-  h+=`<h2>Benachrichtigungen in der App</h2><div class="tabs">${sw(!N.on,'nwon',0,'Aus')}${sw(!!N.on,'nwon',1,'An')}</div>`;
-  h+=`<h2>Live, Remix &amp; Sampler</h2><div class="tabs">${sw(!N.live,'nwlive',0,'Weglassen')}${sw(!!N.live,'nwlive',1,'Anzeigen')}</div>`;
+  let h=`<button class="back" data-a="tab" data-i="rate">‹ Zurück</button><h1>News</h1>`;
+  h+=`<div class="tabs">${sw(nwTab==='n','nwtab','n','News')}${sw(nwTab==='s','nwtab','s','Einstellungen')}</div>`;
   if(nwMsg)h+=`<p class="m">${esc(nwMsg)}</p>`;
-  if(N.on){h+=`<div class="add" style="margin-top:6px"><button class="ghost" data-a="nwcheck" ${nwBusy||!N.a.length?'disabled':''}>Jetzt prüfen</button><span class="m" style="align-self:center">${N.last?'Zuletzt: '+new Date(N.last).toLocaleString('de-DE',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}):'Noch nicht geprüft'}</span></div>`;
-    h+=`<h2>Neu <span class="m">${it.length}</span></h2>`;
-    if(!it.length)h+='<p class="m">Im Moment gibt es nichts Neues.</p>';
-    h+=it.sort((p,q)=>(q.d||'').localeCompare(p.d||'')).map(x=>`<div class="row"><div class="grow"><div class="t">${esc(x.n)}</div><div class="m">${esc(nm(x.ai))} · ${x.t==='Single'?'Single':x.t}${x.s&&x.s.length?' · '+esc(x.s.join(', ')):''} · ${esc(x.d)}</div></div><div class="nwb"><button class="btn" data-a="nwadd" data-i="${x.k}" ${nwBusy?'disabled':''}>Hinzufügen</button><button class="ghost" data-a="nwign" data-i="${x.k}" aria-label="Ignorieren">✕</button></div></div>`).join('');
-  }
+  if(nwTab==='n'){const it=N.on?nwItems():[],un=nwUnrated();
+    if(!N.on)h+=`<p class="m">Die Prüfung auf Neuerscheinungen ist aus. Du kannst sie unter Einstellungen einschalten und bis zu 5 Künstler auswählen.</p>`;
+    else h+=`<div class="add" style="margin-top:6px"><button class="ghost" data-a="nwcheck" ${nwBusy||!N.a.length?'disabled':''}>Jetzt prüfen</button><span class="m" style="align-self:center">${N.last?'Zuletzt: '+new Date(N.last).toLocaleString('de-DE',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}):'Noch nicht geprüft'}</span></div>`;
+    if(N.on){h+=`<h2>Noch nicht bewertet <span class="m">${it.length}</span></h2><p class="m">Veröffentlichungen deiner Künstler, die noch nicht in der App sind.</p>`;
+      if(!it.length)h+='<p class="m">Nichts offen. Alles ist schon in der App.</p>';
+      h+=it.slice(0,LIM).map(x=>{const A=D.artists.find(a=>a.id===x.ai)||{};return `<div class="row"><div class="grow"><div class="t">${esc(x.n)}</div><div class="m">${esc(A.n)} · ${x.t==='Single'?'Single':x.t}${x.s&&x.s.length?' · '+esc(x.s.join(', ')):''} · ${esc(x.d)}</div></div><div class="nwb"><button class="btn" data-a="nwadd" data-i="${x.id}" ${nwBusy?'disabled':''}>Hinzufügen</button><button class="ghost" data-a="nwign" data-i="${x.id}" aria-label="Ignorieren">✕</button></div></div>`}).join('');
+      if(it.length>LIM)h+=`<p class="m">… und ${it.length-LIM} weitere, ältere. Mit ✕ ausblenden, dann rücken sie nach.</p>`;
+      if(it.length>1)h+=`<button class="ghost warn" data-a="nwignall">${armed==='nwia'?'Sicher? Alle '+it.length+' ausblenden':'Alle ausblenden'}</button>`}
+    h+=`<h2>Angefangen, aber unbewertet <span class="m">${un.length}</span></h2>`;
+    if(!un.length)h+='<p class="m">Alle Songs in deinen Alben haben eine Note.</p>';
+    h+=un.map(x=>`<div class="row tap" data-a="go" data-ar="${x.a.id}" data-al="${x.b.id}"><div class="grow"><div class="t">${esc(x.b.n)}</div><div class="m">${esc(x.a.n)} · ${x.n} von ${x.b.songs.length} Songs ohne Note</div></div></div>`).join('');
+    return h}
+  h+=`<p class="sub" style="margin-top:6px">Die App prüft beim Öffnen, ob deine ausgewählten Künstler Veröffentlichungen haben, die noch nicht in der App sind. Daten von MusicBrainz, nur mit Internet.</p>`;
+  h+=`<h2>Prüfung</h2><div class="tabs">${sw(!N.on,'nwon',0,'Aus')}${sw(!!N.on,'nwon',1,'An')}</div>`;
+  h+=`<h2>Live, Remix &amp; Sampler</h2><div class="tabs">${sw(!N.live,'nwlive',0,'Weglassen')}${sw(!!N.live,'nwlive',1,'Anzeigen')}</div>`;
   h+=`<h2>Deine Künstler <span class="m">${N.a.length}/5</span></h2>`;
-  if(!N.a.length)h+='<p class="m">Wähle bis zu 5 Künstler aus, deren Neuerscheinungen dich interessieren.</p>';
+  if(!N.a.length)h+='<p class="m">Wähle bis zu 5 Künstler aus, deren Veröffentlichungen dich interessieren.</p>';
+  const nm=id=>(D.artists.find(a=>a.id===id)||{}).n||'?';
   h+=N.a.map(f=>`<div class="row"><div class="grow"><div class="t">${esc(nm(f.id))}</div><div class="m">verknüpft mit: ${esc(f.n)}</div></div><button class="ghost" data-a="nwrm" data-i="${f.id}" aria-label="Entfernen">✕</button></div>`).join('');
   if(N.a.length<5){const free=D.artists.filter(a=>!N.a.some(f=>f.id===a.id)).sort((p,q)=>p.n.localeCompare(q.n,'de'));
     if(free.length&&!nwCand)h+=`<div class="add"><select id="nwsel" style="flex:1;min-width:0">${free.map(a=>`<option value="${a.id}">${esc(a.n)}</option>`).join('')}</select><button class="btn" data-a="nwsearch" ${nwBusy?'disabled':''}>Suchen</button></div>`;
-    if(nwCand&&nwCand.length)h+=`<h2>Welcher ist ${esc(nm(nwFor))}?</h2>`+nwCand.map((c,i)=>`<div class="row tap cand" data-a="nwpick" data-i="${i}"><div class="grow"><div class="t">${esc(c.n)}</div><div class="m">${esc(c.d||'keine Angaben')}</div></div></div>`).join('')+`<button class="ghost" data-a="nwcancel">Abbrechen</button>`;
-  }
+    if(nwCand&&nwCand.length)h+=`<h2>Welcher ist ${esc(nm(nwFor))}?</h2>`+nwCand.map((c,i)=>`<div class="row tap cand" data-a="nwpick" data-i="${i}"><div class="grow"><div class="t">${esc(c.n)}</div><div class="m">${esc(c.d||'keine Angaben')}</div></div></div>`).join('')+`<button class="ghost" data-a="nwcancel">Abbrechen</button>`}
   return h};
+const backupView=()=>`<button class="back" data-a="tab" data-i="rate">‹ Zurück</button><h1>Sicherung</h1><p class="sub">Sichere deine Bewertungen in einer Datei oder spiele eine Sicherung wieder ein.</p>`+backupBlock();
 let menuOpen=false;
 const mode=()=>document.documentElement.dataset.mode||'auto',dsg=()=>document.documentElement.dataset.design||'classic';
 const topbar=()=>`<div class="top"><span class="brand"><i></i>Coda</span><button class="mb" data-a="menu" aria-label="Menü">☰${nwCount()?`<span class="bdg">${nwCount()}</span>`:''}</button></div>`;
 const menuHtml=()=>{if(!menuOpen)return '';const d=dsg(),m=mode(),b=(on,a,i,t)=>`<button class="${on?'btn':'ghost'}" data-a="${a}" data-i="${i}">${t}</button>`;
   const tot=hlList('a').reduce((t,x)=>t+x.l.length,0);
   return `<div class="sc" data-a="mclose"></div><div class="sh"><div class="gr"></div>
-  <h3>Schnellzugriff</h3><button class="ghost mi" data-a="mnw"><span>Neuerscheinungen</span><span class="m">${nwCount()?nwCount()+' neu':(NW().on?'an':'aus')}</span></button><button class="ghost mi" data-a="mhl"><span>♥ Herzen &amp; 10 von 10</span><span class="m">${tot}</span></button><button class="ghost mi" data-a="bdl"><span>Sicherung speichern</span><span class="m">${D.lb?new Date(D.lb).toLocaleDateString('de-DE'):'noch nie'}</span></button>
+  <h3>Schnellzugriff</h3><button class="ghost mi" data-a="mnw"><span>News</span><span class="m">${nwCount()?nwCount()+' neu':(NW().on?'an':'aus')}</span></button><button class="ghost mi" data-a="mhl"><span>♥ Herzen &amp; 10 von 10</span><span class="m">${tot}</span></button><button class="ghost mi" data-a="mbk"><span>Sicherung</span><span class="m">${D.lb?new Date(D.lb).toLocaleDateString('de-DE'):'noch nie'}</span></button>
   <h3>Design</h3><div class="tabs">${b(d==='classic','dsn','classic','Standard')}${b(d==='nothing','dsn','nothing','Nothing')}</div>
+  <h3>Künstler sortieren nach</h3><div class="tabs">${b(!D.sm,'sm',0,'Durchschnitt')}${b(!!D.sm,'sm',1,'Anzahl Alben')}</div>
   <h3>Darstellung</h3><div class="tabs">${b(m==='auto','mode','auto','Automatisch')}${b(m==='light','mode','light','Hell')}${b(m==='dark','mode','dark','Dunkel')}</div>
   <button class="btn" data-a="mclose" style="width:100%;margin-top:14px">Fertig</button></div>`};
 const backupBlock=()=>{let h=`<h2>Sicherung</h2><p class="m">${D.lb?'Letzte Sicherung: '+new Date(D.lb).toLocaleDateString('de-DE'):'Noch keine Sicherung gemacht.'}</p><div class="add" style="margin-top:0"><button class="btn" data-a="bdl">Sicherung speichern</button><label class="ghost">Sicherung laden<input id="bf" type="file" accept=".json,application/json" hidden></label></div>`;
@@ -369,14 +389,14 @@ function R(){
   else if(!A&&st.t==='search'){h=searchView()}
   else if(!A&&st.t==='hearts'){h=heartsView()}
   else if(!A&&st.t==='nw'){h=nwView()}
+  else if(!A&&st.t==='bk'){h=backupView()}
   else if(!A){
-    h=tabs()+'<h1>Künstler</h1><p class="sub">Nach Durchschnitt sortiert</p>'+nwNote()+bnote();
+    h=tabs()+'<h1>Künstler</h1><p class="sub">'+(D.sm?'Nach Anzahl der Alben sortiert':'Nach Durchschnitt sortiert')+'</p>'+nwNote()+bnote();
     const arts=artList(),row=(x,sg)=>`<div class="row tap" ${x.ch?'style="border-left:4px solid var(--ac)" ':''}data-a="art" data-i="${x.id}"><div class="grow"><div class="t">${esc(x.n)}</div><div class="m">${x.albums.length} Alben${sg&&genreOf(x)?' · '+esc(genreOf(x)):''}</div></div>${chip(artAvg(x))}</div>`;
-    h+=`<div class="tabs"><button class="${D.sg?'ghost':'btn'}" data-a="sg" data-i="0">Nach Durchschnitt</button><button class="${D.sg?'btn':'ghost'}" data-a="sg" data-i="1">Nach Genre</button></div>`;
+    h+=`<div class="tabs"><button class="${D.sg?'ghost':'btn'}" data-a="sg" data-i="0">${D.sm?'Nach Alben':'Nach Durchschnitt'}</button><button class="${D.sg?'btn':'ghost'}" data-a="sg" data-i="1">Nach Genre</button></div>`;
     if(D.sg){[...D.genres.map(g=>g.n),''].forEach(gn=>{const l=arts.filter(x=>genreOf(x)===gn);if(l.length)h+=`<h2>${esc(gn||'Ohne Genre')} <span class="m">${l.length}</span></h2>`+l.map(x=>row(x,false)).join('')})}
     else h+=arts.map(x=>row(x,true)).join('');
     h+='<div class="add"><input id="in" placeholder="Neuer Künstler"><button class="btn" data-a="addArt">Hinzufügen</button></div>';
-    h+=backupBlock();
   }else if(!B){
     h=`<button class="back" data-a="home">‹ Alle Künstler</button>${isEd('art',A.id)?edForm(A.id,A.n):`<h1>${esc(A.n)} ${pen('art',A.id)}</h1>`}<p class="sub">Durchschnitt ${fmt(artAvg(A))}</p>`;
     h+=['Alben','EPs','Singles'].map((nm,kk)=>{const g=A.albums.filter(x=>(x.k||0)===kk);return g.length?`<h2>${nm}</h2>`+g.map((x,i)=>isEd('alb',x.id)?`<div class="row">${edForm(x.id,x.n,x.k||0)}</div>`:`<div class="row tap" data-a="alb" data-i="${x.id}"><div class="mv"><button class="ghost" data-a="aup" data-i="${x.id}" ${i?'':'disabled'}>▲</button><button class="ghost" data-a="adn" data-i="${x.id}" ${i<g.length-1?'':'disabled'}>▼</button></div><div class="grow"><div class="t">${esc(x.n)}</div><div class="m">${x.songs.length} Songs${x.y?' · '+x.y:''}</div></div>${pen('alb',x.id)}<button class="ghost warn" data-a="dalb" data-i="${x.id}">${armed==='a:'+x.id?'Sicher?':'✕'}</button>${chip(albAvg(x))}</div>`).join(''):''}).join('');
@@ -420,15 +440,19 @@ document.addEventListener('click',e=>{
   else if(a==='dsn'){try{localStorage.setItem('coda_design',i)}catch(x){}window.__ap()}
   else if(a==='mode'){try{localStorage.setItem('coda_mode',i)}catch(x){}window.__ap()}
   else if(a==='mnw'){menuOpen=false;st={t:'nw',a:null,b:null}}
+  else if(a==='mbk'){menuOpen=false;st={t:'bk',a:null,b:null}}
+  else if(a==='sm'){D.sm=+i}
+  else if(a==='nwtab'){nwTab=i}
+  else if(a==='nwignall'){if(armed!=='nwia'){armed='nwia';R();return}const N=NW();nwItems().forEach(x=>N.ign.push(x.id))}
   else if(a==='nwon'){NW().on=+i;if(+i)setTimeout(()=>nwCheck(true),0)}
   else if(a==='nwlive'){NW().live=+i}
   else if(a==='nwcheck'){nwCheck(true);return}
   else if(a==='nwsearch'){const v=(document.getElementById('nwsel')||{}).value;if(v)nwSearchRun(v);return}
   else if(a==='nwpick'){if(nwCand&&nwCand[+i])nwFollow(nwCand[+i]);return}
   else if(a==='nwcancel'){nwCand=null;nwMsg=''}
-  else if(a==='nwrm'){const N=NW();N.a=N.a.filter(f=>f.id!==i);N.it=N.it.filter(x=>x.ai!==i)}
+  else if(a==='nwrm'){const N=NW();N.a=N.a.filter(f=>f.id!==i)}
   else if(a==='nwadd'){nwAdd(i);return}
-  else if(a==='nwign'){const N=NW();N.it=N.it.filter(x=>x.k!==i)}
+  else if(a==='nwign'){const N=NW();if(!N.ign.includes(i))N.ign.push(i)}
   else if(a==='menu'){menuOpen=true}
   else if(a==='mclose'){menuOpen=false}
   else if(a==='mhl'){menuOpen=false;st={t:'hearts',a:null,b:null}}
