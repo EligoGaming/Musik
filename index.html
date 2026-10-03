@@ -78,6 +78,20 @@ html[data-design=nothing] .hb.on,html[data-design=nothing] .warn{color:#ff3b3b;b
 html[data-design=nothing] .hl{outline:1.5px solid #ff3b3b;background:color-mix(in srgb,#ff3b3b 12%,var(--card))}
 html[data-design=nothing] .dsn-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#ff3b3b;margin-right:6px}
 
+/* Vergleich */
+.pick{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:10px;margin-bottom:8px}.pick select{width:100%;margin-top:6px}
+.cmp{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0 4px}
+.cmc{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:12px 8px;text-align:center;min-width:0}.cmc .t{overflow-wrap:anywhere}
+.cmc .big{font-size:32px;font-weight:800;font-variant-numeric:tabular-nums;margin:4px 0}.cmc.win{border-color:var(--g);box-shadow:0 0 0 1px var(--g) inset}
+.srow{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center;padding:9px 4px;border-bottom:1px solid var(--bd);font-variant-numeric:tabular-nums}
+.srow .v{font-weight:700;text-align:center}.srow .v.w{color:var(--g)}.srow .l{color:var(--mu);font-size:12px;text-align:center;min-width:96px}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:6px}
+.cell{display:flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:8px;min-height:46px;min-width:0}
+.cell.win{border-color:var(--g)}.cell .t{font-size:13px;font-weight:600;flex:1;min-width:0}.cell .chip{min-width:38px;padding:2px 4px;font-size:14px}
+.cell .n{color:var(--mu);font-size:11px;width:15px;text-align:right;flex:none}
+.verd{text-align:center;font-weight:700;margin:6px 0 10px}
+html[data-design=nothing] .pick,html[data-design=nothing] .cmc{border-radius:22px}html[data-design=nothing] .cell{border-radius:18px}
+html[data-design=nothing] .cmc .big{font-family:"Doto","Space Mono",ui-monospace,monospace;font-weight:900}
 /* Archiv */
 .pill{display:inline-block;padding:2px 10px;border-radius:999px;font-size:12px;font-weight:700;background:var(--ac);color:var(--bg);white-space:nowrap}
 .arc{margin:0 0 8px}.arc .body{padding:4px 4px 8px}
@@ -410,8 +424,9 @@ const designView=()=>{const d=dsg(),m=mode(),ac=D.ac||'off',b=(on,a,i,t)=>`<butt
     const ex=D.artists.slice(0,3);h+=`<h2>Vorschau</h2>`+(ex.length?ex.map(a=>`<div class="row"><div class="grow"><div class="t">${anm(a)}</div><div class="m">${a.albums.length} Alben${genreOf(a)?' · '+esc(genreOf(a)):''}</div></div></div>`).join(''):'<p class="m">Noch keine Künstler.</p>')}
   return h};
 const backupView=()=>`<button class="back" data-a="tab" data-i="rate">‹ Zurück</button><h1>Sicherung</h1><p class="sub">Sichere deine Bewertungen in einer Datei oder spiele eine Sicherung wieder ein.</p>`+backupBlock();
-const VER='13';
+const VER='14';
 const UPD=[
+{v:'14',t:'Album-Vergleich & Sortierung nach Durchschnitt',d:'Zwei Alben direkt gegeneinander stellen und die Alben eines Künstlers nach Note ordnen.',n:['Neuer Vergleich im Menü („⇄ Album-Vergleich“): Wähle zwei Alben, auch von verschiedenen Künstlern, zum Beispiel OK Computer gegen Kid A oder gegen ein Album von Linkin Park.','Gegenüberstellung mit Durchschnitt, Median, bester und schlechtester Note, Anzahl der Zehner, Anteil ab 7 und Herzen. Der bessere Wert ist grün, dazu ein Satz, wer wie viele Punkte vorne liegt.','Song für Song in zwei Spalten, wahlweise „Nach Rang“ (bester gegen besten) oder „Nach Reihenfolge“ (Song 1 gegen Song 1). Der bessere Song jedes Paars ist markiert.','Im Album gibt es den Knopf „Mit anderem Album vergleichen“, der das Album gleich als erste Seite einsetzt. „Tauschen“ und „Leeren“ helfen beim Umstellen.','Auf der Künstlerseite lassen sich die Alben jetzt „Nach Reihenfolge“ oder „Nach Durchschnitt“ anzeigen. Letzteres ist eine gemeinsame Rangliste aller Alben, EPs und Singles-Sammlungen.'],c:['Die Auswahl im Vergleich bleibt gespeichert und ist Teil der Sicherung.']},
 {v:'13',t:'Archiv',d:'Alle Updates an einem Ort, von Anfang an nachlesbar.',n:['Neues Archiv ganz unten im Menü (☰) mit allen Patch Notes.','Nummerierung: große Neuerungen zählen hoch (Update 12, 13 …), Verbesserungen laufen als Unternummer (12.1, 12.2 …).','Aufklappbare Einträge, der neueste ist offen. Mit „Alle aufklappen“ siehst du alles.','Die frühen Einträge wurden nachträglich aus dem Verlauf rekonstruiert.']},
 {v:'12',t:'Design-Tab, Highlights & News-Hinweis',d:'Mehr Übersicht bei vielen Songs und ein eigener Bereich für das Aussehen.',n:['Der News-Hinweis auf der Startseite hat ein ✕. Er kommt erst wieder, wenn mehr Neuigkeiten da sind als beim Schließen.','Highlights lassen sich pro Künstler oder Genre auf- und zuklappen, dazu „Alle aufklappen“ und „Alle zuklappen“.','Suche in den Highlights über Song, Album, Künstler und Genre. Treffer klappen automatisch auf.','Eigener Design-Tab im Menü mit Stil (Standard oder Nothing) und Darstellung (Automatisch, Hell, Dunkel).','Künstler hervorheben: Aus, Lila, Rot oder Eigene Farben pro Genre (9 Farben), wahlweise unterstrichen oder markiert, mit Vorschau.'],c:['Stil und Darstellung sind aus dem Menü in den Design-Tab gewandert.'],
  sub:[{v:'12.1',t:'Menü im Nothing-Design deckend',f:['Das Menü und die Karten im Nothing-Design waren durchsichtig, weil ein Farbwert ungültig war. Jetzt sind sie deckend, im Dunkel- wie im Hellmodus.','Der Hintergrund hinter dem Menü wird stärker abgedunkelt.']}]},
@@ -441,13 +456,34 @@ const archivView=()=>{let h=`<button class="back" data-a="tab" data-i="rate">‹
     if(o){h+=`<div class="body"><p class="m" style="font-size:14px">${esc(u.d)}</p>${arBody(u)}`+(u.sub||[]).map(x=>`<div class="subu"><div><span class="pill">${x.v}</span> <b>${esc(x.t)}</b></div>${arBody(x)}</div>`).join('')+`</div>`}
     h+=`</div>`});
   return h};
+/* ===== Album-Vergleich ===== */
+const cmpSlot=sl=>{if(!sl)return null;const A=D.artists.find(x=>x.id===sl[0]),B=A&&A.albums.find(x=>x.id===sl[1]);return B?{A,B}:null};
+const cmpSt=B=>{const r=B.songs.map(s=>s.r).filter(x=>x!=null).map(Number).sort((a,b)=>a-b),n=r.length;
+  return {n,all:B.songs.length,avg:n?r.reduce((t,x)=>t+x,0)/n:null,med:n?(n%2?r[(n-1)/2]:(r[n/2-1]+r[n/2])/2):null,max:n?r[n-1]:null,min:n?r[0]:null,ten:r.filter(x=>x>=10).length,good:n?Math.round(r.filter(x=>x>=7).length/n*100):null,hrt:B.songs.filter(s=>s.h).length}};
+const pickHtml=(k,sl)=>{const aid=(sl&&sl[0])||'',A=D.artists.find(x=>x.id===aid),arts=[...D.artists].sort((p,q)=>p.n.localeCompare(q.n,'de'));
+  return `<div class="pick"><div class="m">Album ${k.toUpperCase()}</div><select id="cp${k}"><option value="">– Künstler wählen –</option>${arts.map(x=>`<option value="${x.id}" ${x.id===aid?'selected':''}>${esc(x.n)}</option>`).join('')}</select>${A?`<select id="cb${k}"><option value="">– Album wählen –</option>${A.albums.map(b=>`<option value="${b.id}" ${sl&&b.id===sl[1]?'selected':''}>${esc(b.n)}${b.k===2?' (Singles)':b.k===1?' (EP)':''}</option>`).join('')}</select>`:''}</div>`};
+const compareView=()=>{const C=D.cmp||{a:null,b:null},a=cmpSlot(C.a),b=cmpSlot(C.b);
+  let h=`<button class="back" data-a="tab" data-i="rate">‹ Zurück</button><h1>Vergleich</h1><p class="sub">Zwei Alben nebeneinander, auch von verschiedenen Künstlern.</p>`;
+  h+=pickHtml('a',C.a)+pickHtml('b',C.b);
+  h+=`<div class="add" style="margin-top:0"><button class="ghost" data-a="cmsw" ${C.a||C.b?'':'disabled'}>⇄ Tauschen</button><button class="ghost" data-a="cmclr" ${C.a||C.b?'':'disabled'}>Leeren</button></div>`;
+  if(!a||!b)return h+'<p class="m">Wähle zwei Alben, dann siehst du den Vergleich.</p>';
+  const sa=cmpSt(a.B),sb=cmpSt(b.B),same=a.B.n===b.B.n,lab=x=>x.B.n+(same?' ('+x.A.n+')':''),d=(sa.avg??-1)-(sb.avg??-1),wa=d>0.004?'win':'',wb=d<-0.004?'win':'';
+  h+=`<div class="cmp"><div class="cmc ${wa}"><div class="m">${anm(a.A)}</div><div class="t">${esc(a.B.n)}</div><div class="big" style="color:${col(sa.avg)}">${fmt(sa.avg)}</div><div class="m">${sa.all} Songs</div></div><div class="cmc ${wb}"><div class="m">${anm(b.A)}</div><div class="t">${esc(b.B.n)}</div><div class="big" style="color:${col(sb.avg)}">${fmt(sb.avg)}</div><div class="m">${sb.all} Songs</div></div></div>`;
+  h+=`<p class="verd">${sa.avg==null||sb.avg==null?'Noch zu wenige Noten':Math.abs(d)<=0.004?'Gleichstand im Durchschnitt':esc(lab(d>0?a:b))+' liegt '+fmt(Math.abs(d))+' Punkte vorne'}</p>`;
+  const rows=[['Durchschnitt',sa.avg,sb.avg,fmt],['Median',sa.med,sb.med,fmt],['Beste Note',sa.max,sb.max,fmt],['Schlechteste Note',sa.min,sb.min,fmt],['Songs mit 10',sa.ten,sb.ten,String],['Anteil ab 7',sa.good,sb.good,v=>v==null?'–':v+' %'],['Herzen ♥',sa.hrt,sb.hrt,String],['Bewertet',sa.n+' / '+sa.all,sb.n+' / '+sb.all,null]];
+  h+=rows.map(([l,x,y,f])=>{const w=f&&x!=null&&y!=null&&x!==y;return `<div class="srow"><div class="v ${w&&x>y?'w':''}">${f?f(x):x}</div><div class="l">${l}</div><div class="v ${w&&y>x?'w':''}">${f?f(y):y}</div></div>`}).join('');
+  const M=D.cm==='t'?'t':'r';
+  h+=`<h2>Song für Song</h2><div class="tabs"><button class="${M==='r'?'btn':'ghost'}" data-a="cmm" data-i="r">Nach Rang</button><button class="${M==='t'?'btn':'ghost'}" data-a="cmm" data-i="t">Nach Reihenfolge</button></div><p class="m" style="margin:0 0 8px">${M==='r'?'Bester Song gegen besten Song, zweitbester gegen zweitbesten und so weiter.':'Song 1 gegen Song 1, Song 2 gegen Song 2 und so weiter, in der Reihenfolge der Alben.'}</p>`;
+  const la=M==='t'?a.B.songs:sortS(a.B.songs),lb=M==='t'?b.B.songs:sortS(b.B.songs),n=Math.max(la.length,lb.length),cell=(s,o,i)=>s?`<div class="cell ${o!=null&&s.r!=null&&+s.r>+o?'win':''}"><span class="n">${i+1}</span><span class="t">${esc(s.n)}</span>${s.h?'<span style="color:var(--r)">♥</span>':''}${chip(s.r)}</div>`:'<div></div>';
+  for(let i=0;i<n;i++){const x=la[i],y=lb[i];h+=`<div class="pair">${cell(x,y&&y.r,i)}${cell(y,x&&x.r,i)}</div>`}
+  return h};
 let menuOpen=false;
 const mode=()=>document.documentElement.dataset.mode||'auto',dsg=()=>document.documentElement.dataset.design||'classic';
 const topbar=()=>`<div class="top"><span class="brand"><i></i>Coda</span><button class="mb" data-a="menu" aria-label="Menü">☰${nwCount()?`<span class="bdg">${nwCount()}</span>`:''}</button></div>`;
 const menuHtml=()=>{if(!menuOpen)return '';const d=dsg(),m=mode(),b=(on,a,i,t)=>`<button class="${on?'btn':'ghost'}" data-a="${a}" data-i="${i}">${t}</button>`;
   const tot=hlList('a','').reduce((t,x)=>t+x.l.length,0);
   return `<div class="sc" data-a="mclose"></div><div class="sh"><div class="gr"></div>
-  <h3>Schnellzugriff</h3><button class="ghost mi" data-a="mnw"><span>News</span><span class="m">${nwCount()?nwCount()+' neu':(NW().on?'an':'aus')}</span></button><button class="ghost mi" data-a="mhl"><span>♥ Herzen &amp; 10 von 10</span><span class="m">${tot}</span></button><button class="ghost mi" data-a="mds"><span>Design</span><span class="m">${d==='nothing'?'Nothing':'Standard'} · ${m==='auto'?'Auto':m==='light'?'Hell':'Dunkel'}</span></button><button class="ghost mi" data-a="mbk"><span>Sicherung</span><span class="m">${D.lb?new Date(D.lb).toLocaleDateString('de-DE'):'noch nie'}</span></button>
+  <h3>Schnellzugriff</h3><button class="ghost mi" data-a="mnw"><span>News</span><span class="m">${nwCount()?nwCount()+' neu':(NW().on?'an':'aus')}</span></button><button class="ghost mi" data-a="mcm"><span>⇄ Album-Vergleich</span><span class="m">${(D.cmp&&D.cmp.a&&D.cmp.b)?'aktiv':''}</span></button><button class="ghost mi" data-a="mhl"><span>♥ Herzen &amp; 10 von 10</span><span class="m">${tot}</span></button><button class="ghost mi" data-a="mds"><span>Design</span><span class="m">${d==='nothing'?'Nothing':'Standard'} · ${m==='auto'?'Auto':m==='light'?'Hell':'Dunkel'}</span></button><button class="ghost mi" data-a="mbk"><span>Sicherung</span><span class="m">${D.lb?new Date(D.lb).toLocaleDateString('de-DE'):'noch nie'}</span></button>
   <h3>Künstler sortieren nach</h3><div class="tabs">${b(!D.sm,'sm',0,'Durchschnitt')}${b(!!D.sm,'sm',1,'Anzahl Alben')}</div>
   <button class="btn" data-a="mclose" style="width:100%;margin-top:14px">Fertig</button><button class="lnk" data-a="mar">Archiv · Update ${VER}</button></div>`};
 const backupBlock=()=>{let h=`<h2>Sicherung</h2><p class="m">${D.lb?'Letzte Sicherung: '+new Date(D.lb).toLocaleDateString('de-DE'):'Noch keine Sicherung gemacht.'}</p><div class="add" style="margin-top:0"><button class="btn" data-a="bdl">Sicherung speichern</button><label class="ghost">Sicherung laden<input id="bf" type="file" accept=".json,application/json" hidden></label></div>`;
@@ -465,6 +501,7 @@ function R(){
   else if(!A&&st.t==='hearts'){h=heartsView()}
   else if(!A&&st.t==='nw'){h=nwView()}
   else if(!A&&st.t==='bk'){h=backupView()}
+  else if(!A&&st.t==='cm'){h=compareView()}
   else if(!A&&st.t==='ar'){h=archivView()}
   else if(!A&&st.t==='ds'){h=designView()}
   else if(!A){
@@ -476,13 +513,15 @@ function R(){
     h+='<div class="add"><input id="in" placeholder="Neuer Künstler"><button class="btn" data-a="addArt">Hinzufügen</button></div>';
   }else if(!B){
     h=`<button class="back" data-a="home">‹ Alle Künstler</button>${isEd('art',A.id)?edForm(A.id,A.n):`<h1>${anm(A)} ${pen('art',A.id)}</h1>`}<p class="sub">Durchschnitt ${fmt(artAvg(A))}</p>`;
-    h+=['Alben','EPs','Singles'].map((nm,kk)=>{const g=A.albums.filter(x=>(x.k||0)===kk);return g.length?`<h2>${nm}</h2>`+g.map((x,i)=>isEd('alb',x.id)?`<div class="row">${edForm(x.id,x.n,x.k||0)}</div>`:`<div class="row tap" data-a="alb" data-i="${x.id}"><div class="mv"><button class="ghost" data-a="aup" data-i="${x.id}" ${i?'':'disabled'}>▲</button><button class="ghost" data-a="adn" data-i="${x.id}" ${i<g.length-1?'':'disabled'}>▼</button></div><div class="grow"><div class="t">${esc(x.n)}</div><div class="m">${x.songs.length} Songs${x.y?' · '+x.y:''}</div></div>${pen('alb',x.id)}<button class="ghost warn" data-a="dalb" data-i="${x.id}">${armed==='a:'+x.id?'Sicher?':'✕'}</button>${chip(albAvg(x))}</div>`).join(''):''}).join('');
+    const albRow=(x,i,g,rk,tag)=>isEd('alb',x.id)?`<div class="row">${edForm(x.id,x.n,x.k||0)}</div>`:`<div class="row tap" data-a="alb" data-i="${x.id}">${rk?`<span class="rk">${i+1}</span>`:`<div class="mv"><button class="ghost" data-a="aup" data-i="${x.id}" ${i?'':'disabled'}>▲</button><button class="ghost" data-a="adn" data-i="${x.id}" ${i<g.length-1?'':'disabled'}>▼</button></div>`}<div class="grow"><div class="t">${esc(x.n)}</div><div class="m">${tag?tag+' · ':''}${x.songs.length} Songs${x.y?' · '+x.y:''}</div></div>${pen('alb',x.id)}<button class="ghost warn" data-a="dalb" data-i="${x.id}">${armed==='a:'+x.id?'Sicher?':'✕'}</button>${chip(albAvg(x))}</div>`;
+    h+=`<div class="tabs"><button class="${D.as?'ghost':'btn'}" data-a="as" data-i="0">Nach Reihenfolge</button><button class="${D.as?'btn':'ghost'}" data-a="as" data-i="1">Nach Durchschnitt</button></div>`;
+    h+=D.as?`<h2>Alle Alben nach Durchschnitt</h2>`+sortBy(A.albums,albAvg).map((x,i)=>albRow(x,i,null,true,['Album','EP','Single'][x.k||0])).join(''):['Alben','EPs','Singles'].map((nm,kk)=>{const g=A.albums.filter(x=>(x.k||0)===kk);return g.length?`<h2>${nm}</h2>`+g.map((x,i)=>albRow(x,i,g,false,'')).join(''):''}).join('');
     h+='<div class="add"><input id="in" placeholder="Neues Album"><select id="ty"><option value="0">Album</option><option value="1">EP</option><option value="2">Single</option></select><button class="btn" data-a="addAlb">Hinzufügen</button></div>';
     h+=impBox();
     h+=del('art','Künstler löschen');
   }else{
     const row=(s,i,L)=>{if(isEd('song',s.id))return `<div class="row"><span class="rk">${i+1}</span>${edForm(s.id,s.n)}</div>`;const u=i>0&&L[i-1].r===s.r,d=i<L.length-1&&L[i+1].r===s.r;return `<div class="row${s.id===hl?' hl':''}"><span class="rk">${i+1}</span>${D.so?'':`<div class="mv"><button class="ghost" data-a="up" data-i="${s.id}" ${u?'':'disabled'}>▲</button><button class="ghost" data-a="dn" data-i="${s.id}" ${d?'':'disabled'}>▼</button></div>`}<div class="grow t nm" data-a="edit" data-k="song" data-i="${s.id}">${esc(s.n)}</div><button class="ghost hb ${s.h?'on':''}" data-a="ht" data-i="${s.id}">${s.h?'♥':'♡'}</button><input class="r" style="border-color:${col(s.r)};color:${col(s.r)}" inputmode="decimal" value="${s.r==null?'':fmt(s.r)}" data-i="${s.id}" placeholder="–"><button class="ghost" data-a="rm" data-i="${s.id}">✕</button></div>`};
-    h=`<button class="back" data-a="art" data-i="${A.id}">‹ ${esc(A.n)}</button>${isEd('alb',B.id)?edForm(B.id,B.n,B.k||0):`<h1>${esc(B.n)} ${pen('alb',B.id)}</h1>`}<p class="sub">Durchschnitt ${fmt(albAvg(B))} · ${B.songs.length} Songs${B.songs.some(s=>s.h)?' · ♥ '+B.songs.filter(s=>s.h).length:''}</p><div class="tabs"><button class="${D.so?'ghost':'btn'}" data-a="so" data-i="0">Nach Note</button><button class="${D.so?'btn':'ghost'}" data-a="so" data-i="1">Eingabe-Reihenfolge</button></div>`;
+    h=`<button class="back" data-a="art" data-i="${A.id}">‹ ${esc(A.n)}</button>${isEd('alb',B.id)?edForm(B.id,B.n,B.k||0):`<h1>${esc(B.n)} ${pen('alb',B.id)}</h1>`}<p class="sub">Durchschnitt ${fmt(albAvg(B))} · ${B.songs.length} Songs${B.songs.some(s=>s.h)?' · ♥ '+B.songs.filter(s=>s.h).length:''}</p><div class="tabs"><button class="${D.so?'ghost':'btn'}" data-a="so" data-i="0">Nach Note</button><button class="${D.so?'btn':'ghost'}" data-a="so" data-i="1">Eingabe-Reihenfolge</button></div><div class="add" style="margin:0 0 8px"><button class="ghost" data-a="cmpa">⇄ Mit anderem Album vergleichen</button></div>`;
     h+=groups(B).map(([d,g])=>{const L=D.so?g:sortS(g);return (d?`<div class="disc"><span class="t">${esc(d)}</span><span class="m">Ø ${g.length} Songs</span>${chip(avg(g.map(s=>s.r)))}</div>`:'')+L.map((s,i)=>row(s,i,L)).join('')}).join('');
     h+='<h2>Songs hinzufügen</h2><input id="dc" placeholder="Disc (optional), z. B. Disc 2" style="margin-bottom:8px"><textarea id="in" placeholder="Ein Song pro Zeile, z. B.&#10;Runaway: 10&#10;Crawling: 9,5"></textarea><button class="btn" data-a="addSongs">Hinzufügen</button>';
     h+='<p class="m">'+(D.so?'Die Eingabe-Reihenfolge ist die Reihenfolge, in der die Songs eingetragen wurden. ':'Songs mit gleicher Note kannst du mit ▲▼ selbst anordnen. ')+'Tippe auf einen Songnamen, um ihn zu korrigieren.</p>'+del('alb','Album löschen');
@@ -527,6 +566,12 @@ document.addEventListener('click',e=>{
   else if(a==='mar'){menuOpen=false;st={t:'ar',a:null,b:null}}
   else if(a==='axt'){if(arx.has(i))arx.delete(i);else arx.add(i)}
   else if(a==='axall'){if(+i)UPD.forEach(u=>arx.add(u.v));else arx.clear()}
+  else if(a==='mcm'){menuOpen=false;st={t:'cm',a:null,b:null}}
+  else if(a==='cmpa'){D.cmp=D.cmp||{a:null,b:null};D.cmp.a=[A.id,B.id];st={t:'cm',a:null,b:null}}
+  else if(a==='cmsw'){const c=D.cmp||{};D.cmp={a:c.b||null,b:c.a||null}}
+  else if(a==='cmclr'){D.cmp={a:null,b:null}}
+  else if(a==='cmm'){D.cm=i}
+  else if(a==='as'){D.as=+i}
   else if(a==='mbk'){menuOpen=false;st={t:'bk',a:null,b:null}}
   else if(a==='sm'){D.sm=+i}
   else if(a==='nwtab'){nwTab=i}
@@ -570,6 +615,7 @@ document.addEventListener('click',e=>{
 document.addEventListener('keydown',e=>{if(e.target.id!=='ed')return;if(e.key==='Enter'){e.preventDefault();document.querySelector('[data-a=edsave]').click()}else if(e.key==='Escape'){ed=null;R()}});
 document.addEventListener('input',e=>{if(e.target.id==='hq'){hq=e.target.value;const P=hlParts(),r=document.getElementById('hres'),u=document.getElementById('hsub');if(r)r.innerHTML=P.h;if(u)u.textContent=P.tot+' Songs · ♥ Herzen und 10 von 10'}if(e.target.id==='q'){qs=e.target.value;const r=document.getElementById('res');if(r)r.innerHTML=resHtml(qs)}});
 document.addEventListener('change',e=>{
+  if(/^c[pb][ab]$/.test(e.target.id||'')){const k=e.target.id[2],ty=e.target.id[1];D.cmp=D.cmp||{a:null,b:null};const cur=D.cmp[k]||['',''];D.cmp[k]=ty==='p'?(e.target.value?[e.target.value,'']:null):[cur[0],e.target.value];save();R();return}
   if(e.target.id==='fl'){loadDoc(e.target.files[0]);return}
   if(e.target.id==='bf'){readBackup(e.target.files[0]);return}
   if(!e.target.classList.contains('r'))return;
