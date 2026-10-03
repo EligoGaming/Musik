@@ -174,6 +174,15 @@ h2.hp{display:flex;align-items:center;justify-content:space-between;gap:8px}
 .top .sb{position:relative}.top .sb .bdg{top:-7px;right:-7px}
 .sh{overscroll-behavior:contain;transition:transform .2s}
 .ks{width:100%;margin:0 0 12px;padding:11px 12px;font-size:15px}
+/* Update 17.1 */
+h2.gh{color:var(--tx);border-bottom:1px solid var(--bd);padding-bottom:6px;margin-top:22px}
+html[data-design=nothing] h2.gh{color:var(--tx);font-size:13px;border-bottom:1px solid var(--bd2,var(--bd))}
+h2.gh .m{color:var(--mu)}
+.usr{display:flex;align-items:center;gap:8px;padding:4px 0 0 4px;border-top:1px dashed var(--bd)}.usr .t{font-size:14px;font-weight:500;flex:1;min-width:0;cursor:pointer}.usr .ghost{padding:2px 10px;font-size:14px}
+.nwr{flex-direction:column;align-items:stretch;gap:6px}.nwr .hd{display:flex;align-items:center;gap:10px}
+html[data-design=nothing][data-px=off] .chip,html[data-design=nothing][data-px=off] .cmc .big{font-family:inherit;font-weight:800;font-size:16px;letter-spacing:0}
+html[data-design=nothing][data-px=off] .cmc .big{font-size:inherit}
+html[data-design=nothing][data-px=all] input.r{font-family:"Doto","Space Mono",monospace;font-weight:900;font-size:19px}
 </style></head><body><main id="app"></main>
 <script>
 const K='musikratings_leer';let D;
@@ -394,7 +403,7 @@ const nwItems=()=>{const N=NW(),out=[];
       if(t&&(alb.has(t)||(x.t==='Single'&&sng.has(t))))return;out.push({...x,ai:f.id})})});
   return out.sort((p,q)=>(q.d||'').localeCompare(p.d||''))};
 /* Alben in der App, bei denen noch Songs ohne Note sind */
-const nwUnrated=()=>D.artists.flatMap(a=>a.albums.map(b=>({a,b,n:b.songs.filter(s=>s.r==null).length})).filter(x=>x.n>0));
+const nwUnrated=()=>D.artists.flatMap(a=>a.albums.map(b=>({a,b,n:b.songs.filter(s=>s.r==null&&!s.sk).length})).filter(x=>x.n>0));
 const nwCount=()=>{const N=NW();return N.on?nwItems().length+nwUnrated().length:0};
 async function nwSearchRun(aid){const A=D.artists.find(x=>x.id===aid);if(!A)return;nwBusy=true;nwMsg='Suche …';nwCand=null;nwFor=aid;R();
   try{const c=await mbSearch(A.n);nwCand=c;nwMsg=c.length?'':'Nichts gefunden. Der Künstler kann leider nicht verknüpft werden.'}catch(e){nwMsg='Suche nicht möglich. Bist du online?'}
@@ -436,7 +445,8 @@ const nwView=()=>{const N=NW(),LIM=30;
       if(it.length>1)h+=`<button class="ghost warn" data-a="nwignall">${armed==='nwia'?'Sicher? Alle '+it.length+' ausblenden':'Alle ausblenden'}</button>`}
     h+=`<h2>Angefangen, aber unbewertet <span class="m">${un.length}</span></h2>`;
     if(!un.length)h+='<p class="m">Alle Songs in deinen Alben haben eine Note.</p>';
-    h+=un.map(x=>`<div class="row tap" data-a="go" data-ar="${x.a.id}" data-al="${x.b.id}"><div class="grow"><div class="t">${esc(x.b.n)}</div><div class="m">${esc(x.a.n)} · ${x.n} von ${x.b.songs.length} Songs ohne Note</div></div></div>`).join('');
+    if(un.length)h+='<p class="m">Skits oder Zwischenspiele musst du nicht bewerten. Mit ✕ blendest du einen Song oder alle Songs eines Albums aus.</p>';
+    h+=un.map(x=>{const us=x.b.songs.filter(q=>q.r==null&&!q.sk);return `<div class="row nwr"><div class="hd"><div class="grow tap" data-a="go" data-ar="${x.a.id}" data-al="${x.b.id}" style="cursor:pointer"><div class="t">${esc(x.b.n)}</div><div class="m">${esc(x.a.n)} · ${x.n} von ${x.b.songs.length} Songs ohne Note</div></div>${us.length>1?`<button class="ghost" data-a="skal" data-ar="${x.a.id}" data-i="${x.b.id}" aria-label="Alle ausblenden">Alle ✕</button>`:''}</div>${us.slice(0,8).map(q=>`<div class="usr"><span class="t" data-a="go" data-ar="${x.a.id}" data-al="${x.b.id}" data-s="${q.id}">${esc(q.n)}</span><button class="ghost" data-a="skp" data-ar="${x.a.id}" data-al="${x.b.id}" data-i="${q.id}" aria-label="Ausblenden">✕</button></div>`).join('')}${us.length>8?`<div class="m">… und ${us.length-8} weitere</div>`:''}</div>`}).join('');
     return h}
   h+=`<p class="sub" style="margin-top:6px">Die App prüft beim Öffnen, ob deine ausgewählten Künstler Veröffentlichungen haben, die noch nicht in der App sind. Daten von MusicBrainz, nur mit Internet.</p>`;
   h+=`<h2>Prüfung</h2><div class="tabs">${sw(!N.on,'nwon',0,'Aus')}${sw(!!N.on,'nwon',1,'An')}</div>`;
@@ -453,6 +463,7 @@ const designView=()=>{const d=dsg(),m=mode(),ac=D.ac||'off',b=(on,a,i,t)=>`<butt
   let h=`<button class="back" data-a="tab" data-i="rate">‹ Zurück</button><h1>Design</h1>`;
   h+=`<h2>Stil</h2><div class="tabs">${b(d==='classic','dsn','classic','Standard')}${b(d==='nothing','dsn','nothing','Nothing')}</div>`;
   h+=`<h2>Darstellung</h2><div class="tabs">${b(m==='auto','mode','auto','Automatisch')}${b(m==='light','mode','light','Hell')}${b(m==='dark','mode','dark','Dunkel')}</div>`;
+  if(d==='nothing'){const px=D.px||'on';h+=`<h2>Zahlen-Schrift</h2><div class="tabs">${b(px==='on','px','on','Pixel')}${b(px==='all','px','all','Pixel + Songs')}${b(px==='off','px','off','Normal')}</div><p class="m">„Pixel“ zeigt Noten und Durchschnitte in Punktschrift, nur bei den einzelnen Songs nicht. „Pixel + Songs“ nimmt sie auch dort. „Normal“ schaltet sie überall aus.</p>`}
   h+=`<h2>Album-Cover</h2><div class="tabs">${b(!D.cv,'cvt',0,'Aus')}${b(!!D.cv,'cvt',1,'An')}</div><p class="m">Zeigt Cover bei Alben, geholt über MusicBrainz und das Cover Art Archive. Braucht Internet und etwas Datenvolumen. Nicht gefundene Alben bleiben grau.</p>`;
   h+=`<h2>Künstler hervorheben</h2><div class="tabs">${b(ac==='off','ac','off','Aus')}${b(ac==='purple','ac','purple','Lila')}${b(ac==='red','ac','red','Rot')}${b(ac==='custom','ac','custom','Eigene')}</div>`;
   if(ac!=='off'){h+=`<div class="tabs">${b(!D.am,'am',0,'Unterstreichen')}${b(!!D.am,'am',1,'Markieren')}</div>`;
@@ -462,9 +473,10 @@ const designView=()=>{const d=dsg(),m=mode(),ac=D.ac||'off',b=(on,a,i,t)=>`<butt
     const ex=D.artists.slice(0,3);h+=`<h2>Vorschau</h2>`+(ex.length?ex.map(a=>`<div class="row"><div class="grow"><div class="t">${anm(a)}</div><div class="m">${a.albums.length} Alben${genreOf(a)?' · '+esc(genreOf(a)):''}</div></div></div>`).join(''):'<p class="m">Noch keine Künstler.</p>')}
   return h};
 const backupView=()=>`<button class="back" data-a="tab" data-i="rate">‹ Zurück</button><h1>Sicherung</h1><p class="sub">Sichere deine Bewertungen in einer Datei oder spiele eine Sicherung wieder ein.</p>`+backupBlock();
-const VER='17';
+const VER='17.1';
 const UPD=[
-{v:'17',t:'Aufgeräumtes Menü, Statistiken-Tab, Sortierauswahl',d:'Weniger im Menü, mehr Übersicht oben.',n:['Menü lässt sich jetzt nach unten wegwischen.','News haben einen eigenen Knopf oben rechts zwischen Suche und Menü, mit der Zahl der Neuigkeiten.','Neuer Bereich „Statistiken“ im Menü mit drei Reitern: Rückblick, Herzen und 10 von 10, Album-Vergleich.','Auf der Künstlerseite gibt es statt zwei Knöpfen eine Auswahl: Durchschnitt, Genre, Anzahl Singles, Anzahl Alben oder Alphabet.'],c:['Singles haben kein graues Cover-Feld mehr, nur noch Alben und EPs.','Das Menü enthält nur noch Statistiken, Design, Sicherung und das Archiv.']},
+{v:'17',t:'Aufgeräumtes Menü, Statistiken-Tab, Sortierauswahl',d:'Weniger im Menü, mehr Übersicht oben.',n:['Menü lässt sich jetzt nach unten wegwischen.','News haben einen eigenen Knopf oben rechts zwischen Suche und Menü, mit der Zahl der Neuigkeiten.','Neuer Bereich „Statistiken“ im Menü mit drei Reitern: Rückblick, Herzen und 10 von 10, Album-Vergleich.','Auf der Künstlerseite gibt es statt zwei Knöpfen eine Auswahl: Durchschnitt, Genre, Anzahl Singles, Anzahl Alben oder Alphabet.'],c:['Singles haben kein graues Cover-Feld mehr, nur noch Alben und EPs.','Das Menü enthält nur noch Statistiken, Design, Sicherung und das Archiv.'],
+ sub:[{v:'17.1',t:'Skits ausblenden, Genre-Überschriften, Pixel-Zahlen',n:['In den News lassen sich bei „Angefangen, aber unbewertet“ einzelne Songs oder alle Songs eines Albums mit ✕ ausblenden, zum Beispiel Skits. Sie zählen dann nicht mehr als unbewertet. Im Album gibt es „Wieder anzeigen“, und „Rückgängig“ erscheint kurz nach dem Ausblenden.','Neue Einstellung im Design-Tab (nur Nothing): Zahlen-Schrift mit „Pixel“, „Pixel + Songs“ und „Normal“.'],c:['Die Genre-Überschriften auf der Künstlerseite sind heller und haben eine Linie, damit sie zwischen den farbigen Künstlern nicht untergehen.']}]},
 {v:'16',t:'Alben, EPs und Singles getrennt, Cover & Jahr von Hand, Plus-Knöpfe',d:'Saubere Statistik pro Veröffentlichungsart und schnelleres Anlegen.',n:['Rückblick getrennt nach Alben, EPs, Singles oder Alle. Kennzahlen, Notenverteilung, Top-Künstler, beste und schwächste Einträge, Jahre und Genres beziehen sich jeweils nur auf die gewählte Art.','Plus-Knöpfe rechts neben „Alben“, „EPs“ und „Singles“ auf der Künstlerseite. Antippen öffnet direkt ein Eingabefeld, mehrere Einträge hintereinander sind möglich. Das alte Formular ganz unten ist weg.','Cover von Hand: Im Album „Cover wählen“, ein Bild vom Handy aussuchen. Es wird quadratisch zugeschnitten und mit dem Album gespeichert, auch ohne Internet. „Cover entfernen“ macht es rückgängig. Eigene Cover haben Vorrang vor den automatischen.','Erscheinungsjahr von Hand: Im Album gibt es ein Feld „Jahr“.','Die Anzahl bei Künstlern zeigt jetzt „3 Alben · 1 EP · 12 Singles“ statt alles als Alben zu zählen.'],c:['Die Sortierung der Künstler nach Anzahl Alben zählt nur noch echte Alben, keine EPs oder Singles.','Wenn der Speicher voll ist, meldet Coda das, statt still nicht zu speichern.'],f:['Herzen im Rückblick wurden doppelt gezählt, wenn derselbe Song als Single und auf dem Album vorkam. Jetzt zählt er pro Künstler einmal, genau wie in den Highlights.']},
 {v:'15',t:'Sicherung, Suche, Rückgängig, Cover, Rückblick, Verlauf & Notizen',d:'Mehr Sicherheit für deine Daten und mehr Überblick über deine Bewertungen.',n:['Sicherungs-Hinweis auf jeder Seite, sobald die letzte Sicherung 7 Tage her ist. „Jetzt sichern“ oder „Später erinnern“ (3 Tage Ruhe). Dazu „Teilen“, um die Datei direkt an Drive, WhatsApp oder andere Apps zu schicken.','Automatische Kopien: Coda legt täglich eine Kopie auf dem Handy an (die letzten drei) und auch vor jedem Einspielen einer Sicherung. Wiederherstellen im Menü unter Sicherung. Die Datei bleibt trotzdem wichtig. Außerdem bittet Coda den Browser, die Daten nicht automatisch zu löschen.','Suche überall: Lupe oben neben dem Menü. Sucht jetzt auch in deinen Song-Notizen.','Rückgängig: Nach dem Löschen eines Songs, Albums, Künstlers, Genres oder Eintrags erscheint unten für ein paar Sekunden „Rückgängig“.','Album-Cover (optional, Menü > Design): holt Cover über MusicBrainz und das Cover Art Archive und zeigt sie in der Albenliste, im Album und im Vergleich.','Rückblick (Menü): Kennzahlen, Notenverteilung, Top-Künstler, beste und schwächste Alben, Durchschnitt pro Erscheinungsjahr und pro Genre. Die Jahre trägst du über ✎ am Album ein oder holst sie automatisch über MusicBrainz.','Verlauf der Diskografie auf der Künstlerseite: Kurve und Balken aller Alben nach Jahr, dazu Tendenz, bestes und schwächstes Album.','Notizen zu Songs: der Knopf ✎ unter dem Herz öffnet ein Textfeld, zum Beispiel „bester Refrain“.'],c:['Alben haben im Bearbeiten-Formular jetzt ein Jahr-Feld.']},
 {v:'14',t:'Album-Vergleich & Sortierung nach Durchschnitt',d:'Zwei Alben direkt gegeneinander stellen und die Alben eines Künstlers nach Note ordnen.',n:['Neuer Vergleich im Menü („⇄ Album-Vergleich“): Wähle zwei Alben, auch von verschiedenen Künstlern, zum Beispiel OK Computer gegen Kid A oder gegen ein Album von Linkin Park.','Gegenüberstellung mit Durchschnitt, Median, bester und schlechtester Note, Anzahl der Zehner, Anteil ab 7 und Herzen. Der bessere Wert ist grün, dazu ein Satz, wer wie viele Punkte vorne liegt.','Song für Song in zwei Spalten, wahlweise „Nach Rang“ (bester gegen besten) oder „Nach Reihenfolge“ (Song 1 gegen Song 1). Der bessere Song jedes Paars ist markiert.','Im Album gibt es den Knopf „Mit anderem Album vergleichen“, der das Album gleich als erste Seite einsetzt. „Tauschen“ und „Leeren“ helfen beim Umstellen.','Auf der Künstlerseite lassen sich die Alben jetzt „Nach Reihenfolge“ oder „Nach Durchschnitt“ anzeigen. Letzteres ist eine gemeinsame Rangliste aller Alben, EPs und Singles-Sammlungen.'],c:['Die Auswahl im Vergleich bleibt gespeichert und ist Teil der Sicherung.']},
@@ -618,6 +630,7 @@ const listView=()=>{let h=tabs()+'<h1>Künstlerliste</h1><p class="sub">Haken se
   h+=D.genres.map(g=>(isEd('genre',g.id)?edForm(g.id,g.n):`<h2>${esc(g.n)} <span class="m">${g.items.filter(x=>x.done).length}/${g.items.length}</span> ${pen('genre',g.id)}</h2>`)+g.items.map(x=>isEd('item',x.id)?`<div class="row">${edForm(x.id,x.n)}</div>`:`<div class="row"><input type="checkbox" class="ck" data-a="tg" data-g="${g.id}" data-i="${x.id}" ${x.done?'checked':''}><div class="grow t ${x.done?'dn':''}" data-a="open" data-n="${esc(x.n)}">${esc(x.n)}</div>${pen('item',x.id,g.id)}<button class="ghost" data-a="rmItem" data-g="${g.id}" data-i="${x.id}">✕</button></div>`).join('')+`<div class="add"><input placeholder="Neuer Künstler: ${esc(g.n)}"><button class="btn" data-a="addItem" data-g="${g.id}">+</button></div>`+del('g:'+g.id,'Genre löschen')).join('');
   return h+'<h2>Neues Genre</h2><div class="add"><input id="in" placeholder="Genre-Name"><button class="btn" data-a="addGenre">Hinzufügen</button></div>'};
 function R(){
+  document.documentElement.dataset.px=D.px||'on';
   saveNote();
   const A=D.artists.find(x=>x.id===st.a),B=A&&A.albums.find(x=>x.id===st.b);let h='';
   if(!A&&st.t==='list'){h=listView()}
@@ -631,7 +644,7 @@ function R(){
     h=tabs()+'<h1>Künstler</h1><p class="sub">'+({avg:'Nach Durchschnitt sortiert',genre:'Nach Genre sortiert',singles:'Nach Anzahl Singles sortiert',albums:'Nach Anzahl Alben sortiert',abc:'Alphabetisch sortiert'})[ksOf()]+'</p>'+nwNote();
     const arts=artList(),row=(x,sg)=>`<div class="row tap" ${x.ch?'style="border-left:4px solid var(--ac)" ':''}data-a="art" data-i="${x.id}"><div class="grow"><div class="t">${anm(x)}</div><div class="m">${kcnt(x)}${sg&&genreOf(x)?' · '+esc(genreOf(x)):''}</div></div>${chip(artAvg(x))}</div>`;
     h+=`<select id="ksort" class="ks" aria-label="Sortieren nach">${KS.map(([k,n])=>`<option value="${k}" ${ksOf()===k?'selected':''}>Sortieren nach: ${n}</option>`).join('')}</select>`;
-    if(ksOf()==='genre'){[...D.genres.map(g=>g.n),''].forEach(gn=>{const l=arts.filter(x=>genreOf(x)===gn);if(l.length)h+=`<h2>${esc(gn||'Ohne Genre')} <span class="m">${l.length}</span></h2>`+l.map(x=>row(x,false)).join('')})}
+    if(ksOf()==='genre'){[...D.genres.map(g=>g.n),''].forEach(gn=>{const l=arts.filter(x=>genreOf(x)===gn);if(l.length)h+=`<h2 class="gh">${esc(gn||'Ohne Genre')} <span class="m">${l.length}</span></h2>`+l.map(x=>row(x,false)).join('')})}
     else h+=arts.map(x=>row(x,true)).join('');
     h+='<div class="add"><input id="in" placeholder="Neuer Künstler"><button class="btn" data-a="addArt">Hinzufügen</button></div>';
   }else if(!B){
@@ -647,7 +660,7 @@ function R(){
     h=`<button class="back" data-a="art" data-i="${A.id}">‹ ${esc(A.n)}</button><div class="albh">${cvHtml(B,'l')}<div class="grow">${isEd('alb',B.id)?edForm(B.id,B.n,B.k||0,B.y):`<h1>${esc(B.n)} ${pen('alb',B.id)}</h1>`}<p class="sub">Durchschnitt ${fmt(albAvg(B))} · ${B.songs.length} Songs${B.songs.some(s=>s.h)?' · ♥ '+B.songs.filter(s=>s.h).length:''}${B.y?' · '+B.y:''}</p></div></div><div class="tabs"><button class="${D.so?'ghost':'btn'}" data-a="so" data-i="0">Nach Note</button><button class="${D.so?'btn':'ghost'}" data-a="so" data-i="1">Eingabe-Reihenfolge</button></div><div class="add" style="margin:0 0 8px"><button class="ghost" data-a="cmpa">⇄ Mit anderem Album vergleichen</button></div><div class="det"><label class="yl">Jahr <input id="ayr" inputmode="numeric" maxlength="4" placeholder="–" value="${B.y||''}"></label>${(B.k||0)===2?'':`<label class="ghost">${B.cu?'Cover ändern':'Cover wählen'}<input id="cvf" type="file" accept="image/*" hidden></label>`}${B.cu&&(B.k||0)!==2?'<button class="ghost" data-a="cvdel">Cover entfernen</button>':''}</div>`;
     h+=groups(B).map(([d,g])=>{const L=D.so?g:sortS(g);return (d?`<div class="disc"><span class="t">${esc(d)}</span><span class="m">Ø ${g.length} Songs</span>${chip(avg(g.map(s=>s.r)))}</div>`:'')+L.map((s,i)=>row(s,i,L)).join('')}).join('');
     h+='<h2>Songs hinzufügen</h2><input id="dc" placeholder="Disc (optional), z. B. Disc 2" style="margin-bottom:8px"><textarea id="in" placeholder="Ein Song pro Zeile, z. B.&#10;Runaway: 10&#10;Crawling: 9,5"></textarea><button class="btn" data-a="addSongs">Hinzufügen</button>';
-    h+='<p class="m">'+(D.so?'Die Eingabe-Reihenfolge ist die Reihenfolge, in der die Songs eingetragen wurden. ':'Songs mit gleicher Note kannst du mit ▲▼ selbst anordnen. ')+'Tippe auf einen Songnamen, um ihn zu korrigieren.</p>'+del('alb','Album löschen');
+    h+='<p class="m">'+(D.so?'Die Eingabe-Reihenfolge ist die Reihenfolge, in der die Songs eingetragen wurden. ':'Songs mit gleicher Note kannst du mit ▲▼ selbst anordnen. ')+'Tippe auf einen Songnamen, um ihn zu korrigieren.</p>'+(B.songs.some(q=>q.sk&&q.r==null)?`<p class="m">${B.songs.filter(q=>q.sk&&q.r==null).length} Songs ohne Note sind in den News ausgeblendet.</p><div class="add" style="margin:0 0 10px"><button class="ghost" data-a="skreset">Wieder anzeigen</button></div>`:'')+del('alb','Album löschen');
   }
   document.getElementById('app').innerHTML=topbar()+(st.t==='bk'&&!A?'':bnote())+h+menuHtml();{const eb=document.getElementById('ed');if(eb){eb.focus();eb.select()}const hr=document.querySelector('.row.hl');if(hr)hr.scrollIntoView({block:'center'})}
   if(focusA){focusA=0;const q=document.getElementById('ain');if(q)q.focus()}
@@ -661,7 +674,7 @@ document.addEventListener('click',e=>{
   const a=t.dataset.a,i=t.dataset.i,v=(document.getElementById('in')||{}).value||'';
   msg='';bmsg='';const A=D.artists.find(x=>x.id===st.a),B=A&&A.albums.find(x=>x.id===st.b);
   let und=null;
-  if(a==='rm')und=['Song gelöscht'];else if(a==='rmItem')und=['Eintrag entfernt'];else if(a==='dalb'&&armed==='a:'+i)und=['Album gelöscht'];
+  if(a==='skp'||a==='skal')und=['Ausgeblendet'];else if(a==='rm')und=['Song gelöscht'];else if(a==='rmItem')und=['Eintrag entfernt'];else if(a==='dalb'&&armed==='a:'+i)und=['Album gelöscht'];
   else if(a==='del'&&armed===t.dataset.k)und=[armed.startsWith('g:')?'Genre gelöscht':armed==='art'?'Künstler gelöscht':'Album gelöscht'];
   if(und)und.push(JSON.stringify(D));
   if(a==='home'){st={t:st.t,a:null,b:null}}
@@ -741,6 +754,10 @@ document.addEventListener('click',e=>{
   else if(a==='edit'){ed={k:t.dataset.k,i:i,g:t.dataset.g}}
   else if(a==='edcancel'){ed=null}
   else if(a==='edsave'){doEdSave()}
+  else if(a==='skp'){const q=D.artists.find(x=>x.id===t.dataset.ar),r=q&&q.albums.find(x=>x.id===t.dataset.al),sg=r&&r.songs.find(x=>x.id===i);if(sg)sg.sk=1}
+  else if(a==='skal'){const q=D.artists.find(x=>x.id===t.dataset.ar),r=q&&q.albums.find(x=>x.id===i);if(r)r.songs.forEach(x=>{if(x.r==null)x.sk=1})}
+  else if(a==='skreset'){if(B)B.songs.forEach(x=>{delete x.sk})}
+  else if(a==='px'){D.px=i}
   else if(a==='gs'){st={t:'search',a:null,b:null};focusQ=1}
   else if(a==='mrv'){menuOpen=false;st={t:'rv',a:null,b:null}}
   else if(a==='mst'){menuOpen=false;st={t:D.stt||'rv',a:null,b:null}}
