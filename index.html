@@ -249,20 +249,26 @@ function resHtml(q){const T=nm(q).split(/\s+/).filter(Boolean);
   return h}
 const searchView=()=>tabs()+`<h1>Suche</h1><input id="q" type="search" value="${esc(qs)}" placeholder="Song, Album oder Künstler" autocomplete="off" style="margin:8px 0 4px"><div id="res">${resHtml(qs)}</div>`;
 const isTen=x=>x.r!=null&&+x.r>=10;
+const sk=x=>{const k=(x.n||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^\p{L}\p{N}]/gu,'');return k||x.id};
+/* Highlights: gleiche Songs (gleicher Künstler + gleicher Titel) nur einmal zählen */
+const hlList=F=>D.artists.map(a=>{const m=new Map();
+  a.albums.forEach(b=>b.songs.forEach(s=>{const k=sk(s),e=m.get(k);
+    if(!e)m.set(k,{b,s,h:!!s.h,t:isTen(s),al:[b.n]});
+    else{e.h=e.h||!!s.h;e.t=e.t||isTen(s);if(!e.al.includes(b.n))e.al.push(b.n);if((+s.r||0)>(+e.s.r||0)){e.b=b;e.s=s}}}));
+  return {a,l:[...m.values()].filter(e=>F==='h'?e.h:F==='t'?e.t:(e.h||e.t))}}).filter(x=>x.l.length);
 const heartsView=()=>{const F=D.hf||'a',G=D.hg||'a';
-  const ok=x=>F==='h'?!!x.h:F==='t'?isTen(x):(!!x.h||isTen(x));
-  const all=D.artists.map(a=>({a,l:a.albums.flatMap(b=>b.songs.filter(ok).map(s=>[b,s]))})).filter(x=>x.l.length);
+  const all=hlList(F);
   const tot=all.reduce((t,x)=>t+x.l.length,0);
   let h=`<button class="back" data-a="tab" data-i="rate">‹ Zurück</button><h1>Highlights</h1><p class="sub">${tot} Songs · ♥ Herzen und 10 von 10</p>`;
   h+=`<div class="tabs"><button class="${F==='a'?'btn':'ghost'}" data-a="hf" data-i="a">Alle</button><button class="${F==='h'?'btn':'ghost'}" data-a="hf" data-i="h">♥ Herzen</button><button class="${F==='t'?'btn':'ghost'}" data-a="hf" data-i="t">10 / 10</button></div>`;
   h+=`<div class="tabs"><button class="${G==='a'?'btn':'ghost'}" data-a="hg" data-i="a">Nach Künstler</button><button class="${G==='g'?'btn':'ghost'}" data-a="hg" data-i="g">Nach Genre</button></div>`;
   if(!tot)h+='<p class="m">Hier ist noch nichts. Songs mit ♥ oder einer 10 erscheinen automatisch.</p>';
-  const rowS=(a,b,s,sub)=>`<div class="row tap" data-a="go" data-ar="${a.id}" data-al="${b.id}" data-s="${s.id}"><div class="grow"><div class="t">${esc(s.n)}</div><div class="m">${esc(sub)}</div></div>${s.h?'<span style="color:var(--r)">♥</span>':''}${chip(s.r)}</div>`;
-  if(G==='g'){const gs=[...D.genres.map(g=>g.n),''],seen=new Set();
+  const rowS=(a,e,withArt)=>`<div class="row tap" data-a="go" data-ar="${a.id}" data-al="${e.b.id}" data-s="${e.s.id}"><div class="grow"><div class="t">${esc(e.s.n)}</div><div class="m">${esc((withArt?a.n+' · ':'')+e.al.join(' · '))}</div></div>${e.h?'<span style="color:var(--r)">♥</span>':''}${chip(e.s.r)}</div>`;
+  if(G==='g'){const gs=[...D.genres.map(g=>g.n),''];
     gs.forEach(gn=>{const arts=all.filter(x=>genreOf(x.a)===gn).sort((p,q)=>q.l.length-p.l.length);if(!arts.length)return;
       const c=arts.reduce((t,x)=>t+x.l.length,0);h+=`<h2>${esc(gn||'Ohne Genre')} <span class="m">${c}</span></h2>`;
-      arts.forEach(x=>{h+=x.l.map(([b,s])=>rowS(x.a,b,s,x.a.n+' · '+b.n)).join('')})})}
-  else{all.sort((p,q)=>q.l.length-p.l.length).forEach(x=>{h+=`<h2>${esc(x.a.n)} <span class="m">${x.l.length}</span></h2>`+x.l.map(([b,s])=>rowS(x.a,b,s,b.n)).join('')})}
+      arts.forEach(x=>{h+=x.l.map(e=>rowS(x.a,e,true)).join('')})})}
+  else{all.sort((p,q)=>q.l.length-p.l.length).forEach(x=>{h+=`<h2>${esc(x.a.n)} <span class="m">${x.l.length}</span></h2>`+x.l.map(e=>rowS(x.a,e,false)).join('')})}
   return h};
 async function dlBackup(){const fn='musik-ratings-sicherung-'+new Date().toISOString().slice(0,10)+'.json',txt=JSON.stringify(D);try{let dl=null;try{dl=window.claude&&await window.claude.use('downloads')}catch(e){}if(dl){await dl.save({filename:fn,data:txt});D.lb=Date.now();save();bmsg='Sicherung gespeichert.'}else{const u=URL.createObjectURL(new Blob([txt],{type:'application/json'})),a=document.createElement('a');a.href=u;a.download=fn;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),3000);D.lb=Date.now();save()}}catch(e){bmsg=(e&&e.code==='declined')?'Abgebrochen.':'Der Download wurde blockiert. Nutze unten die Text-Sicherung.'}R()}
 function readBackup(f){if(!f)return;f.text().then(t=>{try{const j=JSON.parse(t);if(j&&Array.isArray(j.artists)){bpend=j;bmsg=''}else bmsg='Das ist keine gültige Sicherung.'}catch(x){bmsg='Die Datei konnte nicht gelesen werden.'}R()})}
@@ -273,7 +279,7 @@ let menuOpen=false;
 const mode=()=>document.documentElement.dataset.mode||'auto',dsg=()=>document.documentElement.dataset.design||'classic';
 const topbar=()=>`<div class="top"><span class="brand"><i></i>Coda</span><button class="mb" data-a="menu" aria-label="Menü">☰</button></div>`;
 const menuHtml=()=>{if(!menuOpen)return '';const d=dsg(),m=mode(),b=(on,a,i,t)=>`<button class="${on?'btn':'ghost'}" data-a="${a}" data-i="${i}">${t}</button>`;
-  const tot=D.artists.reduce((t,a)=>t+a.albums.reduce((u,b)=>u+b.songs.filter(x=>x.h||isTen(x)).length,0),0);
+  const tot=hlList('a').reduce((t,x)=>t+x.l.length,0);
   return `<div class="sc" data-a="mclose"></div><div class="sh"><div class="gr"></div>
   <h3>Schnellzugriff</h3><button class="ghost mi" data-a="mhl"><span>♥ Herzen &amp; 10 von 10</span><span class="m">${tot}</span></button><button class="ghost mi" data-a="bdl"><span>Sicherung speichern</span><span class="m">${D.lb?new Date(D.lb).toLocaleDateString('de-DE'):'noch nie'}</span></button>
   <h3>Design</h3><div class="tabs">${b(d==='classic','dsn','classic','Standard')}${b(d==='nothing','dsn','nothing','Nothing')}</div>
