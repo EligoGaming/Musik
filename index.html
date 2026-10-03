@@ -356,7 +356,7 @@ function doEdSave(){const n=((document.getElementById('ed')||{}).value||'').repl
   else if(e.k==='song'){const B=A&&A.albums.find(y=>y.id===st.b),s=B&&B.songs.find(y=>y.id===e.i);if(s)s.n=n}
   else if(e.k==='item'){const g=D.genres.find(y=>y.id===e.g),i=g&&g.items.find(y=>y.id===e.i);if(i){const o=i.n;i.n=n;const a=D.artists.find(y=>nz(y.n)===nz(o));if(a)a.n=n}}
   else if(e.k==='genre'){const g=D.genres.find(y=>y.id===e.i);if(g)g.n=n}}
-const tabs=()=>`<div class="tabs">${[['rate','Bewertungen'],['list','Künstlerliste'],['search','Suche']].map(([k,n])=>`<button class="${st.t===k?'btn':'ghost'}" data-a="tab" data-i="${k}">${n}</button>`).join('')}</div>`;
+const tabs=()=>`<div class="tabs">${[['rate','Bewertungen'],['list','Künstlerliste']].map(([k,n])=>`<button class="${st.t===k?'btn':'ghost'}" data-a="tab" data-i="${k}">${n}</button>`).join('')}</div>`;
 const nm=s=>String(s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
 const cntSongs=d=>d.artists.reduce((t,a)=>t+a.albums.reduce((u,b)=>u+b.songs.length,0),0);
 function resHtml(q){const T=nm(q).split(/\s+/).filter(Boolean);
@@ -505,8 +505,9 @@ const designView=()=>{const d=dsg(),m=mode(),ac=D.ac||'off',b=(on,a,i,t)=>`<butt
     const ex=D.artists.slice(0,3);h+=`<h2>Vorschau</h2>`+(ex.length?ex.map(a=>`<div class="row"><div class="grow"><div class="t">${anm(a)}</div><div class="m">${a.albums.length} Alben${genreOf(a)?' · '+esc(genreOf(a)):''}</div></div></div>`).join(''):'<p class="m">Noch keine Künstler.</p>')}
   return h};
 const backupView=()=>`<button class="back" data-a="tab" data-i="rate">‹ Zurück</button><h1>Sicherung</h1><p class="sub">Sichere deine Bewertungen in einer Datei oder spiele eine Sicherung wieder ein.</p>`+backupBlock();
-const VER='21';
+const VER='22';
 const UPD=[
+{v:'22',t:'Studio, Live, Remix im Rückblick',d:'Einfachere Auswahl im Rückblick und aufgeräumte Tabs.',c:['„Normal“ heißt jetzt „Studio“.','Im Rückblick gibt es statt der sechs Optionen drei Knöpfe: Studio, Live und Remix. Jeder Knopf schaltet seine Alben dazu oder wieder weg. Gefüllte Knöpfe sind aktiv, mindestens einer bleibt immer an.','Die Tab-Leiste unter dem Menü hat keinen „Suche“-Knopf mehr. Die Suche öffnest du mit der Lupe oben rechts.']},
 {v:'21',t:'Live- und Remix-Alben',d:'Alben als Live oder Remix markieren und im Rückblick herausfiltern.',n:['In jedem Album (Alben und EPs) gibt es oben rechts einen Knopf „Normal“. Tippst du ihn an, wählst du Normal, Live oder Remix. Auf der Künstlerseite steht „Live“ oder „Remix“ bei dem Album.','Im Rückblick gibt es unter Alben, EPs, Singles und Alle eine Filterleiste: Alle Alben, Nur normale, Nur Live, Nur Remix, Normal + Live und Normal + Remix. Sie wirkt auf alle Zahlen im Rückblick, auch auf den Gesamtdurchschnitt.'],c:['Die Filterung gilt nur im Rückblick. Künstlerseiten, 10 von 10 und Suche zeigen weiterhin alles.']},
 {v:'20',t:'Speicher-Anzeige und Song-Filter',d:'Mehr Überblick: wie voll Coda ist und welche Songs du suchst.',n:['Im Menü unter „Sicherung“ gibt es jetzt einen Bereich „Speicher“: Balken mit Prozentwert, aufgeteilt in Bewertungen, eigene Cover und automatische Kopien. Ab 80 % wird er rot und rät zur Sicherung.','Auf der Albumseite gibt es eine Filterleiste: Alle, ♥, Unter 5, Notiz und Ohne Note, jeweils mit Anzahl. Die Platznummern bleiben dabei die echten.']},
 {v:'19',t:'Design-Feinschliff',d:'Präsentere Überschriften im Nothing-Design und Disc-Angaben bei den 10 von 10.',n:['Disc-Angabe bei den Songs mit 10 und in den Highlights: Liegt ein Song auf einer Disc, steht sie hinter dem Albumnamen, zum Beispiel „Meteora (Disc 2)“.'],c:['Die Abschnitte „Alben“, „EPs“ und „Singles“ auf der Künstlerseite sind im Nothing-Design größer und kräftiger wie im Standard-Design, mit einem Punkt zwischen Name und Zahl („Alben · 3“) und der Titel sitzt wieder links.','Im Menü steht bei Statistiken nur noch „Statistiken“.'],
@@ -595,8 +596,8 @@ async function cvGo(){if(cvRun)return;cvRun=true;while(cvQ.length){const [A,B]=c
   cvRun=false;if(st.t==='rv'&&!st.a)R()}
 /* Rückblick */
 const RK=[['a','Alben'],['e','EPs'],['s','Singles'],['x','Alle']],rkOf=()=>['a','e','s','x'].includes(D.rk)?D.rk:'a';
-const TGN=['Normal','Live','Remix'],RTF=[['all','Alle Alben'],['n','Nur normale'],['l','Nur Live'],['r','Nur Remix'],['nl','Normal + Live'],['nr','Normal + Remix']],rtOf=()=>RTF.some(x=>x[0]===D.rt)?D.rt:'all';
-const tgOk=b=>{const t=b.tg||0,f=rtOf();return f==='all'||(f==='n'&&t===0)||(f==='l'&&t===1)||(f==='r'&&t===2)||(f==='nl'&&t<2)||(f==='nr'&&(t===0||t===2))};
+const TGN=['Studio','Live','Remix'],RTF=[[0,'Studio'],[1,'Live'],[2,'Remix']],rsOf=()=>Array.isArray(D.rs)&&D.rs.length?D.rs:[0,1,2];
+const tgOk=b=>rsOf().includes(b.tg||0);
 const inK=(b,K)=>(K==='x'||'aes'.indexOf(K)===(b.k||0))&&tgOk(b);
 const kcnt=a=>{const c=[0,0,0];a.albums.forEach(b=>{if((b.k||0)===2)c[2]+=b.songs.length;else c[b.k||0]++});const p=[];if(c[0])p.push(c[0]+(c[0]===1?' Album':' Alben'));if(c[1])p.push(c[1]+(c[1]===1?' EP':' EPs'));if(c[2])p.push(c[2]+(c[2]===1?' Single':' Singles'));return p.join(' · ')||'noch nichts'};
 function rvData(K){const U=[];D.artists.forEach(a=>{const m=new Map();a.albums.filter(b=>inK(b,K)).forEach(b=>b.songs.forEach(sg=>{const k=sk(sg),e=m.get(k);
@@ -605,8 +606,8 @@ const barH=(lab,pct,color,val,attr)=>`<div class="bar${attr?' tap':''}" ${attr||
 const statsView=()=>{const K=rkOf(),NM={a:'Alben',e:'EPs',s:'Singles',x:'Alle'}[K],U=rvData(K),S=U.filter(e=>e.r!=null),n=S.length,hearts=U.filter(e=>e.h).length;
   let h='<button class="back" data-a="tab" data-i="rate">‹ Zurück</button><h1>Rückblick</h1><p class="sub">Deine Bewertungen in Zahlen, getrennt nach Alben, EPs und Singles.</p>';
   h+='<div class="tabs">'+RK.map(([k,t])=>`<button class="${K===k?'btn':'ghost'}" data-a="rk" data-i="${k}">${t}</button>`).join('')+'</div>';
-  h+='<div class="chips">'+RTF.map(([k,t])=>`<button class="${rtOf()===k?'btn':'ghost'}" data-a="rtf" data-i="${k}">${t}</button>`).join('')+'</div>';
-  if(rtOf()!=='all'&&!D.artists.some(a=>a.albums.some(b=>b.tg)))h+='<p class="m">Noch kein Album ist als Live oder Remix markiert. Das machst du oben rechts im Album.</p>';
+  h+='<div class="tabs">'+RTF.map(([k,t])=>`<button class="${rsOf().includes(k)?'btn':'ghost'}" data-a="rtf" data-i="${k}">${t}</button>`).join('')+'</div>';
+  if(rsOf().length<3&&!D.artists.some(a=>a.albums.some(b=>b.tg)))h+='<p class="m">Noch kein Album ist als Live oder Remix markiert. Das machst du oben rechts im Album.</p>';
   if(!n&&!hearts)return h+`<p class="m">Hier gibt es noch keine bewerteten Songs${K==='x'?'':' bei '+NM}.</p>`;
   const cont=D.artists.flatMap(a=>a.albums.filter(b=>inK(b,K)&&b.songs.some(x=>x.r!=null)).map(b=>({a,b,v:albAvg(b)})));
   const t2=K==='s'?['Beste Note',n?fmt(Math.max(...S.map(e=>e.r))):'–']:K==='x'?['Veröffentl.',cont.length]:[NM,cont.length];
@@ -719,7 +720,7 @@ function R(){
     h+=del('art','Künstler löschen');
   }else{
     const row=(s,i,L)=>{if(isEd('song',s.id))return `<div class="row"><span class="rk">${i+1}</span>${edForm(s.id,s.n)}</div>`;const u=i>0&&L[i-1].r===s.r,d=i<L.length-1&&L[i+1].r===s.r;return `<div class="row${s.id===hl?' hl':''}"><span class="rk">${i+1}</span>${D.so?'':`<div class="mv"><button class="ghost" data-a="up" data-i="${s.id}" ${u?'':'disabled'}>▲</button><button class="ghost" data-a="dn" data-i="${s.id}" ${d?'':'disabled'}>▼</button></div>`}<div class="grow t nm" data-a="edit" data-k="song" data-i="${s.id}">${esc(s.n)}</div><button class="ghost hb big ${s.h?'on':''}" data-a="ht" data-i="${s.id}">${s.h?'♥':'♡'}</button><input class="r" style="border-color:${col(s.r)};color:${col(s.r)}" inputmode="decimal" value="${s.r==null?'':fmt(s.r)}" data-i="${s.id}" placeholder="–"><button class="ghost" data-a="rm" data-i="${s.id}">✕</button><button class="nbar${s.no?' on':''}" data-a="nt" data-i="${s.id}" aria-label="Notiz"></button></div>`+noteBlk(s)};
-    h=`<button class="back" data-a="art" data-i="${A.id}">‹ ${esc(A.n)}</button><div class="albh">${cvHtml(B,'l')}<div class="grow"><h1 class="abt">${esc(B.n)} ${pen('alb',B.id)}</h1><p class="sub">Durchschnitt ${fmt(albAvg(B))} · ${B.songs.length} Songs${B.songs.some(s=>s.h)?' · ♥ '+B.songs.filter(s=>s.h).length:''}${B.y?' · '+B.y:''}</p></div>${(B.k||0)===2?'':`<button class="ghost tgb${B.tg?' on':''}" data-a="tgo">${TGN[B.tg||0]} ${tgo?'▴':'▾'}</button>`}</div>${tgo&&(B.k||0)!==2?`<div class="tabs">${TGN.map((n,k)=>`<button class="${(B.tg||0)===k?'btn':'ghost'}" data-a="tgs" data-i="${k}">${n}</button>`).join('')}</div><p class="m" style="margin:-4px 0 10px">Live- und Remix-Alben kannst du im Rückblick herausfiltern.</p>`:''}${isEd('alb',B.id)?albEdPanel(B):''}<div class="tabs"><button class="${D.so?'ghost':'btn'}" data-a="so" data-i="0">Nach Note</button><button class="${D.so?'btn':'ghost'}" data-a="so" data-i="1">Eingabe-Reihenfolge</button></div><div class="add" style="margin:0 0 8px"><button class="ghost" data-a="cmpa">⇄ Mit anderem Album vergleichen</button></div><div class="det"><label class="yl">Jahr <input id="ayr" inputmode="numeric" maxlength="4" placeholder="–" value="${B.y||''}"></label>${(B.k||0)===2?'':`<label class="ghost">${B.cu?'Cover ändern':'Cover wählen'}<input id="cvf" type="file" accept="image/*" hidden></label>`}${B.cu&&(B.k||0)!==2?'<button class="ghost" data-a="cvdel">Cover entfernen</button>':''}</div>`;
+    h=`<button class="back" data-a="art" data-i="${A.id}">‹ ${esc(A.n)}</button><div class="albh">${cvHtml(B,'l')}<div class="grow"><h1 class="abt">${esc(B.n)} ${pen('alb',B.id)}</h1><p class="sub">Durchschnitt ${fmt(albAvg(B))} · ${B.songs.length} Songs${B.songs.some(s=>s.h)?' · ♥ '+B.songs.filter(s=>s.h).length:''}${B.y?' · '+B.y:''}</p></div>${(B.k||0)===2?'':`<button class="ghost tgb${B.tg?' on':''}" data-a="tgo">${TGN[B.tg||0]} ${tgo?'▴':'▾'}</button>`}</div>${tgo&&(B.k||0)!==2?`<div class="tabs">${TGN.map((n,k)=>`<button class="${(B.tg||0)===k?'btn':'ghost'}" data-a="tgs" data-i="${k}">${n}</button>`).join('')}</div><p class="m" style="margin:-4px 0 10px">Live- und Remix-Alben kannst du im Rückblick ein- und ausblenden.</p>`:''}${isEd('alb',B.id)?albEdPanel(B):''}<div class="tabs"><button class="${D.so?'ghost':'btn'}" data-a="so" data-i="0">Nach Note</button><button class="${D.so?'btn':'ghost'}" data-a="so" data-i="1">Eingabe-Reihenfolge</button></div><div class="add" style="margin:0 0 8px"><button class="ghost" data-a="cmpa">⇄ Mit anderem Album vergleichen</button></div><div class="det"><label class="yl">Jahr <input id="ayr" inputmode="numeric" maxlength="4" placeholder="–" value="${B.y||''}"></label>${(B.k||0)===2?'':`<label class="ghost">${B.cu?'Cover ändern':'Cover wählen'}<input id="cvf" type="file" accept="image/*" hidden></label>`}${B.cu&&(B.k||0)!==2?'<button class="ghost" data-a="cvdel">Cover entfernen</button>':''}</div>`;
     const FL=[['','Alle',()=>true],['h','♥',q=>q.h],['lo','Unter 5',q=>q.r!=null&&q.r<5],['no','Notiz',q=>!!q.no],['un','Ohne Note',q=>q.r==null]],fo=FL.find(f=>f[0]===sf)||FL[0];
     h+=`<div class="chips">${FL.map(f=>`<button class="${f[0]===sf?'btn':'ghost'}" data-a="sfl" data-i="${f[0]}">${f[1]}${f[0]?' '+B.songs.filter(f[2]).length:''}</button>`).join('')}</div>`;
     if(sf&&!B.songs.some(fo[2]))h+=`<p class="m">Keine Songs für diesen Filter.</p>`;
@@ -828,7 +829,7 @@ document.addEventListener('click',e=>{
   else if(a==='av'){D.av=i}
   else if(a==='tgo'){tgo=!tgo}
   else if(a==='tgs'){if(B){if(+i)B.tg=+i;else delete B.tg}tgo=false}
-  else if(a==='rtf'){D.rt=i;D.ry=null}
+  else if(a==='rtf'){const c=rsOf(),k=+i;D.rs=c.includes(k)?(c.length>1?c.filter(x=>x!==k):c):[...c,k].sort();D.ry=null}
   else if(a==='sfl'){sf=(sf===i?'':i)}
   else if(a==='dgt'){if(dgx.has(i))dgx.delete(i);else dgx.add(i)}
   else if(a==='dgall'){if(+i){D.genres.forEach(g=>dgx.add(g.id));dgx.add('_')}else dgx.clear()}
