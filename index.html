@@ -7,6 +7,9 @@
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="mobile-web-app-capable" content="yes">
+<script>try{document.documentElement.dataset.design=localStorage.getItem('coda_design')==='nothing'?'nothing':'classic'}catch(e){document.documentElement.dataset.design='classic'}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Doto:wght@400..900&family=Space+Mono:wght@400;700&display=swap">
 <style>
 :root{--g:#2fb36a;--o:#f0932b;--r:#e5484d;--bg:#f3f4f8;--card:#fff;--tx:#14161c;--mu:#6b7080;--ac:#4a63d8;--bd:#dfe2ea;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#14161c;--card:#1d2029;--tx:#eceef3;--mu:#8b90a0;--ac:#9db4ff;--bd:#2c303d}}
@@ -47,6 +50,32 @@ select{background:var(--card);color:var(--tx);border:1px solid var(--bd);border-
 .ed{padding:3px 8px;font-size:14px;vertical-align:middle}.edf{display:flex;gap:8px;align-items:center;margin:8px 0;flex:1;min-width:0}.edf input{flex:1;min-width:0}.nm{cursor:pointer}
 .bn{border:1px solid var(--bd);border-left:4px solid var(--o);background:var(--card);border-radius:10px;padding:10px 12px;margin:10px 0;display:flex;flex-direction:column;gap:8px}.hl{outline:2px solid var(--ac);background:color-mix(in srgb,var(--ac) 12%,var(--card))}input[type=search]{-webkit-appearance:none}
 h2{font-size:17px;margin:26px 0 8px}
+
+/* ===== Design "Nothing" ===== */
+html[data-design=nothing]{--g:#3ddc84;--o:#ffa63d;--r:#ff3b3b;--bg:#000;--card:#0b0b0b;--tx:#f4f2ec;--mu:#8c8a84;--ac:#f4f2ec;--bd:#262626;color-scheme:dark}
+html[data-design=nothing] body{background-color:#000;background-image:radial-gradient(#1d1d1d 1.1px,transparent 1.3px);background-size:18px 18px;font-family:"Space Grotesk","Avenir Next",system-ui,sans-serif}
+html[data-design=nothing] h1{font-family:"Doto","Space Mono",ui-monospace,monospace;font-weight:900;font-size:40px;letter-spacing:.02em;margin:10px 0 2px}
+html[data-design=nothing] h2{font-family:"Space Mono",ui-monospace,monospace;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.14em;color:var(--mu);display:flex;align-items:center;gap:8px}
+html[data-design=nothing] h2::before{content:"";width:7px;height:7px;border-radius:50%;background:#ff3b3b;flex:none}
+html[data-design=nothing] .sub,html[data-design=nothing] .m{font-family:"Space Mono",ui-monospace,monospace;font-size:12px;letter-spacing:.02em}
+html[data-design=nothing] .row,html[data-design=nothing] .imp,html[data-design=nothing] .bn{border-radius:22px;background:var(--card);border-color:var(--bd);padding:12px 16px}
+html[data-design=nothing] .bn{border-left:1px solid var(--bd);border-color:#ff3b3b}
+html[data-design=nothing] .t{font-weight:500}
+html[data-design=nothing] .chip{font-family:"Doto","Space Mono",monospace;font-weight:900;font-size:19px;border-width:1.5px;border-radius:999px;min-width:60px;padding:2px 10px}
+html[data-design=nothing] .rk{font-family:"Space Mono",monospace}
+html[data-design=nothing] .btn{background:#f4f2ec;color:#000;border-radius:999px;font-family:"Space Mono",ui-monospace,monospace;font-size:13px;font-weight:700;padding:11px 18px;letter-spacing:.03em}
+html[data-design=nothing] .ghost{border-radius:999px;border-color:#3a3a3a;font-family:"Space Mono",ui-monospace,monospace;font-size:13px;color:var(--tx)}
+html[data-design=nothing] .tabs button{font-size:11px;padding:10px 0;letter-spacing:0}
+html[data-design=nothing] .mv .ghost{border-radius:10px}
+html[data-design=nothing] input,html[data-design=nothing] textarea,html[data-design=nothing] select{border-radius:16px;background:#0b0b0b;border-color:#2e2e2e;color:var(--tx)}
+html[data-design=nothing] input:focus,html[data-design=nothing] textarea:focus{outline:none;border-color:#ff3b3b}
+html[data-design=nothing] input.ck{accent-color:#ff3b3b}
+html[data-design=nothing] .disc{border-left:1px solid var(--bd);border-radius:22px;background:#0b0b0b;border-color:#2e2e2e}
+html[data-design=nothing] .disc .t{font-family:"Space Mono",ui-monospace,monospace;font-size:14px;text-transform:uppercase;letter-spacing:.08em}
+html[data-design=nothing] .back{color:#ff3b3b;font-family:"Space Mono",ui-monospace,monospace;font-size:13px}
+html[data-design=nothing] .hb.on,html[data-design=nothing] .warn{color:#ff3b3b;border-color:#ff3b3b}
+html[data-design=nothing] .hl{outline:1.5px solid #ff3b3b;background:#150606}
+html[data-design=nothing] .dsn-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#ff3b3b;margin-right:6px}
 </style></head><body><main id="app"></main>
 <script>
 const K='musikratings_leer';let D;
@@ -210,6 +239,7 @@ async function dlBackup(){const fn='musik-ratings-sicherung-'+new Date().toISOSt
 function readBackup(f){if(!f)return;f.text().then(t=>{try{const j=JSON.parse(t);if(j&&Array.isArray(j.artists)){bpend=j;bmsg=''}else bmsg='Das ist keine gültige Sicherung.'}catch(x){bmsg='Die Datei konnte nicht gelesen werden.'}R()})}
 const bnote=()=>{if(!D.artists.some(a=>a.albums.length))return '';const d=D.lb?Math.floor((Date.now()-D.lb)/864e5):null;if(d!=null&&d<14)return '';
   return `<div class="bn">${d==null?'Du hast noch keine Sicherung gemacht.':'Deine letzte Sicherung ist '+d+' Tage alt.'}<div class="add" style="margin:0"><button class="ghost" data-a="bdl">Jetzt sichern</button></div></div>`};
+const dsnBlock=()=>{const n=document.documentElement.dataset.design==='nothing';return `<h2>Design</h2><div class="tabs"><button class="${n?'ghost':'btn'}" data-a="dsn" data-i="classic">Klassisch</button><button class="${n?'btn':'ghost'}" data-a="dsn" data-i="nothing">Nothing</button></div>`};
 const backupBlock=()=>{let h=`<h2>Sicherung</h2><p class="m">${D.lb?'Letzte Sicherung: '+new Date(D.lb).toLocaleDateString('de-DE'):'Noch keine Sicherung gemacht.'}</p><div class="add" style="margin-top:0"><button class="btn" data-a="bdl">Sicherung speichern</button><label class="ghost">Sicherung laden<input id="bf" type="file" accept=".json,application/json" hidden></label></div>`;
   if(bpend)h+=`<div class="bn">Die Sicherung enthält ${bpend.artists.length} Künstler und ${cntSongs(bpend)} Songs. Deine aktuellen Daten werden dabei ersetzt.<div class="add" style="margin:0"><button class="btn" data-a="bapply">Einspielen</button><button class="ghost" data-a="bcancel">Abbrechen</button></div></div>`;
   if(bmsg)h+=`<p class="m">${esc(bmsg)}</p>`;
@@ -230,7 +260,7 @@ function R(){
     if(D.sg){[...D.genres.map(g=>g.n),''].forEach(gn=>{const l=arts.filter(x=>genreOf(x)===gn);if(l.length)h+=`<h2>${esc(gn||'Ohne Genre')} <span class="m">${l.length}</span></h2>`+l.map(x=>row(x,false)).join('')})}
     else h+=arts.map(x=>row(x,true)).join('');
     h+='<div class="add"><input id="in" placeholder="Neuer Künstler"><button class="btn" data-a="addArt">Hinzufügen</button></div>';
-    h+=backupBlock();
+    h+=dsnBlock();h+=backupBlock();
   }else if(!B){
     h=`<button class="back" data-a="home">‹ Alle Künstler</button>${isEd('art',A.id)?edForm(A.id,A.n):`<h1>${esc(A.n)} ${pen('art',A.id)}</h1>`}<p class="sub">Durchschnitt ${fmt(artAvg(A))}</p>`;
     h+=['Alben','EPs','Singles'].map((nm,kk)=>{const g=A.albums.filter(x=>(x.k||0)===kk);return g.length?`<h2>${nm}</h2>`+g.map((x,i)=>isEd('alb',x.id)?`<div class="row">${edForm(x.id,x.n,x.k||0)}</div>`:`<div class="row tap" data-a="alb" data-i="${x.id}"><div class="mv"><button class="ghost" data-a="aup" data-i="${x.id}" ${i?'':'disabled'}>▲</button><button class="ghost" data-a="adn" data-i="${x.id}" ${i<g.length-1?'':'disabled'}>▼</button></div><div class="grow"><div class="t">${esc(x.n)}</div><div class="m">${x.songs.length} Songs</div></div>${pen('alb',x.id)}${chip(albAvg(x))}</div>`).join(''):''}).join('');
@@ -271,6 +301,7 @@ document.addEventListener('click',e=>{
   }
   else if(a==='exp'){D.lb=Date.now();bk=JSON.stringify(D)}
   else if(a==='bdl'){dlBackup();return}
+  else if(a==='dsn'){try{localStorage.setItem('coda_design',i)}catch(x){}document.documentElement.dataset.design=i==='nothing'?'nothing':'classic'}
   else if(a==='bapply'){D=bpend;bpend=null;save();location.reload();return}
   else if(a==='bcancel'){bpend=null}
   else if(a==='so'){D.so=+i}
