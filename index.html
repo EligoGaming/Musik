@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="de"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Musik-Ratings</title>
+<title>Coda</title>
 <link rel="manifest" href="manifest.webmanifest">
-<meta name="theme-color" content="#14161c">
+<meta name="theme-color" content="#17150f">
 <link rel="icon" href="icon-192.png">
-<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="mobile-web-app-capable" content="yes">
 <style>
 :root{--g:#2fb36a;--o:#f0932b;--r:#e5484d;--bg:#f3f4f8;--card:#fff;--tx:#14161c;--mu:#6b7080;--ac:#4a63d8;--bd:#dfe2ea;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -224,7 +224,7 @@ function R(){
   else if(!A&&st.t==='search'){h=searchView()}
   else if(!A&&st.t==='hearts'){h=heartsView()}
   else if(!A){
-    h=tabs()+'<h1>Musik-Ratings</h1><p class="sub">Künstler, nach Durchschnitt sortiert</p>'+bnote();
+    h=tabs()+'<h1>Coda</h1><p class="sub">Künstler, nach Durchschnitt sortiert</p>'+bnote();
     const arts=artList(),row=(x,sg)=>`<div class="row tap" ${x.ch?'style="border-left:4px solid var(--ac)" ':''}data-a="art" data-i="${x.id}"><div class="grow"><div class="t">${esc(x.n)}</div><div class="m">${x.albums.length} Alben${sg&&genreOf(x)?' · '+esc(genreOf(x)):''}</div></div>${chip(artAvg(x))}</div>`;
     h+=`<div class="tabs"><button class="${D.sg?'ghost':'btn'}" data-a="sg" data-i="0">Nach Durchschnitt</button><button class="${D.sg?'btn':'ghost'}" data-a="sg" data-i="1">Nach Genre</button></div>`;
     if(D.sg){[...D.genres.map(g=>g.n),''].forEach(gn=>{const l=arts.filter(x=>genreOf(x)===gn);if(l.length)h+=`<h2>${esc(gn||'Ohne Genre')} <span class="m">${l.length}</span></h2>`+l.map(x=>row(x,false)).join('')})}
