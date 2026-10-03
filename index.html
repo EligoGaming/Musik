@@ -52,7 +52,7 @@ select{background:var(--card);color:var(--tx);border:1px solid var(--bd);border-
 h2{font-size:17px;margin:26px 0 8px}
 
 /* ===== Design "Nothing" ===== */
-html[data-design=nothing][data-theme]{--g:#3ddc84;--o:#ffa63d;--r:#ff3b3b;--bg:#000;--card:var(--card);--tx:#f4f2ec;--mu:#8c8a84;--ac:#f4f2ec;--bd:#262626;--bd2:#3a3a3a;--dot:#1d1d1d;color-scheme:dark}
+html[data-design=nothing][data-theme]{--g:#3ddc84;--o:#ffa63d;--r:#ff3b3b;--bg:#000;--card:#0b0b0b;--tx:#f4f2ec;--mu:#8c8a84;--ac:#f4f2ec;--bd:#262626;--bd2:#3a3a3a;--dot:#1d1d1d;color-scheme:dark}
 html[data-design=nothing][data-eff=light][data-theme]{--g:#12a65a;--o:#e07b00;--r:#e0262a;--bg:#f4f3ef;--card:#fff;--tx:#0a0a0a;--mu:#75736d;--ac:#0a0a0a;--bd:#dedcd6;--bd2:#c9c7c0;--dot:#d6d4cd;color-scheme:light}
 html[data-design=nothing] body{background-color:var(--bg);background-image:radial-gradient(var(--dot) 1.1px,transparent 1.3px);background-size:18px 18px;font-family:"Space Grotesk","Avenir Next",system-ui,sans-serif}
 html[data-design=nothing] h1{font-family:"Doto","Space Mono",ui-monospace,monospace;font-weight:900;font-size:40px;letter-spacing:.02em;margin:10px 0 2px}
@@ -109,7 +109,9 @@ button:disabled{opacity:.45}
 html[data-design=nothing] .top{border-bottom-color:var(--bd)}
 html[data-design=nothing] .top .brand{font-family:"Doto","Space Mono",ui-monospace,monospace;font-weight:900;font-size:24px;letter-spacing:.03em}
 html[data-design=nothing] .top .mb{border-radius:999px;width:46px}
-html[data-design=nothing] .sh{border-radius:28px 28px 0 0}
+html[data-design=nothing] .sh{border-radius:28px 28px 0 0;background:#111;border-color:#2c2c2c}
+html[data-design=nothing][data-eff=light] .sh{background:#fff;border-color:#d4d2cb}
+html[data-design=nothing] .sc{background:rgba(0,0,0,.72)}
 html[data-design=nothing] .sh h3{font-family:"Space Mono",ui-monospace,monospace}
 </style></head><body><main id="app"></main>
 <script>
