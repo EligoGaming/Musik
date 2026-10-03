@@ -78,6 +78,11 @@ html[data-design=nothing] .hb.on,html[data-design=nothing] .warn{color:#ff3b3b;b
 html[data-design=nothing] .hl{outline:1.5px solid #ff3b3b;background:color-mix(in srgb,#ff3b3b 12%,var(--card))}
 html[data-design=nothing] .dsn-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#ff3b3b;margin-right:6px}
 
+/* Neuerscheinungen */
+.top .mb{position:relative}.bdg{position:absolute;top:-7px;right:-7px;background:#e5484d;color:#fff;font-size:11px;font-weight:700;border-radius:999px;min-width:19px;height:19px;line-height:19px;text-align:center;padding:0 5px;font-family:system-ui,sans-serif}
+.nwb{display:flex;gap:6px;flex-wrap:nowrap}.nwb .btn,.nwb .ghost{white-space:nowrap}
+.cand{cursor:pointer}
+button:disabled{opacity:.45}
 /* Kopfleiste + Menü */
 .top{position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;margin:-16px -14px 6px;padding:10px 14px;background:var(--bg);border-bottom:1px solid var(--bd)}
 .top .brand{font-weight:800;font-size:18px;letter-spacing:-.3px;display:flex;align-items:center;gap:8px}
@@ -275,13 +280,78 @@ function readBackup(f){if(!f)return;f.text().then(t=>{try{const j=JSON.parse(t);
 const bnote=()=>{if(!D.artists.some(a=>a.albums.length))return '';const d=D.lb?Math.floor((Date.now()-D.lb)/864e5):null;if(d!=null&&d<14)return '';
   return `<div class="bn">${d==null?'Du hast noch keine Sicherung gemacht.':'Deine letzte Sicherung ist '+d+' Tage alt.'}<div class="add" style="margin:0"><button class="ghost" data-a="bdl">Jetzt sichern</button></div></div>`};
 const dsnBlock=()=>{const n=document.documentElement.dataset.design==='nothing';return `<h2>Design</h2><div class="tabs"><button class="${n?'ghost':'btn'}" data-a="dsn" data-i="classic">Klassisch</button><button class="${n?'btn':'ghost'}" data-a="dsn" data-i="nothing">Nothing</button></div>`};
+
+/* ===== Neuerscheinungen (MusicBrainz) ===== */
+let nwBusy=false,nwMsg='',nwCand=null,nwFor='';
+const NW=()=>D.nw||(D.nw={on:0,live:0,a:[],it:[],last:0});
+let mbP=Promise.resolve(),mbLast=0;
+const mb=path=>{const run=async()=>{for(let t=0;t<2;t++){const w=Math.max(0,mbLast+1100-Date.now());if(w)await new Promise(r=>setTimeout(r,w));mbLast=Date.now();
+  const r=await fetch('https://musicbrainz.org/ws/2/'+path+(path.includes('?')?'&':'?')+'fmt=json');
+  if(r.status===503||r.status===429){await new Promise(r=>setTimeout(r,2500));continue}
+  if(!r.ok)throw new Error('HTTP '+r.status);return r.json()}throw new Error('busy')};
+  const p=mbP.then(run,run);mbP=p.catch(()=>{});return p};
+const past=d=>{if(!d)return false;const p=d.split('-').map(Number);return new Date(p[0],(p[1]||1)-1,p[2]||1)<=new Date()};
+async function mbRGs(id){const out=[];let off=0;
+  for(let i=0;i<6;i++){const j=await mb('release-group?artist='+id+'&limit=100&offset='+off),l=j['release-groups']||[];out.push(...l);off+=l.length;if(!l.length||off>=(j['release-group-count']||0))break}
+  return out.filter(g=>['Album','EP','Single'].includes(g['primary-type'])).map(g=>({id:g.id,t:g['primary-type'],title:g.title,date:g['first-release-date']||'',sec:g['secondary-types']||[]}))}
+async function mbSearch(name){const q=name.replace(/["\\]/g,' ').trim();
+  let j=await mb('artist?query='+encodeURIComponent('artist:"'+q+'"')+'&limit=6');
+  if(!(j.artists||[]).length)j=await mb('artist?query='+encodeURIComponent(q)+'&limit=6');
+  return (j.artists||[]).map(a=>({id:a.id,n:a.name,d:[a.type,a.country,a.disambiguation].filter(Boolean).join(' · ')}))}
+const nwItems=()=>{const N=NW();return N.it.filter(x=>N.a.some(f=>f.id===x.ai)&&D.artists.some(a=>a.id===x.ai)&&(N.live||!(x.s&&x.s.length)))};
+const nwCount=()=>{const N=NW();return N.on?nwItems().length:0};
+async function nwSearchRun(aid){const A=D.artists.find(x=>x.id===aid);if(!A)return;nwBusy=true;nwMsg='Suche …';nwCand=null;nwFor=aid;R();
+  try{const c=await mbSearch(A.n);nwCand=c;nwMsg=c.length?'':'Nichts gefunden. Der Künstler kann leider nicht verknüpft werden.'}catch(e){nwMsg='Suche nicht möglich. Bist du online?'}
+  nwBusy=false;R()}
+async function nwFollow(c){const N=NW();if(N.a.length>=5||N.a.some(f=>f.id===nwFor))return;nwBusy=true;nwMsg='Lade bisherige Veröffentlichungen …';R();
+  try{const g=await mbRGs(c.id);N.a.push({id:nwFor,mb:c.id,n:c.n,seen:g.filter(x=>past(x.date)).map(x=>x.id)});save();nwMsg='';nwCand=null}catch(e){nwMsg='Das hat nicht geklappt. Bist du online?'}
+  nwBusy=false;R()}
+async function nwCheck(force){const N=NW();if(!N.on||!N.a.length||nwBusy)return;if(!force&&Date.now()-(N.last||0)<216e5)return;nwBusy=true;if(force){nwMsg='Prüfe …';R()}
+  try{for(const f of N.a){if(!D.artists.some(x=>x.id===f.id))continue;const g=await mbRGs(f.mb);
+      g.forEach(x=>{if(f.seen.includes(x.id)||!x.date||!past(x.date))return;f.seen.push(x.id);N.it.push({k:x.id,ai:f.id,t:x.t,n:x.title,d:x.date,s:x.sec})})}
+    N.last=Date.now();save();nwMsg=force?'Fertig.':''}
+  catch(e){nwMsg='Prüfung nicht möglich. Bist du online?'}
+  nwBusy=false;const ae=document.activeElement;if(!ae||!/INPUT|TEXTAREA|SELECT/.test(ae.tagName))R()}
+async function nwAdd(k){const N=NW(),it=N.it.find(x=>x.k===k);if(!it||nwBusy)return;const A=D.artists.find(x=>x.id===it.ai);if(!A)return;
+  const y=(it.d||'').slice(0,4)||String(new Date().getFullYear()),kind=it.t==='EP'?1:it.t==='Single'?2:0,done=(b,sid)=>{N.it=N.it.filter(x=>x.k!==k);hl=sid||null;st={t:'rate',a:A.id,b:b.id};menuOpen=false;nwMsg='';save();R()};
+  if(kind===2){let b=A.albums.find(x=>x.k===2&&x.n==='Singles '+y);if(!b){b={id:uid(),n:'Singles '+y,k:2,y:+y,songs:[]};A.albums.push(b)}
+    let s=b.songs.find(x=>sk(x)===sk({n:it.n,id:'-'}));if(!s){s={id:uid(),n:it.n,r:null};b.songs.push(s)}return done(b,s.id)}
+  const ex=A.albums.find(x=>(x.k||0)===kind&&sk(x)===sk({n:it.n,id:'-'}));if(ex)return done(ex,null);
+  nwBusy=true;nwMsg='Lade Tracklist …';R();
+  try{let j=await mb('release?release-group='+k+'&inc=recordings&status=official&limit=25'),rel=j.releases||[];
+    if(!rel.length){j=await mb('release?release-group='+k+'&inc=recordings&limit=25');rel=j.releases||[]}
+    rel=rel.filter(r=>(r.media||[]).some(m=>(m.tracks||[]).length)).sort((p,q)=>(p.date||'9').localeCompare(q.date||'9'));
+    const r0=rel[0];if(!r0)throw 0;const songs=[];
+    r0.media.forEach((m,mi)=>(m.tracks||[]).forEach(t=>{const o={id:uid(),n:t.title||(t.recording&&t.recording.title)||'?',r:null};if(r0.media.length>1)o.d='Disc '+(mi+1);songs.push(o)}));
+    if(!songs.length)throw 0;const b={id:uid(),n:it.n,k:kind,y:+y,songs};A.albums.push(b);nwBusy=false;done(b,null)}
+  catch(e){nwBusy=false;nwMsg='Die Tracklist konnte nicht geladen werden. Versuch es später nochmal.';R()}}
+const nwNote=()=>{const c=nwCount();return c?`<div class="bn">${c===1?'1 Neuerscheinung':c+' Neuerscheinungen'} von deinen Künstlern.<div class="add" style="margin:0"><button class="btn" data-a="mnw">Ansehen</button></div></div>`:''};
+const nwView=()=>{const N=NW(),it=nwItems(),nm=id=>(D.artists.find(a=>a.id===id)||{}).n||'?';
+  const sw=(on,a,i,t)=>`<button class="${on?'btn':'ghost'}" data-a="${a}" data-i="${i}">${t}</button>`;
+  let h=`<button class="back" data-a="tab" data-i="rate">‹ Zurück</button><h1>Neuerscheinungen</h1><p class="sub">Die App prüft beim Öffnen, ob deine ausgewählten Künstler etwas Neues veröffentlicht haben. Daten von MusicBrainz, nur mit Internet.</p>`;
+  h+=`<h2>Benachrichtigungen in der App</h2><div class="tabs">${sw(!N.on,'nwon',0,'Aus')}${sw(!!N.on,'nwon',1,'An')}</div>`;
+  h+=`<h2>Live, Remix &amp; Sampler</h2><div class="tabs">${sw(!N.live,'nwlive',0,'Weglassen')}${sw(!!N.live,'nwlive',1,'Anzeigen')}</div>`;
+  if(nwMsg)h+=`<p class="m">${esc(nwMsg)}</p>`;
+  if(N.on){h+=`<div class="add" style="margin-top:6px"><button class="ghost" data-a="nwcheck" ${nwBusy||!N.a.length?'disabled':''}>Jetzt prüfen</button><span class="m" style="align-self:center">${N.last?'Zuletzt: '+new Date(N.last).toLocaleString('de-DE',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}):'Noch nicht geprüft'}</span></div>`;
+    h+=`<h2>Neu <span class="m">${it.length}</span></h2>`;
+    if(!it.length)h+='<p class="m">Im Moment gibt es nichts Neues.</p>';
+    h+=it.sort((p,q)=>(q.d||'').localeCompare(p.d||'')).map(x=>`<div class="row"><div class="grow"><div class="t">${esc(x.n)}</div><div class="m">${esc(nm(x.ai))} · ${x.t==='Single'?'Single':x.t}${x.s&&x.s.length?' · '+esc(x.s.join(', ')):''} · ${esc(x.d)}</div></div><div class="nwb"><button class="btn" data-a="nwadd" data-i="${x.k}" ${nwBusy?'disabled':''}>Hinzufügen</button><button class="ghost" data-a="nwign" data-i="${x.k}" aria-label="Ignorieren">✕</button></div></div>`).join('');
+  }
+  h+=`<h2>Deine Künstler <span class="m">${N.a.length}/5</span></h2>`;
+  if(!N.a.length)h+='<p class="m">Wähle bis zu 5 Künstler aus, deren Neuerscheinungen dich interessieren.</p>';
+  h+=N.a.map(f=>`<div class="row"><div class="grow"><div class="t">${esc(nm(f.id))}</div><div class="m">verknüpft mit: ${esc(f.n)}</div></div><button class="ghost" data-a="nwrm" data-i="${f.id}" aria-label="Entfernen">✕</button></div>`).join('');
+  if(N.a.length<5){const free=D.artists.filter(a=>!N.a.some(f=>f.id===a.id)).sort((p,q)=>p.n.localeCompare(q.n,'de'));
+    if(free.length&&!nwCand)h+=`<div class="add"><select id="nwsel" style="flex:1;min-width:0">${free.map(a=>`<option value="${a.id}">${esc(a.n)}</option>`).join('')}</select><button class="btn" data-a="nwsearch" ${nwBusy?'disabled':''}>Suchen</button></div>`;
+    if(nwCand&&nwCand.length)h+=`<h2>Welcher ist ${esc(nm(nwFor))}?</h2>`+nwCand.map((c,i)=>`<div class="row tap cand" data-a="nwpick" data-i="${i}"><div class="grow"><div class="t">${esc(c.n)}</div><div class="m">${esc(c.d||'keine Angaben')}</div></div></div>`).join('')+`<button class="ghost" data-a="nwcancel">Abbrechen</button>`;
+  }
+  return h};
 let menuOpen=false;
 const mode=()=>document.documentElement.dataset.mode||'auto',dsg=()=>document.documentElement.dataset.design||'classic';
-const topbar=()=>`<div class="top"><span class="brand"><i></i>Coda</span><button class="mb" data-a="menu" aria-label="Menü">☰</button></div>`;
+const topbar=()=>`<div class="top"><span class="brand"><i></i>Coda</span><button class="mb" data-a="menu" aria-label="Menü">☰${nwCount()?`<span class="bdg">${nwCount()}</span>`:''}</button></div>`;
 const menuHtml=()=>{if(!menuOpen)return '';const d=dsg(),m=mode(),b=(on,a,i,t)=>`<button class="${on?'btn':'ghost'}" data-a="${a}" data-i="${i}">${t}</button>`;
   const tot=hlList('a').reduce((t,x)=>t+x.l.length,0);
   return `<div class="sc" data-a="mclose"></div><div class="sh"><div class="gr"></div>
-  <h3>Schnellzugriff</h3><button class="ghost mi" data-a="mhl"><span>♥ Herzen &amp; 10 von 10</span><span class="m">${tot}</span></button><button class="ghost mi" data-a="bdl"><span>Sicherung speichern</span><span class="m">${D.lb?new Date(D.lb).toLocaleDateString('de-DE'):'noch nie'}</span></button>
+  <h3>Schnellzugriff</h3><button class="ghost mi" data-a="mnw"><span>Neuerscheinungen</span><span class="m">${nwCount()?nwCount()+' neu':(NW().on?'an':'aus')}</span></button><button class="ghost mi" data-a="mhl"><span>♥ Herzen &amp; 10 von 10</span><span class="m">${tot}</span></button><button class="ghost mi" data-a="bdl"><span>Sicherung speichern</span><span class="m">${D.lb?new Date(D.lb).toLocaleDateString('de-DE'):'noch nie'}</span></button>
   <h3>Design</h3><div class="tabs">${b(d==='classic','dsn','classic','Standard')}${b(d==='nothing','dsn','nothing','Nothing')}</div>
   <h3>Darstellung</h3><div class="tabs">${b(m==='auto','mode','auto','Automatisch')}${b(m==='light','mode','light','Hell')}${b(m==='dark','mode','dark','Dunkel')}</div>
   <button class="btn" data-a="mclose" style="width:100%;margin-top:14px">Fertig</button></div>`};
@@ -298,8 +368,9 @@ function R(){
   if(!A&&st.t==='list'){h=listView()}
   else if(!A&&st.t==='search'){h=searchView()}
   else if(!A&&st.t==='hearts'){h=heartsView()}
+  else if(!A&&st.t==='nw'){h=nwView()}
   else if(!A){
-    h=tabs()+'<h1>Künstler</h1><p class="sub">Nach Durchschnitt sortiert</p>'+bnote();
+    h=tabs()+'<h1>Künstler</h1><p class="sub">Nach Durchschnitt sortiert</p>'+nwNote()+bnote();
     const arts=artList(),row=(x,sg)=>`<div class="row tap" ${x.ch?'style="border-left:4px solid var(--ac)" ':''}data-a="art" data-i="${x.id}"><div class="grow"><div class="t">${esc(x.n)}</div><div class="m">${x.albums.length} Alben${sg&&genreOf(x)?' · '+esc(genreOf(x)):''}</div></div>${chip(artAvg(x))}</div>`;
     h+=`<div class="tabs"><button class="${D.sg?'ghost':'btn'}" data-a="sg" data-i="0">Nach Durchschnitt</button><button class="${D.sg?'btn':'ghost'}" data-a="sg" data-i="1">Nach Genre</button></div>`;
     if(D.sg){[...D.genres.map(g=>g.n),''].forEach(gn=>{const l=arts.filter(x=>genreOf(x)===gn);if(l.length)h+=`<h2>${esc(gn||'Ohne Genre')} <span class="m">${l.length}</span></h2>`+l.map(x=>row(x,false)).join('')})}
@@ -308,7 +379,7 @@ function R(){
     h+=backupBlock();
   }else if(!B){
     h=`<button class="back" data-a="home">‹ Alle Künstler</button>${isEd('art',A.id)?edForm(A.id,A.n):`<h1>${esc(A.n)} ${pen('art',A.id)}</h1>`}<p class="sub">Durchschnitt ${fmt(artAvg(A))}</p>`;
-    h+=['Alben','EPs','Singles'].map((nm,kk)=>{const g=A.albums.filter(x=>(x.k||0)===kk);return g.length?`<h2>${nm}</h2>`+g.map((x,i)=>isEd('alb',x.id)?`<div class="row">${edForm(x.id,x.n,x.k||0)}</div>`:`<div class="row tap" data-a="alb" data-i="${x.id}"><div class="mv"><button class="ghost" data-a="aup" data-i="${x.id}" ${i?'':'disabled'}>▲</button><button class="ghost" data-a="adn" data-i="${x.id}" ${i<g.length-1?'':'disabled'}>▼</button></div><div class="grow"><div class="t">${esc(x.n)}</div><div class="m">${x.songs.length} Songs</div></div>${pen('alb',x.id)}<button class="ghost warn" data-a="dalb" data-i="${x.id}">${armed==='a:'+x.id?'Sicher?':'✕'}</button>${chip(albAvg(x))}</div>`).join(''):''}).join('');
+    h+=['Alben','EPs','Singles'].map((nm,kk)=>{const g=A.albums.filter(x=>(x.k||0)===kk);return g.length?`<h2>${nm}</h2>`+g.map((x,i)=>isEd('alb',x.id)?`<div class="row">${edForm(x.id,x.n,x.k||0)}</div>`:`<div class="row tap" data-a="alb" data-i="${x.id}"><div class="mv"><button class="ghost" data-a="aup" data-i="${x.id}" ${i?'':'disabled'}>▲</button><button class="ghost" data-a="adn" data-i="${x.id}" ${i<g.length-1?'':'disabled'}>▼</button></div><div class="grow"><div class="t">${esc(x.n)}</div><div class="m">${x.songs.length} Songs${x.y?' · '+x.y:''}</div></div>${pen('alb',x.id)}<button class="ghost warn" data-a="dalb" data-i="${x.id}">${armed==='a:'+x.id?'Sicher?':'✕'}</button>${chip(albAvg(x))}</div>`).join(''):''}).join('');
     h+='<div class="add"><input id="in" placeholder="Neues Album"><select id="ty"><option value="0">Album</option><option value="1">EP</option><option value="2">Single</option></select><button class="btn" data-a="addAlb">Hinzufügen</button></div>';
     h+=impBox();
     h+=del('art','Künstler löschen');
@@ -348,6 +419,16 @@ document.addEventListener('click',e=>{
   else if(a==='bdl'){dlBackup();return}
   else if(a==='dsn'){try{localStorage.setItem('coda_design',i)}catch(x){}window.__ap()}
   else if(a==='mode'){try{localStorage.setItem('coda_mode',i)}catch(x){}window.__ap()}
+  else if(a==='mnw'){menuOpen=false;st={t:'nw',a:null,b:null}}
+  else if(a==='nwon'){NW().on=+i;if(+i)setTimeout(()=>nwCheck(true),0)}
+  else if(a==='nwlive'){NW().live=+i}
+  else if(a==='nwcheck'){nwCheck(true);return}
+  else if(a==='nwsearch'){const v=(document.getElementById('nwsel')||{}).value;if(v)nwSearchRun(v);return}
+  else if(a==='nwpick'){if(nwCand&&nwCand[+i])nwFollow(nwCand[+i]);return}
+  else if(a==='nwcancel'){nwCand=null;nwMsg=''}
+  else if(a==='nwrm'){const N=NW();N.a=N.a.filter(f=>f.id!==i);N.it=N.it.filter(x=>x.ai!==i)}
+  else if(a==='nwadd'){nwAdd(i);return}
+  else if(a==='nwign'){const N=NW();N.it=N.it.filter(x=>x.k!==i)}
   else if(a==='menu'){menuOpen=true}
   else if(a==='mclose'){menuOpen=false}
   else if(a==='mhl'){menuOpen=false;st={t:'hearts',a:null,b:null}}
@@ -385,5 +466,6 @@ document.addEventListener('change',e=>{
   if(s){const raw=rawN(e.target.value);s.r=num(e.target.value);if(raw>10)s.h=1;save();R()}
 });
 R();
+nwCheck(false);document.addEventListener('visibilitychange',()=>{if(!document.hidden)nwCheck(false)});
 </script><script>if("serviceWorker"in navigator)addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}))</script>
 </body></html>
