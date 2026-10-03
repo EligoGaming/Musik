@@ -42,6 +42,7 @@ textarea{min-height:110px;margin-bottom:8px}
 input.ck{width:22px;height:22px;accent-color:var(--ac);flex:none}
 .dn{color:var(--mu);text-decoration:line-through}
 .mem{border:1px solid var(--bd);border-radius:12px;padding:12px;margin-bottom:10px}.mbar{height:8px;border-radius:99px;background:var(--bd);overflow:hidden}.mbar i{display:block;height:100%;background:var(--ac);border-radius:99px}.mem.warn .mbar i{background:#e5484d}
+.tgb{align-self:flex-start;padding:6px 12px;font-size:13px;white-space:nowrap;flex:none}.tgb.on{border-color:var(--ac);color:var(--ac)}
 .chips{display:flex;gap:6px;margin:0 0 10px;overflow-x:auto}.chips button{flex:none;padding:6px 12px;font-size:13px;white-space:nowrap}
 .tabs{display:flex;gap:8px;margin-bottom:10px}.tabs button{flex:1;min-width:0;padding:8px 4px;font-size:14px;white-space:nowrap}
 select{background:var(--card);color:var(--tx);border:1px solid var(--bd);border-radius:10px;padding:8px;font:inherit}
@@ -504,8 +505,9 @@ const designView=()=>{const d=dsg(),m=mode(),ac=D.ac||'off',b=(on,a,i,t)=>`<butt
     const ex=D.artists.slice(0,3);h+=`<h2>Vorschau</h2>`+(ex.length?ex.map(a=>`<div class="row"><div class="grow"><div class="t">${anm(a)}</div><div class="m">${a.albums.length} Alben${genreOf(a)?' · '+esc(genreOf(a)):''}</div></div></div>`).join(''):'<p class="m">Noch keine Künstler.</p>')}
   return h};
 const backupView=()=>`<button class="back" data-a="tab" data-i="rate">‹ Zurück</button><h1>Sicherung</h1><p class="sub">Sichere deine Bewertungen in einer Datei oder spiele eine Sicherung wieder ein.</p>`+backupBlock();
-const VER='20';
+const VER='21';
 const UPD=[
+{v:'21',t:'Live- und Remix-Alben',d:'Alben als Live oder Remix markieren und im Rückblick herausfiltern.',n:['In jedem Album (Alben und EPs) gibt es oben rechts einen Knopf „Normal“. Tippst du ihn an, wählst du Normal, Live oder Remix. Auf der Künstlerseite steht „Live“ oder „Remix“ bei dem Album.','Im Rückblick gibt es unter Alben, EPs, Singles und Alle eine Filterleiste: Alle Alben, Nur normale, Nur Live, Nur Remix, Normal + Live und Normal + Remix. Sie wirkt auf alle Zahlen im Rückblick, auch auf den Gesamtdurchschnitt.'],c:['Die Filterung gilt nur im Rückblick. Künstlerseiten, 10 von 10 und Suche zeigen weiterhin alles.']},
 {v:'20',t:'Speicher-Anzeige und Song-Filter',d:'Mehr Überblick: wie voll Coda ist und welche Songs du suchst.',n:['Im Menü unter „Sicherung“ gibt es jetzt einen Bereich „Speicher“: Balken mit Prozentwert, aufgeteilt in Bewertungen, eigene Cover und automatische Kopien. Ab 80 % wird er rot und rät zur Sicherung.','Auf der Albumseite gibt es eine Filterleiste: Alle, ♥, Unter 5, Notiz und Ohne Note, jeweils mit Anzahl. Die Platznummern bleiben dabei die echten.']},
 {v:'19',t:'Design-Feinschliff',d:'Präsentere Überschriften im Nothing-Design und Disc-Angaben bei den 10 von 10.',n:['Disc-Angabe bei den Songs mit 10 und in den Highlights: Liegt ein Song auf einer Disc, steht sie hinter dem Albumnamen, zum Beispiel „Meteora (Disc 2)“.'],c:['Die Abschnitte „Alben“, „EPs“ und „Singles“ auf der Künstlerseite sind im Nothing-Design größer und kräftiger wie im Standard-Design, mit einem Punkt zwischen Name und Zahl („Alben · 3“) und der Titel sitzt wieder links.','Im Menü steht bei Statistiken nur noch „Statistiken“.'],
  sub:[{v:'19.1',t:'Herz, Notizen, Genre-Farben',c:['Das Herz steht allein und größer neben der Note. Die Notiz hat einen schmalen Balken ganz rechts neben dem ✕. Der Balken ist farbig, wenn der Song eine Notiz hat.','Im Design-Tab sind die Genre-Farben einklappbar: jedes Genre ist eine Zeile mit Farbpunkt, Antippen öffnet die Farbauswahl. Dazu „Alle aufklappen“ und „Alle zuklappen“.'],f:['„Notiz löschen“ hat nicht funktioniert und die Notiz kam sofort zurück. Behoben.']}]},
@@ -593,7 +595,9 @@ async function cvGo(){if(cvRun)return;cvRun=true;while(cvQ.length){const [A,B]=c
   cvRun=false;if(st.t==='rv'&&!st.a)R()}
 /* Rückblick */
 const RK=[['a','Alben'],['e','EPs'],['s','Singles'],['x','Alle']],rkOf=()=>['a','e','s','x'].includes(D.rk)?D.rk:'a';
-const inK=(b,K)=>K==='x'||'aes'.indexOf(K)===(b.k||0);
+const TGN=['Normal','Live','Remix'],RTF=[['all','Alle Alben'],['n','Nur normale'],['l','Nur Live'],['r','Nur Remix'],['nl','Normal + Live'],['nr','Normal + Remix']],rtOf=()=>RTF.some(x=>x[0]===D.rt)?D.rt:'all';
+const tgOk=b=>{const t=b.tg||0,f=rtOf();return f==='all'||(f==='n'&&t===0)||(f==='l'&&t===1)||(f==='r'&&t===2)||(f==='nl'&&t<2)||(f==='nr'&&(t===0||t===2))};
+const inK=(b,K)=>(K==='x'||'aes'.indexOf(K)===(b.k||0))&&tgOk(b);
 const kcnt=a=>{const c=[0,0,0];a.albums.forEach(b=>{if((b.k||0)===2)c[2]+=b.songs.length;else c[b.k||0]++});const p=[];if(c[0])p.push(c[0]+(c[0]===1?' Album':' Alben'));if(c[1])p.push(c[1]+(c[1]===1?' EP':' EPs'));if(c[2])p.push(c[2]+(c[2]===1?' Single':' Singles'));return p.join(' · ')||'noch nichts'};
 function rvData(K){const U=[];D.artists.forEach(a=>{const m=new Map();a.albums.filter(b=>inK(b,K)).forEach(b=>b.songs.forEach(sg=>{const k=sk(sg),e=m.get(k);
   if(!e)m.set(k,{a,b,s:sg,r:sg.r==null?null:+sg.r,h:!!sg.h});else{e.h=e.h||!!sg.h;if(sg.r!=null&&(e.r==null||+sg.r>e.r)){e.r=+sg.r;e.b=b;e.s=sg}}}));m.forEach(e=>U.push(e))});return U}
@@ -601,6 +605,8 @@ const barH=(lab,pct,color,val,attr)=>`<div class="bar${attr?' tap':''}" ${attr||
 const statsView=()=>{const K=rkOf(),NM={a:'Alben',e:'EPs',s:'Singles',x:'Alle'}[K],U=rvData(K),S=U.filter(e=>e.r!=null),n=S.length,hearts=U.filter(e=>e.h).length;
   let h='<button class="back" data-a="tab" data-i="rate">‹ Zurück</button><h1>Rückblick</h1><p class="sub">Deine Bewertungen in Zahlen, getrennt nach Alben, EPs und Singles.</p>';
   h+='<div class="tabs">'+RK.map(([k,t])=>`<button class="${K===k?'btn':'ghost'}" data-a="rk" data-i="${k}">${t}</button>`).join('')+'</div>';
+  h+='<div class="chips">'+RTF.map(([k,t])=>`<button class="${rtOf()===k?'btn':'ghost'}" data-a="rtf" data-i="${k}">${t}</button>`).join('')+'</div>';
+  if(rtOf()!=='all'&&!D.artists.some(a=>a.albums.some(b=>b.tg)))h+='<p class="m">Noch kein Album ist als Live oder Remix markiert. Das machst du oben rechts im Album.</p>';
   if(!n&&!hearts)return h+`<p class="m">Hier gibt es noch keine bewerteten Songs${K==='x'?'':' bei '+NM}.</p>`;
   const cont=D.artists.flatMap(a=>a.albums.filter(b=>inK(b,K)&&b.songs.some(x=>x.r!=null)).map(b=>({a,b,v:albAvg(b)})));
   const t2=K==='s'?['Beste Note',n?fmt(Math.max(...S.map(e=>e.r))):'–']:K==='x'?['Veröffentl.',cont.length]:[NM,cont.length];
@@ -644,7 +650,7 @@ const avTabs=A=>{const n=(hlList('t','').find(x=>x.a.id===A.id)||{l:[]}).l.lengt
 const tensView=A=>{const e=(hlList('t','').find(x=>x.a.id===A.id)||{l:[]}).l;if(!e.length)return '<p class="m">Noch keine Songs mit 10 bei diesem Künstler.</p>';
   return `<p class="m" style="margin:0 0 8px">${e.length} Songs mit 10. Ein Song, der als Single und auf dem Album vorkommt, zählt einmal.</p>`+e.map((x,i)=>`<div class="row tap" data-a="go" data-ar="${A.id}" data-al="${x.b.id}" data-s="${x.s.id}"><span class="rk">${i+1}</span><div class="grow"><div class="t">${esc(x.s.n)}</div><div class="m">${esc(x.al.join(' · '))}</div></div>${x.h?'<span style="color:var(--r)">♥</span>':''}${chip(x.s.r)}</div>`).join('')};
 const albEdPanel=B=>`<div class="edp"><div class="m">Titel</div><textarea id="ed" rows="2" maxlength="200">${esc(B.n)}</textarea><div class="edr"><label class="m">Art<select id="edt"><option value="0" ${(B.k||0)==0?'selected':''}>Album</option><option value="1" ${B.k==1?'selected':''}>EP</option><option value="2" ${B.k==2?'selected':''}>Single</option></select></label><label class="m">Jahr<input id="edy" inputmode="numeric" maxlength="4" placeholder="–" value="${B.y||''}"></label></div><div class="add"><button class="btn" data-a="edsave">Speichern</button><button class="ghost" data-a="edcancel">Abbrechen</button></div></div>`;
-let dgx=new Set();let sf='';
+let dgx=new Set();let sf='',tgo=false;
 let lastKey='',scrollMap={},popNav=false,goingBack=false,prevMenu=false,histReady=false,hidx=0,hkeys=[];
 let addK=null,focusA=0;
 const KN=['Album','EP','Single'];
@@ -677,7 +683,7 @@ const listView=()=>{let h=tabs()+'<h1>Künstlerliste</h1><p class="sub">Haken se
 function R(){
   document.documentElement.dataset.px=D.px||'on';
   saveNote();
-  const key=[st.t,st.a||'',st.b||''].join('|'),left=key!==lastKey;if(left)sf='';
+  const key=[st.t,st.a||'',st.b||''].join('|'),left=key!==lastKey;if(left){sf='';tgo=false}
   if(left)scrollMap[lastKey]=window.scrollY;
   if(histReady&&!popNav){
     if(left){let j=hidx-1;while(j>=0&&hkeys[j]==='dummy')j--;
@@ -703,7 +709,7 @@ function R(){
     h+='<div class="add"><input id="in" placeholder="Neuer Künstler"><button class="btn" data-a="addArt">Hinzufügen</button></div>';
   }else if(!B){
     h=`<button class="back" data-a="home">‹ Alle Künstler</button>${isEd('art',A.id)?edForm(A.id,A.n):`<h1>${anm(A)} ${pen('art',A.id)}</h1>`}<p class="sub">Durchschnitt ${fmt(artAvg(A))}</p>`;
-    const albRow=(x,i,g,rk,tag)=>`<div class="row tap" data-a="alb" data-i="${x.id}">${rk?`<span class="rk">${i+1}</span>`:`<div class="mv"><button class="ghost" data-a="aup" data-i="${x.id}" ${i?'':'disabled'}>▲</button><button class="ghost" data-a="adn" data-i="${x.id}" ${i<g.length-1?'':'disabled'}>▼</button></div>`}${cvHtml(x,'s')}<div class="grow"><div class="t">${esc(x.n)}</div><div class="m">${tag?tag+' · ':''}${x.songs.length} Songs${x.y?' · '+x.y:''}</div></div><button class="ghost warn" data-a="dalb" data-i="${x.id}">${armed==='a:'+x.id?'Sicher?':'✕'}</button>${chip(albAvg(x))}</div>`;
+    const albRow=(x,i,g,rk,tag)=>`<div class="row tap" data-a="alb" data-i="${x.id}">${rk?`<span class="rk">${i+1}</span>`:`<div class="mv"><button class="ghost" data-a="aup" data-i="${x.id}" ${i?'':'disabled'}>▲</button><button class="ghost" data-a="adn" data-i="${x.id}" ${i<g.length-1?'':'disabled'}>▼</button></div>`}${cvHtml(x,'s')}<div class="grow"><div class="t">${esc(x.n)}</div><div class="m">${tag?tag+' · ':''}${x.tg?TGN[x.tg]+' · ':''}${x.songs.length} Songs${x.y?' · '+x.y:''}</div></div><button class="ghost warn" data-a="dalb" data-i="${x.id}">${armed==='a:'+x.id?'Sicher?':'✕'}</button>${chip(albAvg(x))}</div>`;
     const h0=h;h='';
     h+=`<div class="tabs"><button class="${D.as?'ghost':'btn'}" data-a="as" data-i="0">Nach Reihenfolge</button><button class="${D.as?'btn':'ghost'}" data-a="as" data-i="1">Nach Durchschnitt</button></div>`;
     h+=`<div class="add" style="margin:0 0 8px"><button class="ghost" data-a="vlt">📈 Verlauf ${D.vo?'ausblenden':'anzeigen'}</button></div>`+(D.vo?`<div class="vl">${verlauf(A)}</div>`:'');
@@ -713,7 +719,7 @@ function R(){
     h+=del('art','Künstler löschen');
   }else{
     const row=(s,i,L)=>{if(isEd('song',s.id))return `<div class="row"><span class="rk">${i+1}</span>${edForm(s.id,s.n)}</div>`;const u=i>0&&L[i-1].r===s.r,d=i<L.length-1&&L[i+1].r===s.r;return `<div class="row${s.id===hl?' hl':''}"><span class="rk">${i+1}</span>${D.so?'':`<div class="mv"><button class="ghost" data-a="up" data-i="${s.id}" ${u?'':'disabled'}>▲</button><button class="ghost" data-a="dn" data-i="${s.id}" ${d?'':'disabled'}>▼</button></div>`}<div class="grow t nm" data-a="edit" data-k="song" data-i="${s.id}">${esc(s.n)}</div><button class="ghost hb big ${s.h?'on':''}" data-a="ht" data-i="${s.id}">${s.h?'♥':'♡'}</button><input class="r" style="border-color:${col(s.r)};color:${col(s.r)}" inputmode="decimal" value="${s.r==null?'':fmt(s.r)}" data-i="${s.id}" placeholder="–"><button class="ghost" data-a="rm" data-i="${s.id}">✕</button><button class="nbar${s.no?' on':''}" data-a="nt" data-i="${s.id}" aria-label="Notiz"></button></div>`+noteBlk(s)};
-    h=`<button class="back" data-a="art" data-i="${A.id}">‹ ${esc(A.n)}</button><div class="albh">${cvHtml(B,'l')}<div class="grow"><h1 class="abt">${esc(B.n)} ${pen('alb',B.id)}</h1><p class="sub">Durchschnitt ${fmt(albAvg(B))} · ${B.songs.length} Songs${B.songs.some(s=>s.h)?' · ♥ '+B.songs.filter(s=>s.h).length:''}${B.y?' · '+B.y:''}</p></div></div>${isEd('alb',B.id)?albEdPanel(B):''}<div class="tabs"><button class="${D.so?'ghost':'btn'}" data-a="so" data-i="0">Nach Note</button><button class="${D.so?'btn':'ghost'}" data-a="so" data-i="1">Eingabe-Reihenfolge</button></div><div class="add" style="margin:0 0 8px"><button class="ghost" data-a="cmpa">⇄ Mit anderem Album vergleichen</button></div><div class="det"><label class="yl">Jahr <input id="ayr" inputmode="numeric" maxlength="4" placeholder="–" value="${B.y||''}"></label>${(B.k||0)===2?'':`<label class="ghost">${B.cu?'Cover ändern':'Cover wählen'}<input id="cvf" type="file" accept="image/*" hidden></label>`}${B.cu&&(B.k||0)!==2?'<button class="ghost" data-a="cvdel">Cover entfernen</button>':''}</div>`;
+    h=`<button class="back" data-a="art" data-i="${A.id}">‹ ${esc(A.n)}</button><div class="albh">${cvHtml(B,'l')}<div class="grow"><h1 class="abt">${esc(B.n)} ${pen('alb',B.id)}</h1><p class="sub">Durchschnitt ${fmt(albAvg(B))} · ${B.songs.length} Songs${B.songs.some(s=>s.h)?' · ♥ '+B.songs.filter(s=>s.h).length:''}${B.y?' · '+B.y:''}</p></div>${(B.k||0)===2?'':`<button class="ghost tgb${B.tg?' on':''}" data-a="tgo">${TGN[B.tg||0]} ${tgo?'▴':'▾'}</button>`}</div>${tgo&&(B.k||0)!==2?`<div class="tabs">${TGN.map((n,k)=>`<button class="${(B.tg||0)===k?'btn':'ghost'}" data-a="tgs" data-i="${k}">${n}</button>`).join('')}</div><p class="m" style="margin:-4px 0 10px">Live- und Remix-Alben kannst du im Rückblick herausfiltern.</p>`:''}${isEd('alb',B.id)?albEdPanel(B):''}<div class="tabs"><button class="${D.so?'ghost':'btn'}" data-a="so" data-i="0">Nach Note</button><button class="${D.so?'btn':'ghost'}" data-a="so" data-i="1">Eingabe-Reihenfolge</button></div><div class="add" style="margin:0 0 8px"><button class="ghost" data-a="cmpa">⇄ Mit anderem Album vergleichen</button></div><div class="det"><label class="yl">Jahr <input id="ayr" inputmode="numeric" maxlength="4" placeholder="–" value="${B.y||''}"></label>${(B.k||0)===2?'':`<label class="ghost">${B.cu?'Cover ändern':'Cover wählen'}<input id="cvf" type="file" accept="image/*" hidden></label>`}${B.cu&&(B.k||0)!==2?'<button class="ghost" data-a="cvdel">Cover entfernen</button>':''}</div>`;
     const FL=[['','Alle',()=>true],['h','♥',q=>q.h],['lo','Unter 5',q=>q.r!=null&&q.r<5],['no','Notiz',q=>!!q.no],['un','Ohne Note',q=>q.r==null]],fo=FL.find(f=>f[0]===sf)||FL[0];
     h+=`<div class="chips">${FL.map(f=>`<button class="${f[0]===sf?'btn':'ghost'}" data-a="sfl" data-i="${f[0]}">${f[1]}${f[0]?' '+B.songs.filter(f[2]).length:''}</button>`).join('')}</div>`;
     if(sf&&!B.songs.some(fo[2]))h+=`<p class="m">Keine Songs für diesen Filter.</p>`;
@@ -820,6 +826,9 @@ document.addEventListener('click',e=>{
   else if(a==='skreset'){if(B)B.songs.forEach(x=>{delete x.sk})}
   else if(a==='px'){D.px=i}
   else if(a==='av'){D.av=i}
+  else if(a==='tgo'){tgo=!tgo}
+  else if(a==='tgs'){if(B){if(+i)B.tg=+i;else delete B.tg}tgo=false}
+  else if(a==='rtf'){D.rt=i;D.ry=null}
   else if(a==='sfl'){sf=(sf===i?'':i)}
   else if(a==='dgt'){if(dgx.has(i))dgx.delete(i);else dgx.add(i)}
   else if(a==='dgall'){if(+i){D.genres.forEach(g=>dgx.add(g.id));dgx.add('_')}else dgx.clear()}
