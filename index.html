@@ -213,15 +213,33 @@ html[data-design=nothing] .nbar{border-radius:999px;width:12px}
 .nt{margin-left:4px}.ntf{margin-left:0}
 </style></head><body><main id="app"></main>
 <script>
-const K='musikratings_leer';let D;
+window.__main=function(){
+const K='musikratings_leer';let D;const BT=window.__B||{};
 const SEED={artist:null,genres:[]};
 const SEED2=[];
 const HEARTS=[];
-try{D=JSON.parse(localStorage.getItem(K))}catch(e){}
+D=BT.D||null;
 if(!D||!D.artists)D={artists:[],genres:[],seeded:1,v:4};
 if(!D.genres)D.genres=[];
 const uid=()=>Math.random().toString(36).slice(2,9);
-const save=()=>{try{localStorage.setItem(K,JSON.stringify(D))}catch(e){try{toast('Speichern fehlgeschlagen, Speicher voll? Bitte jetzt sichern.')}catch(x){}}if(window.__sr&&Date.now()-window.__sa>864e5)snapMake(false)};
+let SN=BT.SN||[],snapDirty=false,dbOk=!!BT.db,flushT=0,flushP=Promise.resolve(),dirty=false,lastLight=null,errT=0,memInfo=null;const covSaved=BT.covSaved||new Map();
+const stripCu=(k,v)=>k==='cu'?undefined:v;
+const failToast=()=>{if(Date.now()-errT>6e4){errT=Date.now();try{toast('Speichern fehlgeschlagen, Speicher voll? Bitte jetzt sichern.')}catch(x){}}};
+const schedFlush=()=>{dirty=true;clearTimeout(flushT);flushT=setTimeout(flush,350)};
+function flush(){clearTimeout(flushT);if(!dbOk)return flushP;
+  flushP=flushP.then(async()=>{if(!dirty)return;dirty=false;
+    try{const cur=new Map();D.artists.forEach(a=>a.albums.forEach(b=>{if(b.cu)cur.set(b.id,b.cu)}));
+      const put=[],del=[];for(const [id,u] of cur)if(covSaved.get(id)!==u)put.push([id,u]);for(const id of covSaved.keys())if(!cur.has(id))del.push(id);
+      const sn=snapDirty;snapDirty=false;
+      try{await CodaDB.write(BT.db,{Dstr:lastLight,snaps:sn?SN:undefined,putCov:put.map(([id,u])=>[id,CodaDB.d2b(u)]),delCov:del})}catch(e){snapDirty=snapDirty||sn;throw e}
+      put.forEach(([id,u])=>covSaved.set(id,u));del.forEach(id=>covSaved.delete(id));try{localStorage.removeItem('coda_snaps')}catch(e){}
+    }catch(e){dirty=true;failToast()}});
+  return flushP}
+const save=()=>{D.ts=Date.now();
+  if(!dbOk){try{localStorage.setItem(K,JSON.stringify(D))}catch(e){failToast()}}
+  else{let t;try{t=JSON.stringify(D,stripCu)}catch(e){return}lastLight=t;try{localStorage.setItem(K,t)}catch(e){}schedFlush()}
+  if(window.__sr&&Date.now()-window.__sa>864e5)snapMake(false)};
+addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')flush()});addEventListener('pagehide',()=>{flush()});
 if(!D.seeded){D.seeded=1;if(!D.artists.some(x=>x.n==='Linkin Park'))D.artists.push(SEED.artist);if(!D.genres.length)D.genres=SEED.genres;save()}
 const ORD=['Hybrid Theory (Bonus Edition)','Reanimation','Live in Texas','Meteora (Bonus Edition)','Minutes to Midnight (Deluxe Edition)','Minutes to Midnight','Road to Revolution (Live at Milton Keynes)','A Thousand Suns (Bonus Edition)','A Thousand Suns','LIVING THINGS','LIVING THINGS: Acapellas and Instrumentals','RECHARGED','The Hunting Party','The Hunting Party: Acapellas + Instrumentals','One More Light','One More Light Live','Hybrid Theory (20th Anniversary Edition)','Papercuts','Papercuts: Instrumental','Meteora 20th Anniversary Edition','Hybrid Theory Live Around the World','Meteora Live Around the World','Minutes to Midnight Live Around the World','A Thousand Suns Live Around the World','From Zero','Collision Course (Deluxe Version)','Evolution Of Mike Shinoda'];
 const ix=b=>{const i=ORD.indexOf(b.n);return i<0?999:i};
@@ -505,8 +523,9 @@ const designView=()=>{const d=dsg(),m=mode(),ac=D.ac||'off',b=(on,a,i,t)=>`<butt
     const ex=D.artists.slice(0,3);h+=`<h2>Vorschau</h2>`+(ex.length?ex.map(a=>`<div class="row"><div class="grow"><div class="t">${anm(a)}</div><div class="m">${a.albums.length} Alben${genreOf(a)?' · '+esc(genreOf(a)):''}</div></div></div>`).join(''):'<p class="m">Noch keine Künstler.</p>')}
   return h};
 const backupView=()=>`<button class="back" data-a="tab" data-i="rate">‹ Zurück</button><h1>Sicherung</h1><p class="sub">Sichere deine Bewertungen in einer Datei oder spiele eine Sicherung wieder ein.</p>`+backupBlock();
-const VER='22';
+const VER='23';
 const UPD=[
+{v:'23',t:'Großer Speicher',d:'Coda speichert jetzt in einem deutlich größeren Speicher und startet mit einem Umzug deiner Daten.',n:['Großer Speicher: Statt der etwa 5 MB, die ein Browser normalerweise erlaubt, nutzt Coda jetzt den Speicher des Handys (IndexedDB). Dort ist je nach Gerät Platz für hunderte MB oder mehr. Deine Daten ziehen beim ersten Start automatisch um.','Eigene Cover werden als echte Bilddateien gespeichert und nicht mehr als Text. Das spart etwa ein Drittel Platz und macht das Speichern schneller.','Die Speicher-Anzeige unter „Sicherung“ zeigt jetzt den echten freien Platz deines Handys und ob der Browser die Daten dauerhaft schützt.','Die automatischen Kopien liegen jetzt auch im großen Speicher und sind nicht mehr auf kleine Datenmengen begrenzt.'],c:['Zur Sicherheit schreibt Coda weiterhin eine leichte Kopie (ohne Cover) in den alten Speicher. Sollte der große Speicher nicht gehen, läuft die App wie bisher.']},
 {v:'22',t:'Studio, Live, Remix im Rückblick',d:'Einfachere Auswahl im Rückblick und aufgeräumte Tabs.',c:['„Normal“ heißt jetzt „Studio“.','Im Rückblick gibt es statt der sechs Optionen drei Knöpfe: Studio, Live und Remix. Jeder Knopf schaltet seine Alben dazu oder wieder weg. Gefüllte Knöpfe sind aktiv, mindestens einer bleibt immer an.','Die Tab-Leiste unter dem Menü hat keinen „Suche“-Knopf mehr. Die Suche öffnest du mit der Lupe oben rechts.']},
 {v:'21',t:'Live- und Remix-Alben',d:'Alben als Live oder Remix markieren und im Rückblick herausfiltern.',n:['In jedem Album (Alben und EPs) gibt es oben rechts einen Knopf „Normal“. Tippst du ihn an, wählst du Normal, Live oder Remix. Auf der Künstlerseite steht „Live“ oder „Remix“ bei dem Album.','Im Rückblick gibt es unter Alben, EPs, Singles und Alle eine Filterleiste: Alle Alben, Nur normale, Nur Live, Nur Remix, Normal + Live und Normal + Remix. Sie wirkt auf alle Zahlen im Rückblick, auch auf den Gesamtdurchschnitt.'],c:['Die Filterung gilt nur im Rückblick. Künstlerseiten, 10 von 10 und Suche zeigen weiterhin alles.']},
 {v:'20',t:'Speicher-Anzeige und Song-Filter',d:'Mehr Überblick: wie voll Coda ist und welche Songs du suchst.',n:['Im Menü unter „Sicherung“ gibt es jetzt einen Bereich „Speicher“: Balken mit Prozentwert, aufgeteilt in Bewertungen, eigene Cover und automatische Kopien. Ab 80 % wird er rot und rät zur Sicherung.','Auf der Albumseite gibt es eine Filterleiste: Alle, ♥, Unter 5, Notiz und Ohne Note, jeweils mit Anzahl. Die Platznummern bleiben dabei die echten.']},
@@ -570,8 +589,8 @@ const compareView=()=>{const C=D.cmp||{a:null,b:null},a=cmpSlot(C.a),b=cmpSlot(C
   return h};
 /* ===== Update 15 ===== */
 const DAY=864e5;let focusQ=0,nedit=null,cvErr='';
-const snapsGet=()=>{try{return JSON.parse(localStorage.getItem('coda_snaps')||'[]')}catch(e){return[]}};
-function snapMake(force){try{if(!D.artists.some(a=>a.albums.length))return;const L=snapsGet();if(!force&&L[0]&&Date.now()-L[0].t<DAY)return;const d=JSON.stringify(D,(k,v)=>k==='cu'?undefined:v);if(d.length>400000)return;L.unshift({t:Date.now(),d});window.__sa=Date.now();while(L.length>3)L.pop();localStorage.setItem('coda_snaps',JSON.stringify(L))}catch(e){}}
+const snapsGet=()=>SN;
+function snapMake(force){try{if(!D.artists.some(a=>a.albums.length))return;const L=SN;if(!force&&L[0]&&Date.now()-L[0].t<DAY)return;const d=JSON.stringify(D,stripCu);if(dbOk?d.length>25e6:d.length>400000)return;L.unshift({t:Date.now(),d});window.__sa=Date.now();while(L.length>3)L.pop();if(dbOk){snapDirty=true;schedFlush()}else localStorage.setItem('coda_snaps',JSON.stringify(L))}catch(e){}}
 const snapHtml=()=>{const L=snapsGet();if(!L.length)return '';return '<h2>Automatische Kopien</h2><p class="m">Coda legt täglich eine Kopie auf diesem Gerät an (die letzten drei). Sie hilft bei Fehlern, zum Beispiel nach einem Einspielen. Gegen gelöschte Browserdaten oder ein verlorenes Handy hilft nur die Sicherungsdatei.</p>'+L.map((x,i)=>{let c='';try{const j=JSON.parse(x.d);c=j.artists.length+' Künstler · '+cntSongs(j)+' Songs'}catch(e){}return `<div class="row"><div class="grow"><div class="t">${new Date(x.t).toLocaleString('de-DE',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'})}</div><div class="m">${c}</div></div><button class="ghost" data-a="snrs" data-i="${i}">Wiederherstellen</button></div>`}).join('')};
 const canShare=()=>{try{return !!(navigator.canShare&&navigator.canShare({files:[new File(['{}'],'a.json',{type:'application/json'})]}))}catch(e){return false}};
 async function shareBackup(){try{const f=new File([JSON.stringify(D)],'coda-sicherung-'+new Date().toISOString().slice(0,10)+'.json',{type:'application/json'});await navigator.share({files:[f],title:'Coda Sicherung'});D.lb=Date.now();save();bmsg='Sicherung geteilt.'}catch(e){bmsg=e&&e.name==='AbortError'?'Abgebrochen.':'Teilen hat nicht geklappt. Nutze „Sicherung speichern“.'}R()}
@@ -670,9 +689,14 @@ const menuHtml=()=>{if(!menuOpen)return '';const d=dsg(),m=mode(),b=(on,a,i,t)=>
   return `<div class="sc" data-a="mclose"></div><div class="sh"><div class="gr"></div>
   <button class="ghost mi" data-a="mst"><span>Statistiken</span></button><button class="ghost mi" data-a="mds"><span>Design</span><span class="m">${d==='nothing'?'Nothing':'Standard'} · ${m==='auto'?'Auto':m==='light'?'Hell':'Dunkel'}</span></button><button class="ghost mi" data-a="mbk"><span>Sicherung</span><span class="m">${D.lb?new Date(D.lb).toLocaleDateString('de-DE'):'noch nie'}</span></button>
   <button class="btn" data-a="mclose" style="width:100%;margin-top:14px">Fertig</button><button class="lnk" data-a="mar">Archiv · Update ${VER}</button></div>`};
-const memHtml=()=>{let tot=0,dat=0,snp=0,cov=0;try{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i),n=(k.length+(localStorage.getItem(k)||'').length);tot+=n;if(k===K)dat=n;else if(k==='coda_snaps')snp=n}D.artists.forEach(a=>a.albums.forEach(b=>{if(b.cu)cov+=b.cu.length}))}catch(e){return ''}
-  const LIM=5e6,pc=Math.min(100,Math.round(tot/LIM*100)),mb=n=>n<1e6?Math.round(n/1e3)+' KB':(n/1e6).toFixed(2).replace('.',',')+' MB',w=pc>=80;
-  return `<h2>Speicher</h2><div class="mem${w?' warn':''}"><div class="mbar"><i style="width:${Math.max(pc,1)}%"></i></div><p class="m" style="margin:6px 0 0"><b>${pc} %</b> belegt (${mb(tot)} von ca. 5 MB)</p><p class="m" style="margin:2px 0 0">Bewertungen und Alben ${mb(dat-cov)} · eigene Cover ${mb(cov)} · automatische Kopien ${mb(snp)}</p>${w?'<p class="m" style="margin:6px 0 0">Der Speicher wird knapp. Mach am besten jetzt eine Sicherung.</p>':''}</div>`};
+const mbF=n=>n<1e6?Math.round(n/1e3)+' KB':n<1e9?(n/1e6).toFixed(n<1e7?2:1).replace('.',',')+' MB':(n/1e9).toFixed(1).replace('.',',')+' GB';
+const memBody=()=>{let dat=0,cov=0,nc=0,snp=0;try{dat=(lastLight||JSON.stringify(D,stripCu)).length;D.artists.forEach(a=>a.albums.forEach(b=>{if(b.cu){cov+=Math.round(b.cu.length*.75);nc++}}));SN.forEach(x=>snp+=(x.d||'').length)}catch(e){}
+  if(!dbOk){const LIM=5e6;let tot=0;try{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);tot+=k.length+(localStorage.getItem(k)||'').length}}catch(e){}const pc=Math.min(100,Math.round(tot/LIM*100)),w=pc>=80;
+    return `<div class="mem${w?' warn':''}"><div class="mbar"><i style="width:${Math.max(pc,1)}%"></i></div><p class="m" style="margin:6px 0 0"><b>${pc} %</b> belegt (${mbF(tot)} von ca. 5 MB)</p><p class="m" style="margin:2px 0 0">Dein Browser erlaubt hier nur den kleinen Standard-Speicher.</p>${w?'<p class="m" style="margin:6px 0 0">Der Speicher wird knapp. Mach am besten jetzt eine Sicherung.</p>':''}</div>`}
+  const u=memInfo&&memInfo.u,q=memInfo&&memInfo.q,share=q?u/q:0,pc=q?(share<.01?'unter 1':String(Math.round(share*100))):null,w=q&&share>=.8;
+  return `<div class="mem${w?' warn':''}">${q?`<div class="mbar"><i style="width:${Math.max(share*100,1)}%"></i></div><p class="m" style="margin:6px 0 0"><b>${pc} %</b> belegt (${mbF(u)} von ${mbF(q)})</p>`:`<p class="m" style="margin:0"><b>${mbF(dat+cov+snp)}</b> belegt</p>`}<p class="m" style="margin:2px 0 0">Bewertungen und Alben ${mbF(dat)} · eigene Cover ${mbF(cov)}${nc?' ('+nc+')':''} · automatische Kopien ${mbF(snp)}</p><p class="m" style="margin:2px 0 0">Speicherart: großer Speicher (IndexedDB)${memInfo&&memInfo.p!=null?' · dauerhaft gesichert: '+(memInfo.p?'ja':'nein'):''}</p>${memInfo&&memInfo.p===false?'<p class="m" style="margin:2px 0 0">Der Browser hat den Schutz vor automatischem Löschen nicht freigegeben. Eine Sicherung ist deshalb besonders wichtig.</p>':''}${w?'<p class="m" style="margin:6px 0 0">Der Speicher wird knapp. Mach am besten jetzt eine Sicherung.</p>':''}</div>`};
+async function memRefresh(){try{const S=navigator.storage,e=S&&S.estimate?await S.estimate():null,pp=S&&S.persisted?await S.persisted():null;memInfo={u:e&&e.usage,q:e&&e.quota,p:pp};const el=document.getElementById('mem');if(el)el.innerHTML=memBody()}catch(x){}}
+const memHtml=()=>{setTimeout(memRefresh,0);return `<h2>Speicher</h2><div id="mem">${memBody()}</div>`};
 const backupBlock=()=>{let h=`<h2>Sicherung</h2><p class="m">${D.lb?'Letzte Sicherung: '+new Date(D.lb).toLocaleDateString('de-DE'):'Noch keine Sicherung gemacht.'}</p><div class="add" style="margin-top:0"><button class="btn" data-a="bdl">Sicherung speichern</button>${canShare()?'<button class="ghost" data-a="bsh">Teilen</button>':''}<label class="ghost">Sicherung laden<input id="bf" type="file" accept=".json,application/json" hidden></label></div>`;
   if(bpend)h+=`<div class="bn">Die Sicherung enthält ${bpend.artists.length} Künstler und ${cntSongs(bpend)} Songs. Deine aktuellen Daten werden dabei ersetzt.<div class="add" style="margin:0"><button class="btn" data-a="bapply">Einspielen</button><button class="ghost" data-a="bcancel">Abbrechen</button></div></div>`;
   if(bmsg)h+=`<p class="m">${esc(bmsg)}</p>`;
@@ -804,7 +828,7 @@ document.addEventListener('click',e=>{
   else if(a==='hf'){D.hf=i}
   else if(a==='hg'){D.hg=i}
   else if(a==='dalb'){const k='a:'+i;if(armed!==k){armed=k;R();return}A.albums=A.albums.filter(x=>x.id!==i)}
-  else if(a==='bapply'){snapMake(true);D=bpend;bpend=null;save();location.reload();return}
+  else if(a==='bapply'){snapMake(true);D=bpend;bpend=null;save();flush().then(()=>location.reload());return}
   else if(a==='bcancel'){bpend=null}
   else if(a==='so'){D.so=+i}
   else if(a==='go'){st={t:'rate',a:t.dataset.ar,b:t.dataset.al};hl=t.dataset.s||null}
@@ -869,7 +893,7 @@ document.addEventListener('change',e=>{
   const A=D.artists.find(x=>x.id===st.a),B=A.albums.find(x=>x.id===st.b),s=B.songs.find(x=>x.id===e.target.dataset.i);
   if(s){hideToast();const raw=rawN(e.target.value),nr=num(e.target.value);if(nr!==s.r)s.t=Date.now();s.r=nr;if(raw>10)s.h=1;save();R()}
 });
-window.__sa=(snapsGet()[0]||{}).t||0;window.__sr=1;snapMake(false);try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(e){}
+window.__sa=(snapsGet()[0]||{}).t||0;window.__sr=1;if(BT.needFlush){snapDirty=!!(SN&&SN.length);save()}snapMake(false);try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist().then(()=>memRefresh(),()=>{})}catch(e){}
 try{history.scrollRestoration='manual'}catch(e){}
 lastKey=[st.t,st.a||'',st.b||''].join('|');hkeys[0]=lastKey;try{history.replaceState({st:{t:st.t,a:st.a,b:st.b},i:0},'')}catch(e){}histReady=true;
 addEventListener('popstate',e=>{const q=e.state;if(!q)return;if(q.i!=null)hidx=q.i;
@@ -882,5 +906,55 @@ document.addEventListener('touchend',()=>{const q=sh();if(!q||!on)return;on=fals
 })();
 R();
 nwCheck(false);document.addEventListener('visibilitychange',()=>{if(!document.hidden)nwCheck(false)});
+};
+</script><script>(function(){
+var K='musikratings_leer',DBN='coda';
+function open(){return new Promise(function(res,rej){var r=indexedDB.open(DBN,1);r.onupgradeneeded=function(){var d=r.result;d.createObjectStore('kv');d.createObjectStore('cov')};r.onsuccess=function(){res(r.result)};r.onerror=function(){rej(r.error)};r.onblocked=function(){rej(new Error('blocked'))}})}
+function req(r){return new Promise(function(res,rej){r.onsuccess=function(){res(r.result)};r.onerror=function(){rej(r.error)}})}
+function load(db){return new Promise(function(res,rej){var t=db.transaction(['kv','cov'],'readonly'),out={Dstr:null,snaps:null,cov:new Map()};
+  req(t.objectStore('kv').get('D')).then(function(v){out.Dstr=v==null?null:v});
+  req(t.objectStore('kv').get('snaps')).then(function(v){out.snaps=v||null});
+  var c=t.objectStore('cov').openCursor();c.onsuccess=function(){var q=c.result;if(q){out.cov.set(q.key,q.value);q.continue()}};
+  t.oncomplete=function(){res(out)};t.onerror=function(){rej(t.error)};t.onabort=function(){rej(t.error||new Error('abort'))}})}
+function write(db,o){return new Promise(function(res,rej){var t=db.transaction(['kv','cov'],'readwrite'),kv=t.objectStore('kv'),cv=t.objectStore('cov');
+  if(o.Dstr!=null)kv.put(o.Dstr,'D');if(o.snaps!==undefined)kv.put(o.snaps,'snaps');
+  (o.putCov||[]).forEach(function(x){cv.put(x[1],x[0])});(o.delCov||[]).forEach(function(id){cv.delete(id)});
+  t.oncomplete=function(){res()};t.onerror=function(){rej(t.error)};t.onabort=function(){rej(t.error||new Error('abort'))}})}
+function d2b(u){var i=u.indexOf(','),m=/data:([^;,]+)/.exec(u.slice(0,i)),bin=atob(u.slice(i+1)),a=new Uint8Array(bin.length);for(var k=0;k<bin.length;k++)a[k]=bin.charCodeAt(k);return new Blob([a],{type:m?m[1]:'image/jpeg'})}
+function b2d(b){return new Promise(function(res,rej){var f=new FileReader();f.onload=function(){res(f.result)};f.onerror=function(){rej(f.error)};f.readAsDataURL(b)})}
+window.CodaDB={open:open,load:load,write:write,d2b:d2b,b2d:b2d};
+var strip=function(k,v){return k==='cu'?undefined:v};
+async function go(){
+  var B={D:null,SN:[],covSaved:new Map(),db:null,needFlush:false};
+  try{
+    var ls=null,lsSn=[];
+    try{var t=localStorage.getItem(K);ls=t?JSON.parse(t):null;if(ls&&!Array.isArray(ls.artists))ls=null}catch(e){ls=null}
+    try{lsSn=JSON.parse(localStorage.getItem('coda_snaps')||'[]')}catch(e){lsSn=[]}
+    var db=null,rec=null;
+    try{if(window.indexedDB){db=await Promise.race([open(),new Promise(function(_,rj){setTimeout(function(){rj(new Error('timeout'))},4000)})]);rec=await load(db)}}catch(e){db=null;rec=null}
+    var id=null;
+    if(rec&&rec.Dstr){try{id=JSON.parse(rec.Dstr);if(!id||!Array.isArray(id.artists))id=null}catch(e){id=null}}
+    var D=null;
+    if(id&&ls){var lt=ls.ts||0,it=id.ts||0;
+      if(JSON.stringify(ls,strip)===rec.Dstr)D=id;else if(lt>it)D=ls;else if(lt<it)D=id;else D=ls}
+    else D=id||ls;
+    B.needFlush=!!db&&!!D&&D!==id;
+    if(db&&D&&rec){
+      for(var a of D.artists)for(var b of a.albums){
+        var blob=rec.cov.get(b.id);
+        if(!b.cu&&blob){try{b.cu=await b2d(blob);B.covSaved.set(b.id,b.cu)}catch(e){B.covSaved.set(b.id,null)}}
+        else if(blob)B.covSaved.set(b.id,null)}
+      rec.cov.forEach(function(v,k){if(!B.covSaved.has(k))B.covSaved.set(k,null)});
+      if(D===ls&&id)B.needFlush=true;
+    }
+    B.D=D;B.db=db;
+    B.SN=(rec&&Array.isArray(rec.snaps))?rec.snaps:(Array.isArray(lsSn)?lsSn:[]);
+    if(db&&!(rec&&rec.snaps)&&B.SN.length)B.needFlush=true;
+  }catch(e){B.db=null}
+  window.__B=B;
+  window.__main();
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',go);else go();
+})();
 </script><script>if("serviceWorker"in navigator)addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}))</script>
 </body></html>
