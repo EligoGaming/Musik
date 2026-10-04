@@ -252,6 +252,26 @@ html[data-design=glass] .back{color:var(--ac);font-weight:500}
 html[data-design=glass] .nt{background:color-mix(in srgb,var(--ac) 10%,var(--card));border-left-color:var(--ac);border-radius:0 14px 14px 0}
 html[data-design=glass] .mbar{background:var(--fill)}
 html[data-design=glass] .hb.on,html[data-design=glass] .warn{color:var(--r)}
+/* ---- Glas 25.1: eigenes Thema ---- */
+html[data-design=glass] body::before{inset:-25%;background:radial-gradient(38% 30% at 22% 18%,rgba(70,140,255,.75),transparent 70%),radial-gradient(34% 28% at 82% 30%,rgba(235,120,255,.58),transparent 70%),radial-gradient(40% 32% at 28% 82%,rgba(60,225,190,.58),transparent 70%),radial-gradient(30% 26% at 85% 85%,rgba(255,170,90,.45),transparent 70%),radial-gradient(34% 28% at 50% 50%,rgba(var(--tint,120,150,255),.55),transparent 70%);animation:glDrift 38s ease-in-out infinite alternate;transition:background 1s}
+html[data-design=glass][data-eff=dark] body::before{background:radial-gradient(38% 30% at 22% 18%,rgba(40,100,255,.62),transparent 70%),radial-gradient(34% 28% at 82% 30%,rgba(170,60,240,.46),transparent 70%),radial-gradient(40% 32% at 28% 82%,rgba(20,180,150,.42),transparent 70%),radial-gradient(30% 26% at 85% 85%,rgba(255,120,60,.30),transparent 70%),radial-gradient(34% 28% at 50% 50%,rgba(var(--tint,60,90,200),.45),transparent 70%)}
+@keyframes glDrift{0%{transform:translate3d(-4%,-3%,0) rotate(0deg) scale(1)}50%{transform:translate3d(4%,3%,0) rotate(6deg) scale(1.08)}100%{transform:translate3d(-2%,5%,0) rotate(-5deg) scale(1.02)}}
+@media (prefers-reduced-motion:reduce){html[data-design=glass] body::before{animation:none}}
+html[data-design=glass] .top{margin:-8px 0 14px;top:8px;border:1px solid var(--gl);border-radius:26px;padding:8px 8px 8px 16px;background:color-mix(in srgb,var(--bg) 38%,transparent);box-shadow:var(--gs),inset 0 1px 0 var(--gl),0 0 0 .5px rgba(255,255,255,.25)}
+html[data-design=glass] .row{margin-bottom:0;border-radius:0;border-width:0 0 1px;border-bottom-color:var(--bd);box-shadow:none;background:var(--card);padding:11px 14px;border-left:1px solid var(--gl);border-right:1px solid var(--gl)}
+html[data-design=glass] .row:not(:has(+ .row)){border-radius:0 0 20px 20px;border-bottom:1px solid var(--gl);margin-bottom:12px;box-shadow:0 14px 26px -12px rgba(31,45,90,.18)}
+html[data-design=glass] .row:not(.row + .row){border-radius:20px 20px 0 0;border-top:1px solid var(--gl)}
+html[data-design=glass] .row:not(.row + .row):not(:has(+ .row)){border-radius:20px}
+html[data-design=glass] .row.hl{outline:0;box-shadow:inset 3px 0 0 var(--ac)}
+html[data-design=glass] .fold,html[data-design=glass] .kp,html[data-design=glass] .vl,html[data-design=glass] .bn,html[data-design=glass] .imp,html[data-design=glass] .disc{-webkit-backdrop-filter:blur(20px) saturate(170%);backdrop-filter:blur(20px) saturate(170%)}
+html[data-design=glass] .btn{background:linear-gradient(180deg,color-mix(in srgb,var(--ac) 82%,#fff),var(--ac));box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 6px 16px -6px var(--ac);border:0}
+html[data-design=glass] .tabs button.btn{background:var(--seg);box-shadow:0 1px 3px rgba(0,0,0,.18),0 4px 10px rgba(0,0,0,.06);color:var(--tx)}
+html[data-design=glass] .ghost,html[data-design=glass] .btn,html[data-design=glass] .tabs button,html[data-design=glass] .sb,html[data-design=glass] .mb{transition:transform .35s cubic-bezier(.34,1.56,.64,1),background .25s}
+html[data-design=glass] .ghost:active,html[data-design=glass] .btn:active,html[data-design=glass] .tabs button:active,html[data-design=glass] .sb:active,html[data-design=glass] .mb:active{transform:scale(.93)}
+html[data-design=glass] .sh{animation:glUp .5s cubic-bezier(.22,1.2,.36,1)}
+@keyframes glUp{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
+html[data-design=glass] h1{background:linear-gradient(180deg,var(--tx) 55%,color-mix(in srgb,var(--tx) 62%,transparent));-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;font-size:38px;letter-spacing:-1.2px;margin:18px 2px 6px}
+html[data-design=glass] h1.abt{font-size:30px;margin-top:14px}
 </style></head><body><main id="app"></main>
 <script>
 window.__main=function(){
@@ -565,8 +585,9 @@ const designView=()=>{const d=dsg(),m=mode(),ac=D.ac||'off',b=(on,a,i,t)=>`<butt
     const ex=D.artists.slice(0,3);h+=`<h2>Vorschau</h2>`+(ex.length?ex.map(a=>`<div class="row"><div class="grow"><div class="t">${anm(a)}</div><div class="m">${a.albums.length} Alben${genreOf(a)?' · '+esc(genreOf(a)):''}</div></div></div>`).join(''):'<p class="m">Noch keine Künstler.</p>')}
   return h};
 const backupView=()=>`<button class="back" data-a="tab" data-i="rate">‹ Zurück</button><h1>Sicherung</h1><p class="sub">Sichere deine Bewertungen in einer Datei oder spiele eine Sicherung wieder ein.</p>`+backupBlock();
-const VER='25';
+const VER='25.1';
 const UPD=[
+{v:'25.1',t:'Glas bekommt einen eigenen Charakter',d:'Das Glas-Design ist jetzt ein eigenes Thema, und der Punkt hat neue Effekte.',n:['Glas: schwebende Leiste oben, Songs als gruppierte Liste mit dünnen Trennlinien, ein farbiger, langsam driftender Hintergrund und federnde Knöpfe. Bei Alben mit Cover färbt sich der Hintergrund passend zum Cover.','Der rote Punkt neben Coda hat im Standard-Design jetzt Konfetti mit Ring und im Glas-Design Seifenblasen.']},
 {v:'25',t:'Laufschrift, Glas-Prototyp und eine kleine Überraschung',d:'Lange Songtitel brauchen weniger Platz, und ein erstes Glas-Design ist da.',n:['Songtitel-Option im Design-Tab: „Komplett“ wie bisher oder „Laufschrift“. Bei der Laufschrift steht der Titel in einer Zeile. Ist er zu lang, beginnt er nach etwa zweieinhalb Sekunden langsam nach hinten zu laufen, hält kurz am Ende und springt zurück. Das gilt für Songs im Album, in der Suche, in den Rückblick-Listen und bei den Herzen und Zehnern.','Neues Design „Glas“ (Prototyp): durchscheinende Karten, weiche Farbverläufe, Unschärfe in der Kopfleiste und im Menü, runde Ecken und ein blauer Akzent. Es gibt eine helle und eine dunkle Variante.','Eine kleine Überraschung für Neugierige. Der rote Punkt hat ein Geheimnis.']},
 {v:'24',t:'Notizen-Tab',d:'Alle Notizen an einem Ort, auch zu Künstlern und Alben.',n:['Neuer Menüpunkt „Notizen“: Hier stehen alle Notizen zu Künstlern, Alben, EPs, Singles und Songs. Filter: Alle, Künstler, Alben, Songs, Offen, Erledigt. Sortierung: Neueste oder Nach Künstler.','Bei jedem Künstler und jedem Album gibt es oben einen kleinen Knopf „Notiz“. Er öffnet den Notizen-Tab direkt mit dem Schreibfeld. Die Notiz steht danach auch bei dem Album oder Künstler als kleiner Streifen. „Zurück“ bringt dich wieder zum Album.','In jeder Notiz gibt es „Erledigt“ als Haken (zum Beispiel für „Songs ergänzen“), „Öffnen“ springt zum Künstler, Album oder Song. Mit „Neue Notiz“ legst du eine Notiz an, ohne vorher zum Album zu gehen.','Notizen, die du schon an Songs gemacht hast, erscheinen automatisch in der Liste und lassen sich dort bearbeiten.']},
 {v:'23',t:'Großer Speicher',d:'Coda speichert jetzt in einem deutlich größeren Speicher und startet mit einem Umzug deiner Daten.',n:['Großer Speicher: Statt der etwa 5 MB, die ein Browser normalerweise erlaubt, nutzt Coda jetzt den Speicher des Handys (IndexedDB). Dort ist je nach Gerät Platz für hunderte MB oder mehr. Deine Daten ziehen beim ersten Start automatisch um.','Eigene Cover werden als echte Bilddateien gespeichert und nicht mehr als Text. Das spart etwa ein Drittel Platz und macht das Speichern schneller.','Die Speicher-Anzeige unter „Sicherung“ zeigt jetzt den echten freien Platz deines Handys und ob der Browser die Daten dauerhaft schützt.','Die automatischen Kopien liegen jetzt auch im großen Speicher und sind nicht mehr auf kleine Datenmengen begrenzt.'],c:['Zur Sicherheit schreibt Coda weiterhin eine leichte Kopie (ohne Cover) in den alten Speicher. Sollte der große Speicher nicht gehen, läuft die App wie bisher.']},
@@ -742,14 +763,31 @@ function dotFx(el){try{
     for(let i=0;i<46;i++){const sz=3+Math.random()*5,x=Math.random()*W,red=Math.random()<.45,d=mk(`width:${sz}px;height:${sz}px;border-radius:50%;background:${red?'#ff3b3b':'#f4f2ec'};left:${x}px;top:-12px`),dur=1500+Math.random()*1400,dl=Math.random()*700;
       d.animate([{transform:'translateY(0)',opacity:0},{opacity:1,offset:.12},{transform:`translateY(${H*(.55+Math.random()*.4)}px)`,opacity:0}],{duration:dur,delay:dl,easing:'cubic-bezier(.3,.1,.6,1)',fill:'both'})}
     setTimeout(()=>o.remove(),3800)
+  }else if(dsg()==='glass'){
+    for(let k=0;k<3;k++){const sz=44,d=mk(`left:${cx-sz/2}px;top:${cy-sz/2}px;width:${sz}px;height:${sz}px;border-radius:50%;border:1.5px solid rgba(255,255,255,.85);background:radial-gradient(circle at 30% 25%,rgba(255,255,255,.35),rgba(255,255,255,.04) 60%);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);box-shadow:0 0 18px rgba(120,170,255,.55)`);
+      d.animate([{transform:'scale(.2)',opacity:.95},{transform:'scale(9)',opacity:0}],{duration:1500,delay:k*220,easing:'cubic-bezier(.2,.7,.3,1)',fill:'both'})}
+    for(let i=0;i<20;i++){const sz=12+Math.random()*30,x=Math.random()*W,d=mk(`left:${x}px;top:${H+40}px;width:${sz}px;height:${sz}px;margin:${-sz/2}px 0 0 ${-sz/2}px;border-radius:50%;background:radial-gradient(circle at 30% 28%,rgba(255,255,255,.95) 0 8%,rgba(255,255,255,.28) 26%,rgba(160,200,255,.14) 60%,rgba(255,255,255,.4) 100%);border:1px solid rgba(255,255,255,.7);box-shadow:inset 0 0 8px rgba(255,255,255,.5),0 4px 14px rgba(80,120,220,.25)`),dx=(Math.random()-.5)*60;
+      d.animate([{transform:'translate(0,0) scale(.3)',opacity:0},{opacity:1,offset:.15},{transform:`translate(${dx}px,${-(H*(.6+Math.random()*.5))}px) scale(1)`,opacity:0}],{duration:1800+Math.random()*1500,delay:Math.random()*600,easing:'cubic-bezier(.3,.1,.5,1)',fill:'both'})}
+    setTimeout(()=>o.remove(),4200)
   }else{
-    const cols=[ac,'#ffd24a','#ffffff','#ff7ab6','#7ad7ff'];
-    for(let i=0;i<22;i++){const a=Math.random()*Math.PI*2,r=45+Math.random()*95,sz=10+Math.random()*12,d=mk(`left:${cx}px;top:${cy}px;font-size:${sz}px;line-height:1;color:${cols[i%cols.length]};text-shadow:0 0 6px currentColor;margin:${-sz/2}px 0 0 ${-sz/2}px`,i%3?'✦':'•');
-      d.animate([{transform:'translate(0,0) scale(.2) rotate(0deg)',opacity:0},{opacity:1,offset:.25},{transform:`translate(${Math.cos(a)*r}px,${Math.sin(a)*r}px) scale(1) rotate(${(Math.random()-.5)*160}deg)`,opacity:.9,offset:.7},{transform:`translate(${Math.cos(a)*r*1.15}px,${Math.sin(a)*r*1.15+14}px) scale(.3) rotate(0deg)`,opacity:0}],{duration:1000+Math.random()*500,easing:'cubic-bezier(.2,.7,.3,1)',fill:'both'})}
-    setTimeout(()=>o.remove(),1900)
+    const cols=['#ff3b3b','#ffd24a','#4ac2ff','#7a5cff','#3ddc97','#ff7ab6','#ffffff'];
+    const ring=mk(`left:${cx-14}px;top:${cy-14}px;width:28px;height:28px;border-radius:50%;border:3px solid #ff3b3b`);ring.animate([{transform:'scale(.3)',opacity:1},{transform:'scale(7)',opacity:0}],{duration:800,easing:'ease-out',fill:'both'});
+    for(let i=0;i<44;i++){const a=-Math.PI/2+(Math.random()-.5)*Math.PI*1.6,v=120+Math.random()*230,w=6+Math.random()*7,h=w*(i%2?1:2.2),dx=Math.cos(a)*v,dy=Math.sin(a)*v,d=mk(`left:${cx}px;top:${cy}px;width:${w}px;height:${h}px;background:${cols[i%cols.length]};border-radius:${i%3?'2px':'50%'}`);
+      d.animate([{transform:'translate(0,0) rotate(0deg)',opacity:1},{transform:`translate(${dx}px,${dy}px) rotate(${(Math.random()-.5)*540}deg)`,opacity:1,offset:.45},{transform:`translate(${dx*1.25}px,${dy+H*.5}px) rotate(${(Math.random()-.5)*900}deg)`,opacity:0}],{duration:1500+Math.random()*900,easing:'cubic-bezier(.2,.6,.4,1)',fill:'both'})}
+    setTimeout(()=>o.remove(),2600)
   }
   el.animate([{transform:'scale(1)'},{transform:'scale(2.2)'},{transform:'scale(1)'}],{duration:420,easing:'ease-out'})
 }catch(e){}}
+
+let tintSrc='';
+function glTint(){try{const de=document.documentElement;if(de.dataset.design!=='glass'){de.style.removeProperty('--tint');tintSrc='';return}
+  const im=document.querySelector('#app .cvr.l img');if(!im){de.style.removeProperty('--tint');tintSrc='';return}
+  const src=im.getAttribute('src');if(src===tintSrc)return;tintSrc=src;
+  const t=new Image();if(!/^data:/.test(src))t.crossOrigin='anonymous';
+  t.onload=()=>{try{const c=document.createElement('canvas');c.width=c.height=12;const x=c.getContext('2d');x.drawImage(t,0,0,12,12);const p=x.getImageData(0,0,12,12).data;let R=0,G=0,B=0,W=0;
+    for(let i=0;i<p.length;i+=4){const r=p[i],g=p[i+1],b=p[i+2],mx=Math.max(r,g,b),mn=Math.min(r,g,b),w=.15+(mx-mn)/255*2;R+=r*w;G+=g*w;B+=b*w;W+=w}
+    de.style.setProperty('--tint',Math.round(R/W)+','+Math.round(G/W)+','+Math.round(B/W))}catch(e){}};
+  t.src=src}catch(e){}}
 function mqInit(){mqAn.forEach(a=>{try{a.cancel()}catch(e){}});mqAn=[];
   const els=[...document.querySelectorAll('.mq')];els.forEach(e=>e.classList.remove('mqo'));
   if(!D.mq||matchMedia('(prefers-reduced-motion:reduce)').matches)return;
@@ -857,7 +895,7 @@ function R(){
     h+='<h2>Songs hinzufügen</h2><input id="dc" placeholder="Disc (optional), z. B. Disc 2" style="margin-bottom:8px"><textarea id="in" placeholder="Ein Song pro Zeile, z. B.&#10;Runaway: 10&#10;Crawling: 9,5"></textarea><button class="btn" data-a="addSongs">Hinzufügen</button>';
     h+='<p class="m">'+(D.so?'Die Eingabe-Reihenfolge ist die Reihenfolge, in der die Songs eingetragen wurden. ':'Songs mit gleicher Note kannst du mit ▲▼ selbst anordnen. ')+'Tippe auf einen Songnamen, um ihn zu korrigieren.</p>'+(B.songs.some(q=>q.sk&&q.r==null)?`<p class="m">${B.songs.filter(q=>q.sk&&q.r==null).length} Songs ohne Note sind in den News ausgeblendet.</p><div class="add" style="margin:0 0 10px"><button class="ghost" data-a="skreset">Wieder anzeigen</button></div>`:'')+del('alb','Album löschen');
   }
-  document.getElementById('app').innerHTML=topbar()+(st.t==='bk'&&!A?'':bnote())+h+menuHtml();document.documentElement.dataset.mq=D.mq?'1':'0';mqInit();{const eb=document.getElementById('ed');if(eb){eb.focus();eb.select()}const hr=document.querySelector('.row.hl');if(hr)hr.scrollIntoView({block:'center'})}
+  document.getElementById('app').innerHTML=topbar()+(st.t==='bk'&&!A?'':bnote())+h+menuHtml();document.documentElement.dataset.mq=D.mq?'1':'0';mqInit();glTint();{const eb=document.getElementById('ed');if(eb){eb.focus();eb.select()}const hr=document.querySelector('.row.hl');if(hr)hr.scrollIntoView({block:'center'})}
   if(focusA){focusA=0;const q=document.getElementById('ain');if(q)q.focus()}
   if(focusQ){focusQ=0;const q=document.getElementById('q');if(q)q.focus()}
   {const nx=document.getElementById('ntx')||document.getElementById('nteTx');if(nx)nx.focus()}
