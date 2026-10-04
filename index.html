@@ -272,7 +272,47 @@ html[data-design=glass] .sh{animation:glUp .5s cubic-bezier(.22,1.2,.36,1)}
 @keyframes glUp{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
 html[data-design=glass] h1{background:linear-gradient(180deg,var(--tx) 55%,color-mix(in srgb,var(--tx) 62%,transparent));-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;font-size:38px;letter-spacing:-1.2px;margin:18px 2px 6px}
 html[data-design=glass] h1.abt{font-size:30px;margin-top:14px}
-</style></head><body><main id="app"></main>
+/* ---- Glas 26: Glasformen statt Lichtflecken ---- */
+html[data-design=glass] body::before,html[data-design=glass][data-eff=dark] body::before{background:none;animation:none;transition:none}
+html[data-design=glass][data-theme]{--card:rgba(255,255,255,.46);--gl:rgba(255,255,255,.85)}
+html[data-design=glass][data-eff=dark][data-theme]{--bg:#05070f;--card:rgba(28,34,58,.40);--gl:rgba(255,255,255,.24);--sheet:rgba(22,27,46,.58);--fill:rgba(255,255,255,.13)}
+#glbg{display:none;position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+html[data-design=glass] #glbg{display:block}
+#glbg i{position:absolute;display:block;will-change:transform;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.55),inset 14px 18px 40px rgba(255,255,255,.32),inset -16px -20px 40px rgba(0,0,40,.16)}
+#glbg i:nth-child(1){width:230px;height:230px;left:-95px;top:90px;border-radius:50%;background:linear-gradient(140deg,#58a0ff,#7b4dff);animation:glA 28s ease-in-out infinite alternate}
+#glbg i:nth-child(2){width:190px;height:190px;right:-70px;top:34%;border-radius:36%;background:linear-gradient(140deg,#ff62b4,#ff9a4d);transform:rotate(18deg);animation:glB 34s ease-in-out infinite alternate}
+#glbg i:nth-child(3){width:240px;height:240px;left:30%;bottom:-110px;border-radius:50%;background:linear-gradient(140deg,#25d9b4,#2f8bff);animation:glC 30s ease-in-out infinite alternate}
+#glbg i:nth-child(4){width:110px;height:110px;right:8%;bottom:14%;border-radius:32%;background:linear-gradient(140deg,rgb(var(--tint,255,214,74)),rgba(var(--tint,255,120,70),.7));animation:glA 22s ease-in-out infinite alternate-reverse;transition:background 1s}
+#glbg i{opacity:.85}html[data-eff=dark] #glbg i{opacity:.8}
+@keyframes glA{from{transform:translate3d(0,0,0) rotate(0)}to{transform:translate3d(60px,70px,0) rotate(25deg)}}
+@keyframes glB{from{transform:translate3d(0,0,0) rotate(18deg)}to{transform:translate3d(-70px,50px,0) rotate(-14deg)}}
+@keyframes glC{from{transform:translate3d(0,0,0)}to{transform:translate3d(-50px,-70px,0) scale(1.12)}}
+@media (prefers-reduced-motion:reduce){#glbg i{animation:none!important}}
+html[data-design=glass] .row,html[data-design=glass] .fold,html[data-design=glass] .kp,html[data-design=glass] .vl,html[data-design=glass] .bn,html[data-design=glass] .imp,html[data-design=glass] .disc,html[data-design=glass] .cell,html[data-design=glass] .trg{background:linear-gradient(135deg,rgba(255,255,255,.2),rgba(255,255,255,0) 46%),var(--card);-webkit-backdrop-filter:blur(26px) saturate(190%);backdrop-filter:blur(26px) saturate(190%)}
+html[data-design=glass] .top{background:linear-gradient(135deg,rgba(255,255,255,.2),rgba(255,255,255,0) 50%),color-mix(in srgb,var(--bg) 30%,transparent);-webkit-backdrop-filter:blur(30px) saturate(190%);backdrop-filter:blur(30px) saturate(190%)}
+html[data-design=glass] .sc{background:rgba(8,12,26,.28);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
+html[data-design=glass] .sh{left:10px;right:10px;bottom:calc(10px + env(safe-area-inset-bottom,0px));max-width:540px;border:1px solid var(--gl);border-radius:36px;padding:14px 12px 14px;background:linear-gradient(145deg,rgba(255,255,255,.22),rgba(255,255,255,.03) 55%),var(--sheet);-webkit-backdrop-filter:blur(44px) saturate(210%);backdrop-filter:blur(44px) saturate(210%);box-shadow:0 28px 70px -12px rgba(0,0,0,.5),inset 0 1px 0 var(--gl)}
+html[data-design=glass] .sh .gr{background:var(--gl);opacity:.7;width:36px;margin-bottom:12px}
+html[data-design=glass] .sh .mi{margin-top:0;border-radius:0;padding:15px 18px;background:rgba(255,255,255,.1);border-bottom:1px solid var(--bd);font-size:17px}
+html[data-design=glass] .sh .mi:first-of-type{border-radius:24px 24px 0 0}
+html[data-design=glass] .sh .mi:has(+ .btn){border-radius:0 0 24px 24px;border-bottom:0}
+html[data-design=glass] .sh .mi span:first-child{flex:1}
+html[data-design=glass] .sh .mi::after{content:"›";font-size:24px;line-height:1;color:var(--mu);margin-left:10px;font-weight:300}
+html[data-design=glass] .sh .btn{border-radius:999px;padding:15px;margin-top:12px!important}
+html[data-design=glass] .sh .lnk{margin-top:10px}
+/* ---- Trophäen ---- */
+.trg{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:12px 14px;margin-bottom:10px}
+.trh{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.trm{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0 10px}
+.trmd{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:800;border:2px dashed var(--bd);color:var(--mu);font-variant-numeric:tabular-nums;letter-spacing:-.3px}
+.trmd.on{border-style:solid;box-shadow:inset 0 2px 0 rgba(255,255,255,.55),0 3px 8px rgba(0,0,0,.2)}
+.trmd.br.on{background:linear-gradient(145deg,#eaa872,#b36528);border-color:#8f4f1f;color:#fff}
+.trmd.si.on{background:linear-gradient(145deg,#f4f6f9,#a7afbb);border-color:#868e9a;color:#1d2229}
+.trmd.go.on{background:linear-gradient(145deg,#ffe680,#e0a100);border-color:#b07a00;color:#3a2600}
+.trmd.pl.on{background:linear-gradient(145deg,#dcf8ff,#69c1e8 55%,#b79cff);border-color:#5aa9cf;color:#0f2638}
+.trb{height:6px;border-radius:3px;background:var(--bd);overflow:hidden}.trb i{display:block;height:100%;border-radius:3px;background:var(--ac)}
+.trt{display:flex;justify-content:space-between;gap:10px;margin-top:6px}
+</style></head><body><div id="glbg"><i></i><i></i><i></i><i></i></div><main id="app"></main>
 <script>
 window.__main=function(){
 const K='musikratings_leer';let D;const BT=window.__B||{};
@@ -585,8 +625,9 @@ const designView=()=>{const d=dsg(),m=mode(),ac=D.ac||'off',b=(on,a,i,t)=>`<butt
     const ex=D.artists.slice(0,3);h+=`<h2>Vorschau</h2>`+(ex.length?ex.map(a=>`<div class="row"><div class="grow"><div class="t">${anm(a)}</div><div class="m">${a.albums.length} Alben${genreOf(a)?' · '+esc(genreOf(a)):''}</div></div></div>`).join(''):'<p class="m">Noch keine Künstler.</p>')}
   return h};
 const backupView=()=>`<button class="back" data-a="tab" data-i="rate">‹ Zurück</button><h1>Sicherung</h1><p class="sub">Sichere deine Bewertungen in einer Datei oder spiele eine Sicherung wieder ein.</p>`+backupBlock();
-const VER='25.1';
+const VER='26';
 const UPD=[
+{v:'26',t:'Trophäen und mehr Glas',d:'Das Trophäen-System ist da, und Glas sieht jetzt wirklich nach Glas aus.',n:['Neu: Trophäen im Menü. Es gibt Stufen für bewertete Songs (10 bis 10.000), komplett bewertete Alben, Künstler, Herzen, Zehner und Notizen. Was du schon erreicht hast, ist sofort freigeschaltet.','Bei einer neuen Trophäe erscheint eine kurze Meldung.','Glas: Der Hintergrund besteht jetzt aus farbigen Glasformen statt Lichtflecken, die Karten sind echtes Milchglas, und das Menü schwebt als runde Karte mit Pfeilen.']},
 {v:'25.1',t:'Glas bekommt einen eigenen Charakter',d:'Das Glas-Design ist jetzt ein eigenes Thema, und der Punkt hat neue Effekte.',n:['Glas: schwebende Leiste oben, Songs als gruppierte Liste mit dünnen Trennlinien, ein farbiger, langsam driftender Hintergrund und federnde Knöpfe. Bei Alben mit Cover färbt sich der Hintergrund passend zum Cover.','Der rote Punkt neben Coda hat im Standard-Design jetzt Konfetti mit Ring und im Glas-Design Seifenblasen.']},
 {v:'25',t:'Laufschrift, Glas-Prototyp und eine kleine Überraschung',d:'Lange Songtitel brauchen weniger Platz, und ein erstes Glas-Design ist da.',n:['Songtitel-Option im Design-Tab: „Komplett“ wie bisher oder „Laufschrift“. Bei der Laufschrift steht der Titel in einer Zeile. Ist er zu lang, beginnt er nach etwa zweieinhalb Sekunden langsam nach hinten zu laufen, hält kurz am Ende und springt zurück. Das gilt für Songs im Album, in der Suche, in den Rückblick-Listen und bei den Herzen und Zehnern.','Neues Design „Glas“ (Prototyp): durchscheinende Karten, weiche Farbverläufe, Unschärfe in der Kopfleiste und im Menü, runde Ecken und ein blauer Akzent. Es gibt eine helle und eine dunkle Variante.','Eine kleine Überraschung für Neugierige. Der rote Punkt hat ein Geheimnis.']},
 {v:'24',t:'Notizen-Tab',d:'Alle Notizen an einem Ort, auch zu Künstlern und Alben.',n:['Neuer Menüpunkt „Notizen“: Hier stehen alle Notizen zu Künstlern, Alben, EPs, Singles und Songs. Filter: Alle, Künstler, Alben, Songs, Offen, Erledigt. Sortierung: Neueste oder Nach Künstler.','Bei jedem Künstler und jedem Album gibt es oben einen kleinen Knopf „Notiz“. Er öffnet den Notizen-Tab direkt mit dem Schreibfeld. Die Notiz steht danach auch bei dem Album oder Künstler als kleiner Streifen. „Zurück“ bringt dich wieder zum Album.','In jeder Notiz gibt es „Erledigt“ als Haken (zum Beispiel für „Songs ergänzen“), „Öffnen“ springt zum Künstler, Album oder Song. Mit „Neue Notiz“ legst du eine Notiz an, ohne vorher zum Album zu gehen.','Notizen, die du schon an Songs gemacht hast, erscheinen automatisch in der Liste und lassen sich dort bearbeiten.']},
@@ -829,7 +870,7 @@ const ntView=()=>{const L=ntItems(),f=NTF.some(q=>q[0]===D.nf)?D.nf:'all',so=D.n
 const menuHtml=()=>{if(!menuOpen)return '';const d=dsg(),m=mode(),b=(on,a,i,t)=>`<button class="${on?'btn':'ghost'}" data-a="${a}" data-i="${i}">${t}</button>`;
   const tot=hlList('a','').reduce((t,x)=>t+x.l.length,0);
   return `<div class="sc" data-a="mclose"></div><div class="sh"><div class="gr"></div>
-  <button class="ghost mi" data-a="mst"><span>Statistiken</span></button><button class="ghost mi" data-a="mnt"><span>Notizen</span><span class="m">${ntItems().filter(x=>!x.e.nd).length||''}</span></button><button class="ghost mi" data-a="mds"><span>Design</span><span class="m">${({nothing:'Nothing',glass:'Glas'})[d]||'Standard'} · ${m==='auto'?'Auto':m==='light'?'Hell':'Dunkel'}</span></button><button class="ghost mi" data-a="mbk"><span>Sicherung</span><span class="m">${D.lb?new Date(D.lb).toLocaleDateString('de-DE'):'noch nie'}</span></button>
+  <button class="ghost mi" data-a="mst"><span>Statistiken</span></button><button class="ghost mi" data-a="mnt"><span>Notizen</span><span class="m">${ntItems().filter(x=>!x.e.nd).length||''}</span></button><button class="ghost mi" data-a="mtr"><span>Trophäen</span><span class="m">${trCount().join(' / ')}</span></button><button class="ghost mi" data-a="mds"><span>Design</span><span class="m">${({nothing:'Nothing',glass:'Glas'})[d]||'Standard'} · ${m==='auto'?'Auto':m==='light'?'Hell':'Dunkel'}</span></button><button class="ghost mi" data-a="mbk"><span>Sicherung</span><span class="m">${D.lb?new Date(D.lb).toLocaleDateString('de-DE'):'noch nie'}</span></button>
   <button class="btn" data-a="mclose" style="width:100%;margin-top:14px">Fertig</button><button class="lnk" data-a="mar">Archiv · Update ${VER}</button></div>`};
 const mbF=n=>n<1e6?Math.round(n/1e3)+' KB':n<1e9?(n/1e6).toFixed(n<1e7?2:1).replace('.',',')+' MB':(n/1e9).toFixed(1).replace('.',',')+' GB';
 const memBody=()=>{let dat=0,cov=0,nc=0,snp=0;try{dat=(lastLight||JSON.stringify(D,stripCu)).length;D.artists.forEach(a=>a.albums.forEach(b=>{if(b.cu){cov+=Math.round(b.cu.length*.75);nc++}}));SN.forEach(x=>snp+=(x.d||'').length)}catch(e){}
@@ -847,6 +888,30 @@ const backupBlock=()=>{let h=`<h2>Sicherung</h2><p class="m">${D.lb?'Letzte Sich
 const listView=()=>{let h=tabs()+'<h1>Künstlerliste</h1><p class="sub">Haken setzen, wenn du einen Künstler bewertet hast. Name antippen öffnet die Bewertungen.</p>';
   h+=D.genres.map(g=>(isEd('genre',g.id)?edForm(g.id,g.n):`<h2>${esc(g.n)} <span class="m">${g.items.filter(x=>x.done).length}/${g.items.length}</span> ${pen('genre',g.id)}</h2>`)+g.items.map(x=>isEd('item',x.id)?`<div class="row">${edForm(x.id,x.n)}</div>`:`<div class="row"><input type="checkbox" class="ck" data-a="tg" data-g="${g.id}" data-i="${x.id}" ${x.done?'checked':''}><div class="grow t ${x.done?'dn':''}" data-a="open" data-n="${esc(x.n)}">${esc(x.n)}</div>${pen('item',x.id,g.id)}<button class="ghost" data-a="rmItem" data-g="${g.id}" data-i="${x.id}">✕</button></div>`).join('')+`<div class="add"><input placeholder="Neuer Künstler: ${esc(g.n)}"><button class="btn" data-a="addItem" data-g="${g.id}">+</button></div>`+del('g:'+g.id,'Genre löschen')).join('');
   return h+'<h2>Neues Genre</h2><div class="add"><input id="in" placeholder="Genre-Name"><button class="btn" data-a="addGenre">Hinzufügen</button></div>'};
+
+const TRG=[
+ {id:'so',n:'Songs bewertet',u:'Songs',t:[10,100,500,1000,2500,5000,10000],f:S=>S.so},
+ {id:'al',n:'Alben komplett bewertet',u:'Alben',t:[1,10,25,50,100,250],f:S=>S.al},
+ {id:'ar',n:'Künstler bewertet',u:'Künstler',t:[3,10,25,50,100],f:S=>S.ar},
+ {id:'he',n:'Herzen vergeben',u:'Herzen',t:[1,10,50,100,500],f:S=>S.he},
+ {id:'te',n:'Zehner vergeben',u:'Zehner',t:[1,10,25,100],f:S=>S.te},
+ {id:'no',n:'Notizen geschrieben',u:'Notizen',t:[1,10,25,50],f:S=>S.no}];
+function trStats(){const S={so:0,al:0,ar:0,he:0,te:0,no:0};
+  D.artists.forEach(a=>{let ra=0;if(a.no)S.no++;a.albums.forEach(b=>{if(b.no)S.no++;let all=b.songs.length>0;b.songs.forEach(g=>{if(g.no)S.no++;if(g.h)S.he++;if(g.r==null)all=false;else{S.so++;ra=1;if(g.r>=10)S.te++}});if(all&&b.k!==2)S.al++});if(ra)S.ar++});return S}
+const trN=n=>n>=1000?(n/1000).toString().replace('.',',')+'k':String(n);
+const trCls=(i,n)=>{const q=n<2?0:i/(n-1);return q<.34?'br':q<.67?'si':q<1?'go':'pl'};
+function trCount(){const S=trStats();let t=0,g=0;TRG.forEach(G=>{const c=G.f(S);G.t.forEach(x=>{t++;if(c>=x)g++})});return [g,t]}
+function trCheck(){try{const S=trStats(),first=!D.tr;if(first)D.tr={};const nw=[];
+  TRG.forEach(G=>{const c=G.f(S);G.t.forEach(x=>{const k=G.id+':'+x;if(c>=x&&D.tr[k]==null){D.tr[k]=first?0:Date.now();if(!first)nw.push(trN(x)+' '+G.u)}})});
+  if(first||nw.length){save();if(nw.length)toast('🏆 '+(nw.length>1?nw.length+' neue Trophäen':'Neue Trophäe: '+nw[0]))}}catch(e){}}
+const trView=()=>{const S=trStats(),[g,t]=trCount();
+  let h=`<button class="back" data-a="tab" data-i="rate">‹ Zurück</button><h1>Trophäen</h1><p class="sub">${g} von ${t} freigeschaltet</p><div class="trb" style="margin:0 2px 16px"><i style="width:${t?Math.round(g/t*100):0}%"></i></div>`;
+  TRG.forEach(G=>{const c=G.f(S),n=G.t.length,nx=G.t.find(x=>c<x),pv=[0,...G.t].filter(x=>x<=c).pop(),last=G.t.filter(x=>c>=x).map(x=>(D.tr||{})[G.id+':'+x]).filter(x=>x!=null);
+    const lt=last.length?Math.max(...last):null;
+    h+=`<div class="trg"><div class="trh"><b>${G.n}</b><span class="m">${c.toLocaleString('de-DE')}</span></div><div class="trm">${G.t.map((x,i)=>`<span class="trmd ${trCls(i,n)}${c>=x?' on':''}" title="${x.toLocaleString('de-DE')} ${G.u}">${trN(x)}</span>`).join('')}</div>`+
+    (nx?`<div class="trb"><i style="width:${Math.round((c-pv)/(nx-pv)*100)}%"></i></div><div class="trt"><span class="m">Nächste Stufe: ${nx.toLocaleString('de-DE')} ${G.u}</span><span class="m">noch ${(nx-c).toLocaleString('de-DE')}</span></div>`:`<div class="trt"><span class="m">Alle Stufen geschafft!</span></div>`)+
+    (lt!=null?`<div class="m" style="margin-top:4px;font-size:13px">${lt===0?'Schon erreicht, bevor es Trophäen gab.':'Zuletzt freigeschaltet am '+new Date(lt).toLocaleDateString('de-DE')+'.'}</div>`:'')+`</div>`});
+  h+=`<p class="m" style="margin-top:14px">Ein Album zählt als bewertet, wenn alle Songs eine Note haben (Singles zählen nicht dazu). Freigeschaltete Trophäen bleiben erhalten, auch wenn du später etwas löschst. Belohnungen wie neue Designs kommen in einem späteren Update.</p>`;return h};
 function R(){
   document.documentElement.dataset.px=D.px||'on';
   saveNote();saveNoteE();
@@ -864,6 +929,7 @@ function R(){
   else if(!A&&st.t==='search'){h=searchView()}
   else if(!A&&(st.t==='hearts'||st.t==='cm'||st.t==='rv')){h=statHub()}
   else if(!A&&st.t==='nt'){h=ntView()}
+  else if(!A&&st.t==='tr'){h=trView()}
   else if(!A&&st.t==='nw'){h=nwView()}
   else if(!A&&st.t==='bk'){h=backupView()}
   else if(!A&&st.t==='ar'){h=archivView()}
@@ -895,7 +961,7 @@ function R(){
     h+='<h2>Songs hinzufügen</h2><input id="dc" placeholder="Disc (optional), z. B. Disc 2" style="margin-bottom:8px"><textarea id="in" placeholder="Ein Song pro Zeile, z. B.&#10;Runaway: 10&#10;Crawling: 9,5"></textarea><button class="btn" data-a="addSongs">Hinzufügen</button>';
     h+='<p class="m">'+(D.so?'Die Eingabe-Reihenfolge ist die Reihenfolge, in der die Songs eingetragen wurden. ':'Songs mit gleicher Note kannst du mit ▲▼ selbst anordnen. ')+'Tippe auf einen Songnamen, um ihn zu korrigieren.</p>'+(B.songs.some(q=>q.sk&&q.r==null)?`<p class="m">${B.songs.filter(q=>q.sk&&q.r==null).length} Songs ohne Note sind in den News ausgeblendet.</p><div class="add" style="margin:0 0 10px"><button class="ghost" data-a="skreset">Wieder anzeigen</button></div>`:'')+del('alb','Album löschen');
   }
-  document.getElementById('app').innerHTML=topbar()+(st.t==='bk'&&!A?'':bnote())+h+menuHtml();document.documentElement.dataset.mq=D.mq?'1':'0';mqInit();glTint();{const eb=document.getElementById('ed');if(eb){eb.focus();eb.select()}const hr=document.querySelector('.row.hl');if(hr)hr.scrollIntoView({block:'center'})}
+  document.getElementById('app').innerHTML=topbar()+(st.t==='bk'&&!A?'':bnote())+h+menuHtml();document.documentElement.dataset.mq=D.mq?'1':'0';mqInit();glTint();trCheck();{const eb=document.getElementById('ed');if(eb){eb.focus();eb.select()}const hr=document.querySelector('.row.hl');if(hr)hr.scrollIntoView({block:'center'})}
   if(focusA){focusA=0;const q=document.getElementById('ain');if(q)q.focus()}
   if(focusQ){focusQ=0;const q=document.getElementById('q');if(q)q.focus()}
   {const nx=document.getElementById('ntx')||document.getElementById('nteTx');if(nx)nx.focus()}
@@ -999,6 +1065,7 @@ document.addEventListener('click',e=>{
   else if(a==='rtf'){const c=rsOf(),k=+i;D.rs=c.includes(k)?(c.length>1?c.filter(x=>x!==k):c):[...c,k].sort();D.ry=null}
   else if(a==='dot'){const now=Date.now();dotN=(now-dotT<1500?dotN:0)+1;dotT=now;if(dotN>=5){dotN=0;dotFx(t)}return}
   else if(a==='mq'){D.mq=+i?1:0}
+  else if(a==='mtr'){menuOpen=false;st={t:'tr',a:null,b:null}}
   else if(a==='mnt'){menuOpen=false;ntFrom=null;nte=null;st={t:'nt',a:null,b:null}}
   else if(a==='ntgo'){ntFrom={t:st.t,a:st.a,b:st.b};nte=i;D.nf='all';st={t:'nt',a:null,b:null}}
   else if(a==='ntb'){const f=ntFrom;ntFrom=null;nte=null;st=f&&f.t?f:{t:'rate',a:null,b:null}}
