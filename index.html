@@ -7,7 +7,7 @@
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="mobile-web-app-capable" content="yes">
-<script>(function(){var d=document.documentElement;function ap(){var m='auto',st='classic';try{m=localStorage.getItem('coda_mode')||'auto';st=localStorage.getItem('coda_design')==='nothing'?'nothing':'classic'}catch(e){}var e=m==='auto'?(matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light'):m;d.dataset.design=st;d.dataset.mode=m;d.dataset.eff=e;d.dataset.theme=e;var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.content=e==='dark'?(st==='nothing'?'#000000':'#14161c'):(st==='nothing'?'#ffffff':'#f3f4f8')}window.__ap=ap;ap();try{matchMedia('(prefers-color-scheme:dark)').addEventListener('change',ap)}catch(e){}})()</script>
+<script>(function(){var d=document.documentElement;function ap(){var m='auto',st='classic';try{m=localStorage.getItem('coda_mode')||'auto';var v=localStorage.getItem('coda_design');st=(v==='nothing'||v==='glass')?v:'classic'}catch(e){}var e=m==='auto'?(matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light'):m;d.dataset.design=st;d.dataset.mode=m;d.dataset.eff=e;d.dataset.theme=e;var tc=document.querySelector('meta[name=theme-color]');if(tc)tc.content=e==='dark'?(st==='nothing'?'#000000':st==='glass'?'#070a12':'#14161c'):(st==='nothing'?'#ffffff':st==='glass'?'#e8edf8':'#f3f4f8')}window.__ap=ap;ap();try{matchMedia('(prefers-color-scheme:dark)').addEventListener('change',ap)}catch(e){}})()</script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Doto:wght@400..900&family=Space+Mono:wght@400;700&display=swap">
 <style>
@@ -213,6 +213,45 @@ html[data-design=nothing] h2.hp .hr .m{font-size:14px}
 .nbar{align-self:stretch;width:15px;min-height:30px;border:0;padding:0;border-radius:8px;background:var(--bd);cursor:pointer;flex:none}.nbar.on{background:var(--ac)}
 html[data-design=nothing] .nbar{border-radius:999px;width:12px}
 .nt{margin-left:4px}.ntf{margin-left:0}
+html[data-mq="1"] .row{gap:6px;padding:10px 8px}html[data-mq="1"] .rk{width:20px}html[data-mq="1"] .row .hb.big{padding:5px 6px}html[data-mq="1"] .row input.r{width:50px;padding:6px 3px}html[data-mq="1"] .row .mv .ghost{padding:1px 5px}
+.mq .mqi{display:inline}html[data-mq="1"] .mq{white-space:nowrap;overflow:hidden;overflow-wrap:normal}html[data-mq="1"] .mq .mqi{display:inline-block;will-change:transform}html[data-mq="1"] .mq.mqo{-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 14px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 14px),transparent)}
+.top .brand i.dot{position:relative;cursor:pointer}.top .brand i.dot::after{content:"";position:absolute;inset:-14px}
+/* ===== Glas (Prototyp) ===== */
+html[data-design=glass][data-theme]{--g:#22b36b;--o:#f5a524;--r:#ff453a;--bg:#e8edf8;--card:rgba(255,255,255,.58);--tx:#0b0d12;--mu:#586075;--ac:#0a7aff;--bd:rgba(60,72,110,.16);--gl:rgba(255,255,255,.78);--gs:0 8px 28px rgba(31,45,90,.10);--fill:rgba(118,126,152,.16);--sheet:rgba(244,247,255,.80);--seg:rgba(255,255,255,.96);--inp:rgba(255,255,255,.62);color-scheme:light}
+html[data-design=glass][data-eff=dark][data-theme]{--g:#32d583;--o:#ffb340;--r:#ff6961;--bg:#070a12;--card:rgba(34,40,58,.55);--tx:#f3f5fa;--mu:#9aa2b8;--ac:#3b9bff;--bd:rgba(255,255,255,.13);--gl:rgba(255,255,255,.14);--gs:0 8px 28px rgba(0,0,0,.35);--fill:rgba(255,255,255,.12);--sheet:rgba(24,28,42,.80);--seg:rgba(255,255,255,.22);--inp:rgba(255,255,255,.09);color-scheme:dark}
+html[data-design=glass] body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro Display","Inter","Segoe UI",system-ui,sans-serif;background:var(--bg)}
+html[data-design=glass] body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(60% 38% at 12% 4%,rgba(96,160,255,.60),transparent 70%),radial-gradient(55% 34% at 100% 22%,rgba(214,140,255,.42),transparent 70%),radial-gradient(70% 40% at 0% 100%,rgba(90,225,195,.42),transparent 70%)}
+html[data-design=glass][data-eff=dark] body::before{background:radial-gradient(60% 38% at 12% 4%,rgba(40,100,255,.50),transparent 70%),radial-gradient(55% 34% at 100% 22%,rgba(150,60,230,.38),transparent 70%),radial-gradient(70% 40% at 0% 100%,rgba(20,170,140,.32),transparent 70%)}
+html[data-design=glass] h1{font-size:34px;font-weight:800;letter-spacing:-.9px;margin:10px 0 4px}
+html[data-design=glass] h1.abt{font-size:28px;letter-spacing:-.6px}
+html[data-design=glass] h2{font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--mu);margin:26px 4px 8px}
+html[data-design=glass] h2.hp{font-size:21px;text-transform:none;letter-spacing:-.3px;color:var(--tx);font-weight:700}
+html[data-design=glass] h2.gh{color:var(--mu);border-bottom:0}
+html[data-design=glass] .row,html[data-design=glass] .imp,html[data-design=glass] .kp,html[data-design=glass] .vl,html[data-design=glass] .fold,html[data-design=glass] .disc,html[data-design=glass] .edp,html[data-design=glass] .mem,html[data-design=glass] .pick,html[data-design=glass] .cmc,html[data-design=glass] .subu,html[data-design=glass] .bn{background:var(--card);border:1px solid var(--gl);border-radius:20px;box-shadow:var(--gs),inset 0 1px 0 var(--gl)}
+html[data-design=glass] .cell{background:var(--card);border:1px solid var(--gl);border-radius:16px}
+html[data-design=glass] .bn{box-shadow:var(--gs),inset 4px 0 0 var(--o)}
+html[data-design=glass] .row{padding:11px 14px}
+html[data-design=glass] .btn{background:var(--ac);color:#fff;border-radius:14px;font-weight:600}
+html[data-design=glass] .ghost{background:var(--fill);border:0;border-radius:12px;color:var(--tx)}
+html[data-design=glass] .tabs{background:var(--fill);padding:3px;border-radius:13px;gap:2px}
+html[data-design=glass] .tabs button{border:0;border-radius:10px;background:transparent;color:var(--tx);font-weight:500;padding:8px 4px}
+html[data-design=glass] .tabs button.btn{background:var(--seg);color:var(--tx);box-shadow:0 1px 3px rgba(0,0,0,.18),0 4px 10px rgba(0,0,0,.06)}
+html[data-design=glass] input,html[data-design=glass] textarea,html[data-design=glass] select{background:var(--inp);border:1px solid var(--bd);border-radius:12px;color:var(--tx)}
+html[data-design=glass] input:focus,html[data-design=glass] textarea:focus,html[data-design=glass] select:focus{outline:none;border-color:var(--ac);box-shadow:0 0 0 3px color-mix(in srgb,var(--ac) 25%,transparent)}
+html[data-design=glass] input.r{border-radius:12px}
+html[data-design=glass] .top{background:color-mix(in srgb,var(--bg) 42%,transparent);-webkit-backdrop-filter:blur(22px) saturate(180%);backdrop-filter:blur(22px) saturate(180%);border-bottom:1px solid var(--bd)}
+html[data-design=glass] .top .brand{font-weight:700}
+html[data-design=glass] .top .mb,html[data-design=glass] .top .sb{border:0;background:var(--fill);border-radius:999px;color:var(--tx)}
+html[data-design=glass] .sc{background:rgba(10,14,26,.32)}
+html[data-design=glass] .sh{background:var(--sheet);-webkit-backdrop-filter:blur(30px) saturate(180%);backdrop-filter:blur(30px) saturate(180%);border:1px solid var(--gl);border-bottom:0;border-radius:28px 28px 0 0}
+html[data-design=glass] #toast{background:var(--sheet);color:var(--tx);-webkit-backdrop-filter:blur(24px) saturate(180%);backdrop-filter:blur(24px) saturate(180%);border:1px solid var(--gl);border-radius:18px;box-shadow:var(--gs)}
+html[data-design=glass] .chip{border-width:1.5px;border-radius:12px;background:color-mix(in srgb,currentColor 9%,transparent)}
+html[data-design=glass] .cvr.s,html[data-design=glass] .cvr.m{border-radius:10px}html[data-design=glass] .cvr.l{border-radius:16px}
+html[data-design=glass] .hl{outline:2px solid var(--ac);background:color-mix(in srgb,var(--ac) 14%,var(--card))}
+html[data-design=glass] .back{color:var(--ac);font-weight:500}
+html[data-design=glass] .nt{background:color-mix(in srgb,var(--ac) 10%,var(--card));border-left-color:var(--ac);border-radius:0 14px 14px 0}
+html[data-design=glass] .mbar{background:var(--fill)}
+html[data-design=glass] .hb.on,html[data-design=glass] .warn{color:var(--r)}
 </style></head><body><main id="app"></main>
 <script>
 window.__main=function(){
@@ -388,7 +427,7 @@ function resHtml(q){const T=nm(q).split(/\s+/).filter(Boolean);
   const A2=first(al,x=>hit(x[1].n)),S2=first(so,x=>hit(x[2].n)),LIM=60;let h='';
   if(ar.length)h+='<h2>Künstler</h2>'+ar.map(a=>`<div class="row tap" data-a="art" data-i="${a.id}"><div class="grow"><div class="t">${anm(a)}</div><div class="m">${kcnt(a)}</div></div>${chip(artAvg(a))}</div>`).join('');
   if(A2.length)h+=`<h2>Alben <span class="m">${A2.length}</span></h2>`+A2.slice(0,LIM).map(([a,b])=>`<div class="row tap" data-a="go" data-ar="${a.id}" data-al="${b.id}"><div class="grow"><div class="t">${esc(b.n)}</div><div class="m">${esc(a.n)} · ${b.songs.length} Songs</div></div>${chip(albAvg(b))}</div>`).join('')+(A2.length>LIM?`<p class="m">… und ${A2.length-LIM} weitere. Suche genauer.</p>`:'');
-  if(S2.length)h+=`<h2>Songs <span class="m">${S2.length}</span></h2>`+S2.slice(0,LIM).map(([a,b,s])=>`<div class="row tap" data-a="go" data-ar="${a.id}" data-al="${b.id}" data-s="${s.id}"><div class="grow"><div class="t">${esc(s.n)}</div><div class="m">${esc(a.n)} · ${esc(b.n)}</div>${s.no?`<div class="m">✎ ${esc(s.no.length>70?s.no.slice(0,70)+'…':s.no)}</div>`:''}</div>${s.h?'<span style="color:var(--r)">♥</span>':''}${chip(s.r)}</div>`).join('')+(S2.length>LIM?`<p class="m">… und ${S2.length-LIM} weitere. Suche genauer, z. B. mit Künstler und Songname.</p>`:'');
+  if(S2.length)h+=`<h2>Songs <span class="m">${S2.length}</span></h2>`+S2.slice(0,LIM).map(([a,b,s])=>`<div class="row tap" data-a="go" data-ar="${a.id}" data-al="${b.id}" data-s="${s.id}"><div class="grow"><div class="t mq"><span class="mqi">${esc(s.n)}</span></div><div class="m">${esc(a.n)} · ${esc(b.n)}</div>${s.no?`<div class="m">✎ ${esc(s.no.length>70?s.no.slice(0,70)+'…':s.no)}</div>`:''}</div>${s.h?'<span style="color:var(--r)">♥</span>':''}${chip(s.r)}</div>`).join('')+(S2.length>LIM?`<p class="m">… und ${S2.length-LIM} weitere. Suche genauer, z. B. mit Künstler und Songname.</p>`:'');
   return h}
 const searchView=()=>tabs()+`<h1>Suche</h1><input id="q" type="search" value="${esc(qs)}" placeholder="Song, Album, Künstler oder Notiz" autocomplete="off" style="margin:8px 0 4px"><div id="res">${resHtml(qs)}</div>`;
 const isTen=x=>x.r!=null&&+x.r>=10;
@@ -406,7 +445,7 @@ const hlList=(F,q)=>{const T=fold_(q).split(/\s+/).filter(Boolean);
 const hlKeys=()=>{const all=hlList(D.hf||'a',''),G=D.hg||'a';return G==='g'?[...new Set(all.map(x=>'g:'+((genreObj(x.a)||{}).id||'_')))]:all.map(x=>'a:'+x.a.id)};
 const hlParts=()=>{const F=D.hf||'a',G=D.hg||'a',all=hlList(F,hq),srch=!!hq.trim(),tot=all.reduce((t,x)=>t+x.l.length,0),open=k=>srch||hxs.has(k);
   const head=(k,title,c)=>`<div class="fold" data-a="hxt" data-i="${k}"><span class="chev">${open(k)?'▾':'▸'}</span><span class="grow">${title}</span><span class="m">${c}</span></div>`;
-  const rowS=(a,e,withArt)=>`<div class="row tap" data-a="go" data-ar="${a.id}" data-al="${e.b.id}" data-s="${e.s.id}"><div class="grow"><div class="t">${esc(e.s.n)}</div><div class="m">${esc((withArt?a.n+' · ':'')+e.al.join(' · '))}</div></div>${e.h?'<span style="color:var(--r)">♥</span>':''}${chip(e.s.r)}</div>`;
+  const rowS=(a,e,withArt)=>`<div class="row tap" data-a="go" data-ar="${a.id}" data-al="${e.b.id}" data-s="${e.s.id}"><div class="grow"><div class="t mq"><span class="mqi">${esc(e.s.n)}</span></div><div class="m">${esc((withArt?a.n+' · ':'')+e.al.join(' · '))}</div></div>${e.h?'<span style="color:var(--r)">♥</span>':''}${chip(e.s.r)}</div>`;
   let h='';if(!tot)h+=`<p class="m">${srch?'Nichts gefunden.':'Hier ist noch nichts. Songs mit ♥ oder einer 10 erscheinen automatisch.'}</p>`;
   if(G==='g'){[...D.genres,null].forEach(g=>{const arts=all.filter(x=>(genreObj(x.a)||null)===g).sort((p,q)=>q.l.length-p.l.length);if(!arts.length)return;const k='g:'+(g?g.id:'_'),c=arts.reduce((t,x)=>t+x.l.length,0);
       h+=head(k,esc(g?g.n:'Ohne Genre'),c);if(open(k))arts.forEach(x=>{h+=x.l.map(e=>rowS(x.a,e,true)).join('')})})}
@@ -510,9 +549,10 @@ const nwView=()=>{const N=NW(),LIM=30;
   return h};
 const designView=()=>{const d=dsg(),m=mode(),ac=D.ac||'off',b=(on,a,i,t)=>`<button class="${on?'btn':'ghost'}" data-a="${a}" data-i="${i}">${t}</button>`;
   let h=`<button class="back" data-a="tab" data-i="rate">‹ Zurück</button><h1>Design</h1>`;
-  h+=`<h2>Stil</h2><div class="tabs">${b(d==='classic','dsn','classic','Standard')}${b(d==='nothing','dsn','nothing','Nothing')}</div>`;
+  h+=`<h2>Stil</h2><div class="tabs">${b(d==='classic','dsn','classic','Standard')}${b(d==='nothing','dsn','nothing','Nothing')}${b(d==='glass','dsn','glass','Glas')}</div>${d==='glass'?'<p class="m">„Glas“ ist ein erster Prototyp: durchscheinende Karten, weiche Farbverläufe und Unschärfe. Sag mir gern, was dir gefällt und was nicht.</p>':''}`;
   h+=`<h2>Darstellung</h2><div class="tabs">${b(m==='auto','mode','auto','Automatisch')}${b(m==='light','mode','light','Hell')}${b(m==='dark','mode','dark','Dunkel')}</div>`;
   if(d==='nothing'){const px=D.px||'on';h+=`<h2>Zahlen-Schrift</h2><div class="tabs">${b(px==='on','px','on','Pixel')}${b(px==='all','px','all','Pixel + Songs')}${b(px==='off','px','off','Normal')}</div><p class="m">„Pixel“ zeigt Noten und Durchschnitte in Punktschrift, nur bei den einzelnen Songs nicht. „Pixel + Songs“ nimmt sie auch dort. „Normal“ schaltet sie überall aus.</p>`}
+  h+=`<h2>Songtitel</h2><div class="tabs">${b(!D.mq,'mq',0,'Komplett')}${b(!!D.mq,'mq',1,'Laufschrift')}</div><p class="m">„Komplett“ zeigt lange Titel in mehreren Zeilen. „Laufschrift“ zeigt nur eine Zeile. Ist ein Titel zu lang, beginnt er nach etwa zweieinhalb Sekunden langsam nach hinten zu laufen.</p>`;
   h+=`<h2>Album-Cover</h2><div class="tabs">${b(!D.cv,'cvt',0,'Aus')}${b(!!D.cv,'cvt',1,'An')}</div><p class="m">Zeigt Cover bei Alben, geholt über MusicBrainz und das Cover Art Archive. Braucht Internet und etwas Datenvolumen. Nicht gefundene Alben bleiben grau.</p>`;
   h+=`<h2>Künstler hervorheben</h2><div class="tabs">${b(ac==='off','ac','off','Aus')}${b(ac==='purple','ac','purple','Lila')}${b(ac==='red','ac','red','Rot')}${b(ac==='custom','ac','custom','Eigene')}</div>`;
   if(ac!=='off'){h+=`<div class="tabs">${b(!D.am,'am',0,'Unterstreichen')}${b(!!D.am,'am',1,'Markieren')}</div>`;
@@ -525,8 +565,9 @@ const designView=()=>{const d=dsg(),m=mode(),ac=D.ac||'off',b=(on,a,i,t)=>`<butt
     const ex=D.artists.slice(0,3);h+=`<h2>Vorschau</h2>`+(ex.length?ex.map(a=>`<div class="row"><div class="grow"><div class="t">${anm(a)}</div><div class="m">${a.albums.length} Alben${genreOf(a)?' · '+esc(genreOf(a)):''}</div></div></div>`).join(''):'<p class="m">Noch keine Künstler.</p>')}
   return h};
 const backupView=()=>`<button class="back" data-a="tab" data-i="rate">‹ Zurück</button><h1>Sicherung</h1><p class="sub">Sichere deine Bewertungen in einer Datei oder spiele eine Sicherung wieder ein.</p>`+backupBlock();
-const VER='24';
+const VER='25';
 const UPD=[
+{v:'25',t:'Laufschrift, Glas-Prototyp und eine kleine Überraschung',d:'Lange Songtitel brauchen weniger Platz, und ein erstes Glas-Design ist da.',n:['Songtitel-Option im Design-Tab: „Komplett“ wie bisher oder „Laufschrift“. Bei der Laufschrift steht der Titel in einer Zeile. Ist er zu lang, beginnt er nach etwa zweieinhalb Sekunden langsam nach hinten zu laufen, hält kurz am Ende und springt zurück. Das gilt für Songs im Album, in der Suche, in den Rückblick-Listen und bei den Herzen und Zehnern.','Neues Design „Glas“ (Prototyp): durchscheinende Karten, weiche Farbverläufe, Unschärfe in der Kopfleiste und im Menü, runde Ecken und ein blauer Akzent. Es gibt eine helle und eine dunkle Variante.','Eine kleine Überraschung für Neugierige. Der rote Punkt hat ein Geheimnis.']},
 {v:'24',t:'Notizen-Tab',d:'Alle Notizen an einem Ort, auch zu Künstlern und Alben.',n:['Neuer Menüpunkt „Notizen“: Hier stehen alle Notizen zu Künstlern, Alben, EPs, Singles und Songs. Filter: Alle, Künstler, Alben, Songs, Offen, Erledigt. Sortierung: Neueste oder Nach Künstler.','Bei jedem Künstler und jedem Album gibt es oben einen kleinen Knopf „Notiz“. Er öffnet den Notizen-Tab direkt mit dem Schreibfeld. Die Notiz steht danach auch bei dem Album oder Künstler als kleiner Streifen. „Zurück“ bringt dich wieder zum Album.','In jeder Notiz gibt es „Erledigt“ als Haken (zum Beispiel für „Songs ergänzen“), „Öffnen“ springt zum Künstler, Album oder Song. Mit „Neue Notiz“ legst du eine Notiz an, ohne vorher zum Album zu gehen.','Notizen, die du schon an Songs gemacht hast, erscheinen automatisch in der Liste und lassen sich dort bearbeiten.']},
 {v:'23',t:'Großer Speicher',d:'Coda speichert jetzt in einem deutlich größeren Speicher und startet mit einem Umzug deiner Daten.',n:['Großer Speicher: Statt der etwa 5 MB, die ein Browser normalerweise erlaubt, nutzt Coda jetzt den Speicher des Handys (IndexedDB). Dort ist je nach Gerät Platz für hunderte MB oder mehr. Deine Daten ziehen beim ersten Start automatisch um.','Eigene Cover werden als echte Bilddateien gespeichert und nicht mehr als Text. Das spart etwa ein Drittel Platz und macht das Speichern schneller.','Die Speicher-Anzeige unter „Sicherung“ zeigt jetzt den echten freien Platz deines Handys und ob der Browser die Daten dauerhaft schützt.','Die automatischen Kopien liegen jetzt auch im großen Speicher und sind nicht mehr auf kleine Datenmengen begrenzt.'],c:['Zur Sicherheit schreibt Coda weiterhin eine leichte Kopie (ohne Cover) in den alten Speicher. Sollte der große Speicher nicht gehen, läuft die App wie bisher.']},
 {v:'22',t:'Studio, Live, Remix im Rückblick',d:'Einfachere Auswahl im Rückblick und aufgeräumte Tabs.',c:['„Normal“ heißt jetzt „Studio“.','Im Rückblick gibt es statt der sechs Optionen drei Knöpfe: Studio, Live und Remix. Jeder Knopf schaltet seine Alben dazu oder wieder weg. Gefüllte Knöpfe sind aktiv, mindestens einer bleibt immer an.','Die Tab-Leiste unter dem Menü hat keinen „Suche“-Knopf mehr. Die Suche öffnest du mit der Lupe oben rechts.']},
@@ -644,7 +685,7 @@ const statsView=()=>{const K=rkOf(),NM={a:'Alben',e:'EPs',s:'Singles',x:'Alle'}[
   if(AR.length){h+=`<h2>Top-Künstler <span class="m">Ø, ab ${MIN} Songs</span></h2>`+sortBy(AR,x=>x.v).slice(0,5).map((x,i)=>arow(x,i)).join('');
     h+='<h2>Meistbewertet</h2>'+sortBy(AR,x=>x.c).slice(0,3).map((x,i)=>arow(x,i,'c')).join('')}
   const IT=K==='s'?S.map(e=>({a:e.a,b:e.b,s:e.s,v:e.r,y:e.b.y})):cont.filter(x=>x.b.songs.filter(q=>q.r!=null).length>=3).map(x=>({...x,y:x.b.y}));
-  const lrow=(x,i)=>x.s?`<div class="row tap" data-a="go" data-ar="${x.a.id}" data-al="${x.b.id}" data-s="${x.s.id}"><span class="rk">${i+1}</span><div class="grow"><div class="t">${esc(x.s.n)}</div><div class="m">${esc(x.a.n)}${x.b.y?' · '+x.b.y:''}</div></div>${x.s.h?'<span style="color:var(--r)">♥</span>':''}${chip(x.v)}</div>`:`<div class="row tap" data-a="go" data-ar="${x.a.id}" data-al="${x.b.id}"><span class="rk">${i+1}</span><div class="grow"><div class="t">${esc(x.b.n)}</div><div class="m">${esc(x.a.n)}${x.b.y?' · '+x.b.y:''}${K==='x'?' · '+['Album','EP','Single'][x.b.k||0]:''}</div></div>${chip(x.v)}</div>`;
+  const lrow=(x,i)=>x.s?`<div class="row tap" data-a="go" data-ar="${x.a.id}" data-al="${x.b.id}" data-s="${x.s.id}"><span class="rk">${i+1}</span><div class="grow"><div class="t mq"><span class="mqi">${esc(x.s.n)}</span></div><div class="m">${esc(x.a.n)}${x.b.y?' · '+x.b.y:''}</div></div>${x.s.h?'<span style="color:var(--r)">♥</span>':''}${chip(x.v)}</div>`:`<div class="row tap" data-a="go" data-ar="${x.a.id}" data-al="${x.b.id}"><span class="rk">${i+1}</span><div class="grow"><div class="t">${esc(x.b.n)}</div><div class="m">${esc(x.a.n)}${x.b.y?' · '+x.b.y:''}${K==='x'?' · '+['Album','EP','Single'][x.b.k||0]:''}</div></div>${chip(x.v)}</div>`;
   const WORD=K==='s'?'Singles':K==='e'?'EPs':K==='x'?'Veröffentlichungen':'Alben';
   if(IT.length){const so=sortBy(IT,x=>x.v);h+=`<h2>Beste ${WORD} <span class="m">${K==='s'?'':'ab 3 Songs'}</span></h2>`+so.slice(0,5).map(lrow).join('');if(IT.length>8)h+=`<h2>Schwächste ${WORD}</h2>`+so.slice(-3).reverse().map((x,i)=>lrow(x,i)).join('')}
   const Y=new Map();IT.forEach(x=>{if(x.y){if(!Y.has(x.y))Y.set(x.y,[]);Y.get(x.y).push(x)}});
@@ -671,7 +712,7 @@ const verlauf=A=>{let L=A.albums.map((b,i)=>({b,i,v:albAvg(b)})).filter(x=>(x.b.
 const kavg=(A,k)=>{const g=A.albums.filter(x=>(x.k||0)===k);return k===2?avg(g.flatMap(x=>x.songs.map(q=>q.r))):avg(g.map(albAvg))};
 const avTabs=A=>{const n=(hlList('t','').find(x=>x.a.id===A.id)||{l:[]}).l.length;return `<div class="tabs"><button class="${D.av==='t'?'ghost':'btn'}" data-a="av" data-i="a">Alben</button><button class="${D.av==='t'?'btn':'ghost'}" data-a="av" data-i="t">10 von 10 <span class="m">${n}</span></button></div>`};
 const tensView=A=>{const e=(hlList('t','').find(x=>x.a.id===A.id)||{l:[]}).l;if(!e.length)return '<p class="m">Noch keine Songs mit 10 bei diesem Künstler.</p>';
-  return `<p class="m" style="margin:0 0 8px">${e.length} Songs mit 10. Ein Song, der als Single und auf dem Album vorkommt, zählt einmal.</p>`+e.map((x,i)=>`<div class="row tap" data-a="go" data-ar="${A.id}" data-al="${x.b.id}" data-s="${x.s.id}"><span class="rk">${i+1}</span><div class="grow"><div class="t">${esc(x.s.n)}</div><div class="m">${esc(x.al.join(' · '))}</div></div>${x.h?'<span style="color:var(--r)">♥</span>':''}${chip(x.s.r)}</div>`).join('')};
+  return `<p class="m" style="margin:0 0 8px">${e.length} Songs mit 10. Ein Song, der als Single und auf dem Album vorkommt, zählt einmal.</p>`+e.map((x,i)=>`<div class="row tap" data-a="go" data-ar="${A.id}" data-al="${x.b.id}" data-s="${x.s.id}"><span class="rk">${i+1}</span><div class="grow"><div class="t mq"><span class="mqi">${esc(x.s.n)}</span></div><div class="m">${esc(x.al.join(' · '))}</div></div>${x.h?'<span style="color:var(--r)">♥</span>':''}${chip(x.s.r)}</div>`).join('')};
 const albEdPanel=B=>`<div class="edp"><div class="m">Titel</div><textarea id="ed" rows="2" maxlength="200">${esc(B.n)}</textarea><div class="edr"><label class="m">Art<select id="edt"><option value="0" ${(B.k||0)==0?'selected':''}>Album</option><option value="1" ${B.k==1?'selected':''}>EP</option><option value="2" ${B.k==2?'selected':''}>Single</option></select></label><label class="m">Jahr<input id="edy" inputmode="numeric" maxlength="4" placeholder="–" value="${B.y||''}"></label></div><div class="add"><button class="btn" data-a="edsave">Speichern</button><button class="ghost" data-a="edcancel">Abbrechen</button></div></div>`;
 let dgx=new Set();let sf='',tgo=false,nte=null,ntFrom=null,ntNew=false,ntNa='',ntNb='',ntNt='';
 let lastKey='',scrollMap={},popNav=false,goingBack=false,prevMenu=false,histReady=false,hidx=0,hkeys=[];
@@ -686,7 +727,38 @@ const statHub=()=>{const cur=['rv','hearts','cm'].includes(st.t)?st.t:'rv',body=
 const KS=[['avg','Durchschnitt'],['genre','Genre'],['singles','Anzahl Singles'],['albums','Anzahl Alben'],['abc','Alphabet']],ksOf=()=>D.ks||(D.sg?'genre':D.sm?'albums':'avg');
 let menuOpen=false;
 const mode=()=>document.documentElement.dataset.mode||'auto',dsg=()=>document.documentElement.dataset.design||'classic';
-const topbar=()=>`<div class="top"><span class="brand"><i></i>Coda</span><span class="rt"><button class="sb" data-a="gs" aria-label="Suche"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg></button><button class="sb" data-a="mnw" aria-label="News"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9a6 6 0 0 1 12 0c0 6 2.5 7.5 2.5 7.5h-17S6 15 6 9z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg>${nwCount()?`<span class="bdg">${nwCount()}</span>`:''}</button><button class="mb" data-a="menu" aria-label="Menü">☰</button></span></div>`;
+const topbar=()=>`<div class="top"><span class="brand"><i class="dot" data-a="dot"></i>Coda</span><span class="rt"><button class="sb" data-a="gs" aria-label="Suche"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg></button><button class="sb" data-a="mnw" aria-label="News"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9a6 6 0 0 1 12 0c0 6 2.5 7.5 2.5 7.5h-17S6 15 6 9z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg>${nwCount()?`<span class="bdg">${nwCount()}</span>`:''}</button><button class="mb" data-a="menu" aria-label="Menü">☰</button></span></div>`;
+
+/* ===== Update 25: Punkt-Überraschung und Laufschrift ===== */
+let dotN=0,dotT=0,mqAn=[],mqT=0;
+function dotFx(el){try{
+  const old=document.getElementById('fx');if(old)old.remove();
+  const rc=el.getBoundingClientRect(),cx=rc.left+rc.width/2,cy=rc.top+rc.height/2,W=innerWidth,H=innerHeight,nothing=dsg()==='nothing';
+  const o=document.createElement('div');o.id='fx';o.style.cssText='position:fixed;inset:0;pointer-events:none;z-index:90;overflow:hidden';document.body.appendChild(o);
+  const rm=matchMedia('(prefers-reduced-motion:reduce)').matches,cs=getComputedStyle(document.documentElement),ac=cs.getPropertyValue('--ac').trim()||'#4a63d8';
+  const mk=(css,txt)=>{const d=document.createElement('div');d.style.cssText='position:absolute;left:0;top:0;will-change:transform,opacity;'+css;if(txt)d.textContent=txt;o.appendChild(d);return d};
+  if(rm){const d=mk(`left:${cx-6}px;top:${cy-6}px;width:12px;height:12px;border-radius:50%;background:#ff3b3b`);d.animate([{opacity:1},{opacity:0}],{duration:700});setTimeout(()=>o.remove(),800);return}
+  if(nothing){
+    for(let i=0;i<46;i++){const sz=3+Math.random()*5,x=Math.random()*W,red=Math.random()<.45,d=mk(`width:${sz}px;height:${sz}px;border-radius:50%;background:${red?'#ff3b3b':'#f4f2ec'};left:${x}px;top:-12px`),dur=1500+Math.random()*1400,dl=Math.random()*700;
+      d.animate([{transform:'translateY(0)',opacity:0},{opacity:1,offset:.12},{transform:`translateY(${H*(.55+Math.random()*.4)}px)`,opacity:0}],{duration:dur,delay:dl,easing:'cubic-bezier(.3,.1,.6,1)',fill:'both'})}
+    setTimeout(()=>o.remove(),3800)
+  }else{
+    const cols=[ac,'#ffd24a','#ffffff','#ff7ab6','#7ad7ff'];
+    for(let i=0;i<22;i++){const a=Math.random()*Math.PI*2,r=45+Math.random()*95,sz=10+Math.random()*12,d=mk(`left:${cx}px;top:${cy}px;font-size:${sz}px;line-height:1;color:${cols[i%cols.length]};text-shadow:0 0 6px currentColor;margin:${-sz/2}px 0 0 ${-sz/2}px`,i%3?'✦':'•');
+      d.animate([{transform:'translate(0,0) scale(.2) rotate(0deg)',opacity:0},{opacity:1,offset:.25},{transform:`translate(${Math.cos(a)*r}px,${Math.sin(a)*r}px) scale(1) rotate(${(Math.random()-.5)*160}deg)`,opacity:.9,offset:.7},{transform:`translate(${Math.cos(a)*r*1.15}px,${Math.sin(a)*r*1.15+14}px) scale(.3) rotate(0deg)`,opacity:0}],{duration:1000+Math.random()*500,easing:'cubic-bezier(.2,.7,.3,1)',fill:'both'})}
+    setTimeout(()=>o.remove(),1900)
+  }
+  el.animate([{transform:'scale(1)'},{transform:'scale(2.2)'},{transform:'scale(1)'}],{duration:420,easing:'ease-out'})
+}catch(e){}}
+function mqInit(){mqAn.forEach(a=>{try{a.cancel()}catch(e){}});mqAn=[];
+  const els=[...document.querySelectorAll('.mq')];els.forEach(e=>e.classList.remove('mqo'));
+  if(!D.mq||matchMedia('(prefers-reduced-motion:reduce)').matches)return;
+  const info=els.map(el=>{const i=el.firstElementChild;return i?{el,i,ov:Math.ceil(i.getBoundingClientRect().width-el.clientWidth)}:null}).filter(Boolean);
+  info.forEach(({el,i,ov})=>{if(ov<=3)return;el.classList.add('mqo');
+    const go=ov+6,hold=2500,sc=go/38*1000,endh=1500,back=800,tot=hold+sc+endh+back;
+    mqAn.push(i.animate([{transform:'translateX(0)',offset:0},{transform:'translateX(0)',offset:hold/tot},{transform:`translateX(-${go}px)`,offset:(hold+sc)/tot},{transform:`translateX(-${go}px)`,offset:(hold+sc+endh)/tot,easing:'ease-in-out'},{transform:'translateX(0)',offset:1}],{duration:tot,iterations:Infinity}))})}
+addEventListener('resize',()=>{clearTimeout(mqT);mqT=setTimeout(mqInit,250)});
+try{document.fonts&&document.fonts.ready.then(()=>mqInit())}catch(e){}
 
 /* ===== Notizen-Tab ===== */
 const ntKey=x=>x.k+':'+x.a.id+':'+(x.b?x.b.id:'')+':'+(x.s?x.s.id:'');
@@ -719,7 +791,7 @@ const ntView=()=>{const L=ntItems(),f=NTF.some(q=>q[0]===D.nf)?D.nf:'all',so=D.n
 const menuHtml=()=>{if(!menuOpen)return '';const d=dsg(),m=mode(),b=(on,a,i,t)=>`<button class="${on?'btn':'ghost'}" data-a="${a}" data-i="${i}">${t}</button>`;
   const tot=hlList('a','').reduce((t,x)=>t+x.l.length,0);
   return `<div class="sc" data-a="mclose"></div><div class="sh"><div class="gr"></div>
-  <button class="ghost mi" data-a="mst"><span>Statistiken</span></button><button class="ghost mi" data-a="mnt"><span>Notizen</span><span class="m">${ntItems().filter(x=>!x.e.nd).length||''}</span></button><button class="ghost mi" data-a="mds"><span>Design</span><span class="m">${d==='nothing'?'Nothing':'Standard'} · ${m==='auto'?'Auto':m==='light'?'Hell':'Dunkel'}</span></button><button class="ghost mi" data-a="mbk"><span>Sicherung</span><span class="m">${D.lb?new Date(D.lb).toLocaleDateString('de-DE'):'noch nie'}</span></button>
+  <button class="ghost mi" data-a="mst"><span>Statistiken</span></button><button class="ghost mi" data-a="mnt"><span>Notizen</span><span class="m">${ntItems().filter(x=>!x.e.nd).length||''}</span></button><button class="ghost mi" data-a="mds"><span>Design</span><span class="m">${({nothing:'Nothing',glass:'Glas'})[d]||'Standard'} · ${m==='auto'?'Auto':m==='light'?'Hell':'Dunkel'}</span></button><button class="ghost mi" data-a="mbk"><span>Sicherung</span><span class="m">${D.lb?new Date(D.lb).toLocaleDateString('de-DE'):'noch nie'}</span></button>
   <button class="btn" data-a="mclose" style="width:100%;margin-top:14px">Fertig</button><button class="lnk" data-a="mar">Archiv · Update ${VER}</button></div>`};
 const mbF=n=>n<1e6?Math.round(n/1e3)+' KB':n<1e9?(n/1e6).toFixed(n<1e7?2:1).replace('.',',')+' MB':(n/1e9).toFixed(1).replace('.',',')+' GB';
 const memBody=()=>{let dat=0,cov=0,nc=0,snp=0;try{dat=(lastLight||JSON.stringify(D,stripCu)).length;D.artists.forEach(a=>a.albums.forEach(b=>{if(b.cu){cov+=Math.round(b.cu.length*.75);nc++}}));SN.forEach(x=>snp+=(x.d||'').length)}catch(e){}
@@ -776,7 +848,7 @@ function R(){
     h+=impBox();
     h+=del('art','Künstler löschen');
   }else{
-    const row=(s,i,L)=>{if(isEd('song',s.id))return `<div class="row"><span class="rk">${i+1}</span>${edForm(s.id,s.n)}</div>`;const u=i>0&&L[i-1].r===s.r,d=i<L.length-1&&L[i+1].r===s.r;return `<div class="row${s.id===hl?' hl':''}"><span class="rk">${i+1}</span>${D.so?'':`<div class="mv"><button class="ghost" data-a="up" data-i="${s.id}" ${u?'':'disabled'}>▲</button><button class="ghost" data-a="dn" data-i="${s.id}" ${d?'':'disabled'}>▼</button></div>`}<div class="grow t nm" data-a="edit" data-k="song" data-i="${s.id}">${esc(s.n)}</div><button class="ghost hb big ${s.h?'on':''}" data-a="ht" data-i="${s.id}">${s.h?'♥':'♡'}</button><input class="r" style="border-color:${col(s.r)};color:${col(s.r)}" inputmode="decimal" value="${s.r==null?'':fmt(s.r)}" data-i="${s.id}" placeholder="–"><button class="ghost" data-a="rm" data-i="${s.id}">✕</button><button class="nbar${s.no?' on':''}" data-a="nt" data-i="${s.id}" aria-label="Notiz"></button></div>`+noteBlk(s)};
+    const row=(s,i,L)=>{if(isEd('song',s.id))return `<div class="row"><span class="rk">${i+1}</span>${edForm(s.id,s.n)}</div>`;const u=i>0&&L[i-1].r===s.r,d=i<L.length-1&&L[i+1].r===s.r;return `<div class="row${s.id===hl?' hl':''}"><span class="rk">${i+1}</span>${D.so?'':`<div class="mv"><button class="ghost" data-a="up" data-i="${s.id}" ${u?'':'disabled'}>▲</button><button class="ghost" data-a="dn" data-i="${s.id}" ${d?'':'disabled'}>▼</button></div>`}<div class="grow t nm mq" data-a="edit" data-k="song" data-i="${s.id}"><span class="mqi">${esc(s.n)}</span></div><button class="ghost hb big ${s.h?'on':''}" data-a="ht" data-i="${s.id}">${s.h?'♥':'♡'}</button><input class="r" style="border-color:${col(s.r)};color:${col(s.r)}" inputmode="decimal" value="${s.r==null?'':fmt(s.r)}" data-i="${s.id}" placeholder="–"><button class="ghost" data-a="rm" data-i="${s.id}">✕</button><button class="nbar${s.no?' on':''}" data-a="nt" data-i="${s.id}" aria-label="Notiz"></button></div>`+noteBlk(s)};
     h=`<button class="back" data-a="art" data-i="${A.id}">‹ ${esc(A.n)}</button><div class="albh">${cvHtml(B,'l')}<div class="grow"><h1 class="abt">${esc(B.n)} ${pen('alb',B.id)}</h1><p class="sub">Durchschnitt ${fmt(albAvg(B))} · ${B.songs.length} Songs${B.songs.some(s=>s.h)?' · ♥ '+B.songs.filter(s=>s.h).length:''}${B.y?' · '+B.y:''}</p></div><div class="hcol">${(B.k||0)===2?'':`<button class="ghost tgb${B.tg?' on':''}" data-a="tgo">${TGN[B.tg||0]} ${tgo?'▴':'▾'}</button>`}<button class="ghost tgb${B.no?' on':''}" data-a="ntgo" data-i="b:${A.id}:${B.id}:">📝 Notiz</button></div></div>${B.no?`<div class="nt npv" data-a="ntgo" data-i="b:${A.id}:${B.id}:">${esc(B.no)}</div>`:''}${tgo&&(B.k||0)!==2?`<div class="tabs">${TGN.map((n,k)=>`<button class="${(B.tg||0)===k?'btn':'ghost'}" data-a="tgs" data-i="${k}">${n}</button>`).join('')}</div><p class="m" style="margin:-4px 0 10px">Live- und Remix-Alben kannst du im Rückblick ein- und ausblenden.</p>`:''}${isEd('alb',B.id)?albEdPanel(B):''}<div class="tabs"><button class="${D.so?'ghost':'btn'}" data-a="so" data-i="0">Nach Note</button><button class="${D.so?'btn':'ghost'}" data-a="so" data-i="1">Eingabe-Reihenfolge</button></div><div class="add" style="margin:0 0 8px"><button class="ghost" data-a="cmpa">⇄ Mit anderem Album vergleichen</button></div><div class="det"><label class="yl">Jahr <input id="ayr" inputmode="numeric" maxlength="4" placeholder="–" value="${B.y||''}"></label>${(B.k||0)===2?'':`<label class="ghost">${B.cu?'Cover ändern':'Cover wählen'}<input id="cvf" type="file" accept="image/*" hidden></label>`}${B.cu&&(B.k||0)!==2?'<button class="ghost" data-a="cvdel">Cover entfernen</button>':''}</div>`;
     const FL=[['','Alle',()=>true],['h','♥',q=>q.h],['lo','Unter 5',q=>q.r!=null&&q.r<5],['no','Notiz',q=>!!q.no],['un','Ohne Note',q=>q.r==null]],fo=FL.find(f=>f[0]===sf)||FL[0];
     h+=`<div class="chips">${FL.map(f=>`<button class="${f[0]===sf?'btn':'ghost'}" data-a="sfl" data-i="${f[0]}">${f[1]}${f[0]?' '+B.songs.filter(f[2]).length:''}</button>`).join('')}</div>`;
@@ -785,7 +857,7 @@ function R(){
     h+='<h2>Songs hinzufügen</h2><input id="dc" placeholder="Disc (optional), z. B. Disc 2" style="margin-bottom:8px"><textarea id="in" placeholder="Ein Song pro Zeile, z. B.&#10;Runaway: 10&#10;Crawling: 9,5"></textarea><button class="btn" data-a="addSongs">Hinzufügen</button>';
     h+='<p class="m">'+(D.so?'Die Eingabe-Reihenfolge ist die Reihenfolge, in der die Songs eingetragen wurden. ':'Songs mit gleicher Note kannst du mit ▲▼ selbst anordnen. ')+'Tippe auf einen Songnamen, um ihn zu korrigieren.</p>'+(B.songs.some(q=>q.sk&&q.r==null)?`<p class="m">${B.songs.filter(q=>q.sk&&q.r==null).length} Songs ohne Note sind in den News ausgeblendet.</p><div class="add" style="margin:0 0 10px"><button class="ghost" data-a="skreset">Wieder anzeigen</button></div>`:'')+del('alb','Album löschen');
   }
-  document.getElementById('app').innerHTML=topbar()+(st.t==='bk'&&!A?'':bnote())+h+menuHtml();{const eb=document.getElementById('ed');if(eb){eb.focus();eb.select()}const hr=document.querySelector('.row.hl');if(hr)hr.scrollIntoView({block:'center'})}
+  document.getElementById('app').innerHTML=topbar()+(st.t==='bk'&&!A?'':bnote())+h+menuHtml();document.documentElement.dataset.mq=D.mq?'1':'0';mqInit();{const eb=document.getElementById('ed');if(eb){eb.focus();eb.select()}const hr=document.querySelector('.row.hl');if(hr)hr.scrollIntoView({block:'center'})}
   if(focusA){focusA=0;const q=document.getElementById('ain');if(q)q.focus()}
   if(focusQ){focusQ=0;const q=document.getElementById('q');if(q)q.focus()}
   {const nx=document.getElementById('ntx')||document.getElementById('nteTx');if(nx)nx.focus()}
@@ -887,6 +959,8 @@ document.addEventListener('click',e=>{
   else if(a==='tgo'){tgo=!tgo}
   else if(a==='tgs'){if(B){if(+i)B.tg=+i;else delete B.tg}tgo=false}
   else if(a==='rtf'){const c=rsOf(),k=+i;D.rs=c.includes(k)?(c.length>1?c.filter(x=>x!==k):c):[...c,k].sort();D.ry=null}
+  else if(a==='dot'){const now=Date.now();dotN=(now-dotT<1500?dotN:0)+1;dotT=now;if(dotN>=5){dotN=0;dotFx(t)}return}
+  else if(a==='mq'){D.mq=+i?1:0}
   else if(a==='mnt'){menuOpen=false;ntFrom=null;nte=null;st={t:'nt',a:null,b:null}}
   else if(a==='ntgo'){ntFrom={t:st.t,a:st.a,b:st.b};nte=i;D.nf='all';st={t:'nt',a:null,b:null}}
   else if(a==='ntb'){const f=ntFrom;ntFrom=null;nte=null;st=f&&f.t?f:{t:'rate',a:null,b:null}}
