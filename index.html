@@ -300,18 +300,44 @@ html[data-design=glass] .sh .mi span:first-child{flex:1}
 html[data-design=glass] .sh .mi::after{content:"›";font-size:24px;line-height:1;color:var(--mu);margin-left:10px;font-weight:300}
 html[data-design=glass] .sh .btn{border-radius:999px;padding:15px;margin-top:12px!important}
 html[data-design=glass] .sh .lnk{margin-top:10px}
-/* ---- Trophäen ---- */
+/* ---- Trophäen 28 ---- */
 .trg{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:12px 14px;margin-bottom:10px}
 .trh{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
-.trm{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0 10px}
-.trmd{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:800;border:2px dashed var(--bd);color:var(--mu);font-variant-numeric:tabular-nums;letter-spacing:-.3px}
-.trmd.on{border-style:solid;box-shadow:inset 0 2px 0 rgba(255,255,255,.55),0 3px 8px rgba(0,0,0,.2)}
-.trmd.br.on{background:linear-gradient(145deg,#eaa872,#b36528);border-color:#8f4f1f;color:#fff}
-.trmd.si.on{background:linear-gradient(145deg,#f4f6f9,#a7afbb);border-color:#868e9a;color:#1d2229}
-.trmd.go.on{background:linear-gradient(145deg,#ffe680,#e0a100);border-color:#b07a00;color:#3a2600}
-.trmd.pl.on{background:linear-gradient(145deg,#dcf8ff,#69c1e8 55%,#b79cff);border-color:#5aa9cf;color:#0f2638}
+.trm{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0 8px}
 .trb{height:6px;border-radius:3px;background:var(--bd);overflow:hidden}.trb i{display:block;height:100%;border-radius:3px;background:var(--ac)}
 .trt{display:flex;justify-content:space-between;gap:10px;margin-top:6px}
+.mdl{width:50px;height:50px;flex:none}
+.mdl .rs{fill:none;stroke:var(--bd);stroke-width:1.6;stroke-dasharray:3 2.2}
+.mdl .rg{fill:none;stroke:var(--bd);stroke-width:1}
+.mdl .mt{font:800 11px system-ui,sans-serif;fill:var(--mu);letter-spacing:-.2px}
+.mdl.on .rs{stroke-dasharray:none;stroke-width:1.2}
+.mdl.on .rg{stroke:rgba(255,255,255,.7);stroke-width:1.4}
+.mdl.tbr.on .rs{fill:url(#gbr);stroke:#8f4f1f}.mdl.tsi.on .rs{fill:url(#gsi);stroke:#868e9a}.mdl.tgo.on .rs{fill:url(#ggo);stroke:#b07a00}.mdl.tpl.on .rs{fill:url(#gpl);stroke:#5aa9cf}
+.mdl.on .mt{fill:#fff;stroke:rgba(0,0,0,.25);stroke-width:.6;paint-order:stroke}.mdl.tsi.on .mt,.mdl.tpl.on .mt{fill:#1b2430;stroke:none}.mdl.tgo.on .mt{fill:#3a2600;stroke:none}
+.stm{width:100%;height:auto;display:block;overflow:visible}
+.stm .s1{fill:none;stroke:var(--c);stroke-width:2.6;stroke-dasharray:1.6 3.4;stroke-linecap:round}
+.stm .s2{fill:none;stroke:var(--c);stroke-width:3.2}
+.stm .s3{fill:color-mix(in srgb,var(--c) 10%,transparent);stroke:var(--c);stroke-width:1.2}
+.stm text{fill:var(--c);text-anchor:middle}.stm .si{font-size:25px}.stm .sn{font:800 19px system-ui,sans-serif;letter-spacing:-.5px}
+.stm:not(.on){--c:var(--mu);opacity:.42;filter:grayscale(1)}.stm:not(.on) .s1{stroke-dasharray:3 4}.stm:not(.on) .si{opacity:.35}
+.stg{display:grid;grid-template-columns:repeat(4,1fr);gap:10px 8px;margin:6px 0 14px}
+.stp{background:transparent;border:0;padding:2px;cursor:pointer;position:relative;color:var(--tx);min-width:0}
+.stp.new .stm{animation:stIn .8s cubic-bezier(.2,1.4,.4,1) both}
+.stp .nw{position:absolute;top:-2px;right:-2px;z-index:2;background:var(--r);color:#fff;font-size:10px;font-weight:800;border-radius:999px;padding:1px 6px}
+.stp.sel .stm.on{filter:drop-shadow(0 4px 10px color-mix(in srgb,var(--c) 50%,transparent))}
+@keyframes stIn{from{transform:scale(2.2) rotate(-24deg);opacity:0}}
+.trd{display:flex;gap:14px;align-items:center;background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:14px;margin:10px 0 6px}.trd .stm{width:92px;flex:none}
+.trgh{font-weight:700;margin:16px 2px 2px}
+/* ---- MusicBrainz-Songliste ---- */
+.mbp{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:12px;margin:0 0 10px}
+.mbc{display:flex;flex-direction:column;align-items:flex-start;gap:2px;width:100%;text-align:left;margin-bottom:6px;padding:10px 12px}
+.mbv{display:flex;flex-direction:column;gap:6px}.mbv button{text-align:left}
+.mbt{max-height:340px;overflow:auto;border-radius:10px}
+.mbr{display:flex;align-items:center;gap:8px;width:100%;text-align:left;background:transparent;border:0;border-bottom:1px solid var(--bd);padding:8px 4px;color:var(--tx);font:inherit;opacity:.55;cursor:pointer}.mbr.on{opacity:1}
+.mbr .ck{width:20px;height:20px;border:2px solid var(--bd);border-radius:6px;display:grid;place-items:center;font-size:13px;flex:none;color:var(--ac)}.mbr.on .ck{border-color:var(--ac)}
+.mbr .n{color:var(--mu);font-size:12px;width:20px;text-align:right;flex:none}.mbr .t{flex:1;min-width:0;overflow-wrap:anywhere}
+html[data-design=glass] .mbp,html[data-design=glass] .trd{background:linear-gradient(135deg,rgba(255,255,255,.2),rgba(255,255,255,0) 46%),var(--card);border:1px solid var(--gl);border-radius:20px;-webkit-backdrop-filter:blur(22px) saturate(180%);backdrop-filter:blur(22px) saturate(180%)}
+@media (prefers-reduced-motion:reduce){.stp.new .stm{animation:none}}
 .acell{display:flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:9px 8px;min-height:46px;min-width:0;cursor:pointer}
 .acell.win{border-color:var(--g)}.acell .t{font-size:13px;font-weight:700;flex:1;min-width:0;overflow-wrap:anywhere}.acell .chev{color:var(--mu);font-size:12px;flex:none;width:10px}.acell .chip{min-width:38px;padding:2px 4px;font-size:14px}
 .acell.ph{visibility:hidden}.apair{margin-bottom:8px}.apair .pair{margin:6px 0 0}.apair .pair:last-child{margin-bottom:6px}
@@ -630,8 +656,9 @@ const designView=()=>{const d=dsg(),m=mode(),ac=D.ac||'off',b=(on,a,i,t)=>`<butt
     const ex=D.artists.slice(0,3);h+=`<h2>Vorschau</h2>`+(ex.length?ex.map(a=>`<div class="row"><div class="grow"><div class="t">${anm(a)}</div><div class="m">${a.albums.length} Alben${genreOf(a)?' · '+esc(genreOf(a)):''}</div></div></div>`).join(''):'<p class="m">Noch keine Künstler.</p>')}
   return h};
 const backupView=()=>`<button class="back" data-a="tab" data-i="rate">‹ Zurück</button><h1>Sicherung</h1><p class="sub">Sichere deine Bewertungen in einer Datei oder spiele eine Sicherung wieder ein.</p>`+backupBlock();
-const VER='27';
+const VER='28';
 const UPD=[
+{v:'28',t:'Songliste aus MusicBrainz und neue Trophäen',d:'Neue Alben lassen sich per Songliste anlegen, und die Trophäen sind jetzt ein Stempel-Album.',n:['Beim Anlegen von Alben, EPs und Singles gibt es den Zusatzknopf „Songs aus MusicBrainz laden“. Du suchst die Veröffentlichung, wählst eine Version (zum Beispiel Standard oder Deluxe) und hakst die Songs an, die du anlegen willst. Das normale Eintippen von Songs bleibt unverändert.','Trophäen: neues Siegel mit mittiger Zahl, ein Stempel-Album mit einem Stempel pro erreichter Stufe und neue Reihen (Künstler komplett bewertet, Genres entdeckt, Genre-Treue, Bewertungsserie).','Eine geheime Trophäe wartet irgendwo in der App.']},
 {v:'27',t:'Künstler-Vergleich',d:'Zwei Künstler direkt vergleichen, mit aufklappbaren Alben.',n:['Im Vergleichs-Tab gibt es oben jetzt den Umschalter Alben | Künstler.','Künstler-Vergleich: Durchschnitt über die Alben, Durchschnitt über alle Songs, Median, beste und schlechteste Note, Zehner, Anteil ab 7, Herzen und Anzahl der Alben und Singles.','Darunter stehen die Alben und Singles beider Künstler paarweise, nach Rang oder nach Reihenfolge. Ein Tipp auf ein Album klappt die Songs auf, es gibt auch „Alle aufklappen“.','Auf der Künstlerseite gibt es den Knopf „Mit anderem Künstler vergleichen“.']},
 {v:'26',t:'Trophäen und mehr Glas',d:'Das Trophäen-System ist da, und Glas sieht jetzt wirklich nach Glas aus.',n:['Neu: Trophäen im Menü. Es gibt Stufen für bewertete Songs (10 bis 10.000), komplett bewertete Alben, Künstler, Herzen, Zehner und Notizen. Was du schon erreicht hast, ist sofort freigeschaltet.','Bei einer neuen Trophäe erscheint eine kurze Meldung.','Glas: Der Hintergrund besteht jetzt aus farbigen Glasformen statt Lichtflecken, die Karten sind echtes Milchglas, und das Menü schwebt als runde Karte mit Pfeilen.']},
 {v:'25.1',t:'Glas bekommt einen eigenen Charakter',d:'Das Glas-Design ist jetzt ein eigenes Thema, und der Punkt hat neue Effekte.',n:['Glas: schwebende Leiste oben, Songs als gruppierte Liste mit dünnen Trennlinien, ein farbiger, langsam driftender Hintergrund und federnde Knöpfe. Bei Alben mit Cover färbt sich der Hintergrund passend zum Cover.','Der rote Punkt neben Coda hat im Standard-Design jetzt Konfetti mit Ring und im Glas-Design Seifenblasen.']},
@@ -815,7 +842,39 @@ let dgx=new Set();let sf='',tgo=false,nte=null,ntFrom=null,ntNew=false,ntNa='',n
 let lastKey='',scrollMap={},popNav=false,goingBack=false,prevMenu=false,histReady=false,hidx=0,hkeys=[];
 let addK=null,focusA=0;
 const KN=['Album','EP','Single'];
-const addForm=k=>`<div class="add" style="margin:0 0 8px"><input id="ain" placeholder="${k===2?'Neue Single (oder Sammlung)':'Neue'+(k?'':'s')+' '+KN[k]}" maxlength="200" autocomplete="off"><button class="btn" data-a="addAlbK" data-i="${k}">Hinzufügen</button></div>`;
+
+/* ===== Songliste aus MusicBrainz ===== */
+let mbl=null;
+const mbQ=x=>String(x).replace(/["\\]/g,' ').trim();
+async function mbFind(){const m=mbl;if(!m)return;m.busy=1;m.msg='';m.cands=null;m.pick=null;m.vars=null;R();
+  try{const A=D.artists.find(x=>x.id===m.aid),j=await mb('release-group?query='+encodeURIComponent('releasegroup:"'+mbQ(m.q)+'" AND artist:"'+mbQ(A?A.n:'')+'"')+'&limit=8');
+    if(mbl!==m)return;m.cands=(j['release-groups']||[]).map(g=>({id:g.id,n:g.title,t:g['primary-type']||'',s:g['secondary-types']||[],d:g['first-release-date']||''}));
+    if(!m.cands.length)m.msg='Nichts gefunden. Prüfe die Schreibweise oder tippe die Songs wie gewohnt von Hand ein.'}
+  catch(e){if(mbl!==m)return;m.msg='MusicBrainz ist gerade nicht erreichbar. Versuch es später nochmal oder tippe die Songs wie gewohnt von Hand ein.'}
+  m.busy=0;R()}
+function mbVar(i){const m=mbl,v=m.vars[i];m.vi=i;m.sel=v.tr.map((t,j)=>m.k===2?j===0:true)}
+async function mbLoad(idx){const m=mbl;if(!m||!m.cands)return;const g=m.cands[idx];if(!g)return;m.pick=g;m.nm=g.n;m.busy=1;m.msg='';m.vars=null;R();
+  try{const j=await mb('release?release-group='+g.id+'&inc=recordings&limit=100');if(mbl!==m)return;const vars=new Map();
+    (j.releases||[]).forEach(r=>{const med=r.media||[],tr=[];med.forEach(md=>(md.tracks||[]).forEach(t=>tr.push({n:t.title,d:med.length>1?'Disc '+md.position:''})));if(!tr.length)return;const key=tr.map(t=>tk(t.n)).join('|');if(!vars.has(key))vars.set(key,{tr,c:0,rel:r});vars.get(key).c++});
+    m.vars=[...vars.values()].sort((a,b)=>b.c-a.c||a.tr.length-b.tr.length).slice(0,5);
+    if(m.vars.length)mbVar(0);else{m.msg='Für diese Veröffentlichung hat MusicBrainz keine Songliste.';m.pick=null}}
+  catch(e){if(mbl!==m)return;m.msg='MusicBrainz ist gerade nicht erreichbar. Versuch es später nochmal.';m.pick=null}
+  m.busy=0;R()}
+const mbLab=(v,g)=>{const r=v.rel,t=r.title&&tk(r.title)!==tk(g.n)?r.title+' · ':'';return t+v.tr.length+' Titel'+(r.country?' · '+r.country:'')+(r.date?' · '+r.date.slice(0,4):'')};
+const mbPanel=k=>{const m=mbl;if(!m||m.k!==k||m.aid!==st.a)return '';let h='<div class="mbp">';
+  if(m.busy)h+='<p class="m" style="margin:0 0 6px">Einen Moment, MusicBrainz antwortet …</p>';
+  if(m.msg)h+=`<p class="m" style="margin:0 0 6px">${esc(m.msg)}</p>`;
+  if(m.cands&&m.cands.length&&!m.pick&&!m.busy)h+='<p class="m" style="margin:0 0 6px">Tippe die passende Veröffentlichung an:</p>'+m.cands.map((g,j)=>`<button class="ghost mbc" data-a="mbpk" data-i="${j}"><b>${esc(g.n)}</b><span class="m">${esc([g.t,...g.s,g.d?g.d.slice(0,4):''].filter(Boolean).join(' · '))}</span></button>`).join('');
+  if(m.pick&&m.vars){const v=m.vars[m.vi],n=m.sel.filter(Boolean).length;
+    h+=`<p class="m" style="margin:0 0 6px"><b>${esc(m.pick.n)}</b> aus MusicBrainz. Die Songs kommen ohne Noten, danach kannst du alles ändern.</p>`;
+    if(m.vars.length>1)h+='<p class="m" style="margin:0 0 6px">Version wählen, zum Beispiel Standard oder Deluxe:</p><div class="mbv">'+m.vars.map((x,j)=>`<button class="${j===m.vi?'btn':'ghost'}" data-a="mbv" data-i="${j}">${esc(mbLab(x,m.pick))}</button>`).join('')+'</div>';
+    h+=`<input id="mbn" value="${esc(m.nm)}" maxlength="200" placeholder="Name" autocomplete="off" style="margin:10px 0 8px">`;
+    if(k===2)h+='<p class="m" style="margin:0 0 6px">Bei Singles ist nur der erste Titel vorgewählt. Hake weitere an, wenn du sie mitbewerten willst.</p>';
+    h+='<div class="mbt">'+v.tr.map((t,j)=>`<button class="mbr${m.sel[j]?' on':''}" data-a="mbt" data-i="${j}"><span class="ck">${m.sel[j]?'✓':''}</span><span class="n">${j+1}</span><span class="t">${esc(t.n)}</span></button>`).join('')+'</div>';
+    h+=`<div class="add" style="margin:10px 0 0"><button class="btn" data-a="mbgo" ${n?'':'disabled'}>${n} Song${n===1?'':'s'} anlegen</button><button class="ghost" data-a="mbx">Abbrechen</button></div>`}
+  else h+='<div class="add" style="margin:6px 0 0"><button class="ghost" data-a="mbx">Schließen</button></div>';
+  return h+'</div>'};
+const addForm=k=>`<div class="add" style="margin:0 0 8px"><input id="ain" value="${mbl&&mbl.k===k&&mbl.aid===st.a?esc(mbl.q):''}" placeholder="${k===2?'Neue Single (oder Sammlung)':'Neue'+(k?'':'s')+' '+KN[k]}" maxlength="200" autocomplete="off"><button class="btn" data-a="addAlbK" data-i="${k}">Hinzufügen</button></div><div class="add" style="margin:-2px 0 8px"><button class="ghost" data-a="mbl" data-i="${k}">🔎 Songs aus MusicBrainz laden</button></div>${mbPanel(k)}`;
 const quickAdd=()=>`<div class="qa">${[0,1,2].map(k=>`<button class="${addK===k?'btn':'ghost'}" data-a="addk" data-i="${k}">+ ${KN[k]}</button>`).join('')}</div>${addK!=null?addForm(addK):''}`;
 function setCover(f,aid,bid){if(!f)return;const rd=new FileReader();rd.onload=()=>{const im=new Image();im.onload=()=>{const A=D.artists.find(x=>x.id===aid),B=A&&A.albums.find(x=>x.id===bid);if(!B)return;const S=200,c=document.createElement('canvas');c.width=c.height=S;const m=Math.min(im.width,im.height);c.getContext('2d').drawImage(im,(im.width-m)/2,(im.height-m)/2,m,m,0,0,S,S);try{B.cu=c.toDataURL('image/jpeg',.78);save();R()}catch(e){}};im.src=rd.result};rd.readAsDataURL(f)}
 const STT=[['rv','Rückblick'],['hearts','♥ & 10/10'],['cm','Vergleich']];
@@ -905,7 +964,7 @@ const ntView=()=>{const L=ntItems(),f=NTF.some(q=>q[0]===D.nf)?D.nf:'all',so=D.n
 const menuHtml=()=>{if(!menuOpen)return '';const d=dsg(),m=mode(),b=(on,a,i,t)=>`<button class="${on?'btn':'ghost'}" data-a="${a}" data-i="${i}">${t}</button>`;
   const tot=hlList('a','').reduce((t,x)=>t+x.l.length,0);
   return `<div class="sc" data-a="mclose"></div><div class="sh"><div class="gr"></div>
-  <button class="ghost mi" data-a="mst"><span>Statistiken</span></button><button class="ghost mi" data-a="mnt"><span>Notizen</span><span class="m">${ntItems().filter(x=>!x.e.nd).length||''}</span></button><button class="ghost mi" data-a="mtr"><span>Trophäen</span><span class="m">${trCount().join(' / ')}</span></button><button class="ghost mi" data-a="mds"><span>Design</span><span class="m">${({nothing:'Nothing',glass:'Glas'})[d]||'Standard'} · ${m==='auto'?'Auto':m==='light'?'Hell':'Dunkel'}</span></button><button class="ghost mi" data-a="mbk"><span>Sicherung</span><span class="m">${D.lb?new Date(D.lb).toLocaleDateString('de-DE'):'noch nie'}</span></button>
+  <button class="ghost mi" data-a="mst"><span>Statistiken</span></button><button class="ghost mi" data-a="mnt"><span>Notizen</span><span class="m">${ntItems().filter(x=>!x.e.nd).length||''}</span></button><button class="ghost mi" data-a="mtr"><span>Trophäen</span><span class="m">${trCount().join(' / ')}${(D.trn||[]).length?' · neu':''}</span></button><button class="ghost mi" data-a="mds"><span>Design</span><span class="m">${({nothing:'Nothing',glass:'Glas'})[d]||'Standard'} · ${m==='auto'?'Auto':m==='light'?'Hell':'Dunkel'}</span></button><button class="ghost mi" data-a="mbk"><span>Sicherung</span><span class="m">${D.lb?new Date(D.lb).toLocaleDateString('de-DE'):'noch nie'}</span></button>
   <button class="btn" data-a="mclose" style="width:100%;margin-top:14px">Fertig</button><button class="lnk" data-a="mar">Archiv · Update ${VER}</button></div>`};
 const mbF=n=>n<1e6?Math.round(n/1e3)+' KB':n<1e9?(n/1e6).toFixed(n<1e7?2:1).replace('.',',')+' MB':(n/1e9).toFixed(1).replace('.',',')+' GB';
 const memBody=()=>{let dat=0,cov=0,nc=0,snp=0;try{dat=(lastLight||JSON.stringify(D,stripCu)).length;D.artists.forEach(a=>a.albums.forEach(b=>{if(b.cu){cov+=Math.round(b.cu.length*.75);nc++}}));SN.forEach(x=>snp+=(x.d||'').length)}catch(e){}
@@ -925,28 +984,64 @@ const listView=()=>{let h=tabs()+'<h1>Künstlerliste</h1><p class="sub">Haken se
   return h+'<h2>Neues Genre</h2><div class="add"><input id="in" placeholder="Genre-Name"><button class="btn" data-a="addGenre">Hinzufügen</button></div>'};
 
 const TRG=[
- {id:'so',n:'Songs bewertet',u:'Songs',t:[10,100,500,1000,2500,5000,10000],f:S=>S.so},
- {id:'al',n:'Alben komplett bewertet',u:'Alben',t:[1,10,25,50,100,250],f:S=>S.al},
- {id:'ar',n:'Künstler bewertet',u:'Künstler',t:[3,10,25,50,100],f:S=>S.ar},
- {id:'he',n:'Herzen vergeben',u:'Herzen',t:[1,10,50,100,500],f:S=>S.he},
- {id:'te',n:'Zehner vergeben',u:'Zehner',t:[1,10,25,100],f:S=>S.te},
- {id:'no',n:'Notizen geschrieben',u:'Notizen',t:[1,10,25,50],f:S=>S.no}];
-function trStats(){const S={so:0,al:0,ar:0,he:0,te:0,no:0};
-  D.artists.forEach(a=>{let ra=0;if(a.no)S.no++;a.albums.forEach(b=>{if(b.no)S.no++;let all=b.songs.length>0;b.songs.forEach(g=>{if(g.no)S.no++;if(g.h)S.he++;if(g.r==null)all=false;else{S.so++;ra=1;if(g.r>=10)S.te++}});if(all&&b.k!==2)S.al++});if(ra)S.ar++});return S}
+ {id:'so',n:'Songs bewertet',u:'Songs',ic:'🎵',t:[10,100,500,1000,2500,5000,10000],f:S=>S.so},
+ {id:'al',n:'Alben komplett bewertet',u:'Alben',ic:'💿',t:[1,10,25,50,100,250],f:S=>S.al},
+ {id:'ar',n:'Künstler bewertet',u:'Künstler',ic:'🎤',t:[3,10,25,50,100],f:S=>S.ar},
+ {id:'ak',n:'Künstler komplett bewertet',u:'Künstler komplett',ic:'🏅',t:[1,5,10,25],f:S=>S.ak},
+ {id:'he',n:'Herzen vergeben',u:'Herzen',ic:'♥',t:[1,10,50,100,500],f:S=>S.he},
+ {id:'te',n:'Zehner vergeben',u:'Zehner',ic:'🔟',t:[1,10,25,100],f:S=>S.te},
+ {id:'no',n:'Notizen geschrieben',u:'Notizen',ic:'📝',t:[1,10,25,50],f:S=>S.no},
+ {id:'gn',n:'Genres entdeckt',u:'Genres',ic:'🌍',t:[3,5,10,15],f:S=>S.gn},
+ {id:'gt',n:'Genre-Treue',u:'Künstler im selben Genre',ic:'🎸',t:[5,10,25,50],f:S=>S.gt},
+ {id:'sk',n:'Bewertungsserie',u:'Tage in Folge',ic:'🔥',t:[3,7,14,30],f:S=>S.sk}];
+const TRS=[{id:'sec:slow',n:'Gemächlich',d:'Du hast das versteckte Wort gefunden.'}];
+const trDay=d=>d.toLocaleDateString('sv-SE');
+function trStreak(){const s=new Set(D.rd||[]);const d=new Date();if(!s.has(trDay(d)))d.setDate(d.getDate()-1);let n=0;while(s.has(trDay(d))){n++;d.setDate(d.getDate()-1)}return n}
+function trStats(){const S={so:0,al:0,ar:0,ak:0,he:0,te:0,no:0,gn:0,gt:0,gtn:'',sum:0,sk:0},gc=new Map();
+  D.artists.forEach(a=>{let ra=0,all=a.albums.length>0&&a.albums.some(b=>b.songs.length);if(a.no)S.no++;a.albums.forEach(b=>{if(b.no)S.no++;let ok=b.songs.length>0;b.songs.forEach(g=>{if(g.no)S.no++;if(g.h)S.he++;if(g.r==null){ok=false;all=false}else{S.so++;ra=1;S.sum+=+g.r;if(g.r>=10)S.te++}});if(ok&&b.k!==2)S.al++});
+    if(ra){S.ar++;if(all)S.ak++;const g=genreObj(a);if(g)gc.set(g.n,(gc.get(g.n)||0)+1)}});
+  S.gn=gc.size;gc.forEach((v,k)=>{if(v>S.gt){S.gt=v;S.gtn=k}});S.sum=Math.round(S.sum*10)/10;S.sk=trStreak();return S}
 const trN=n=>n>=1000?(n/1000).toString().replace('.',',')+'k':String(n);
-const trCls=(i,n)=>{const q=n<2?0:i/(n-1);return q<.34?'br':q<.67?'si':q<1?'go':'pl'};
-function trCount(){const S=trStats();let t=0,g=0;TRG.forEach(G=>{const c=G.f(S);G.t.forEach(x=>{t++;if(c>=x)g++})});return [g,t]}
-function trCheck(){try{const S=trStats(),first=!D.tr;if(first)D.tr={};const nw=[];
-  TRG.forEach(G=>{const c=G.f(S);G.t.forEach(x=>{const k=G.id+':'+x;if(c>=x&&D.tr[k]==null){D.tr[k]=first?0:Date.now();if(!first)nw.push(trN(x)+' '+G.u)}})});
-  if(first||nw.length){save();if(nw.length)toast('🏆 '+(nw.length>1?nw.length+' neue Trophäen':'Neue Trophäe: '+nw[0]))}}catch(e){}}
-const trView=()=>{const S=trStats(),[g,t]=trCount();
-  let h=`<button class="back" data-a="tab" data-i="rate">‹ Zurück</button><h1>Trophäen</h1><p class="sub">${g} von ${t} freigeschaltet</p><div class="trb" style="margin:0 2px 16px"><i style="width:${t?Math.round(g/t*100):0}%"></i></div>`;
-  TRG.forEach(G=>{const c=G.f(S),n=G.t.length,nx=G.t.find(x=>c<x),pv=[0,...G.t].filter(x=>x<=c).pop(),last=G.t.filter(x=>c>=x).map(x=>(D.tr||{})[G.id+':'+x]).filter(x=>x!=null);
-    const lt=last.length?Math.max(...last):null;
-    h+=`<div class="trg"><div class="trh"><b>${G.n}</b><span class="m">${c.toLocaleString('de-DE')}</span></div><div class="trm">${G.t.map((x,i)=>`<span class="trmd ${trCls(i,n)}${c>=x?' on':''}" title="${x.toLocaleString('de-DE')} ${G.u}">${trN(x)}</span>`).join('')}</div>`+
-    (nx?`<div class="trb"><i style="width:${Math.round((c-pv)/(nx-pv)*100)}%"></i></div><div class="trt"><span class="m">Nächste Stufe: ${nx.toLocaleString('de-DE')} ${G.u}</span><span class="m">noch ${(nx-c).toLocaleString('de-DE')}</span></div>`:`<div class="trt"><span class="m">Alle Stufen geschafft!</span></div>`)+
-    (lt!=null?`<div class="m" style="margin-top:4px;font-size:13px">${lt===0?'Schon erreicht, bevor es Trophäen gab.':'Zuletzt freigeschaltet am '+new Date(lt).toLocaleDateString('de-DE')+'.'}</div>`:'')+`</div>`});
-  h+=`<p class="m" style="margin-top:14px">Ein Album zählt als bewertet, wenn alle Songs eine Note haben (Singles zählen nicht dazu). Freigeschaltete Trophäen bleiben erhalten, auch wenn du später etwas löschst. Belohnungen wie neue Designs kommen in einem späteren Update.</p>`;return h};
+const trCls=(i,n)=>{const q=n<2?0:i/(n-1);return q<.34?'tbr':q<.67?'tsi':q<1?'tgo':'tpl'};
+const TRC={tbr:'#b36528',tsi:'#7e8794',tgo:'#c28f00',tpl:'#3c9fd0'};
+const ROS=(()=>{const p=[];for(let i=0;i<28;i++){const a=i/28*Math.PI*2,r=i%2?20.5:23;p.push((24+Math.cos(a)*r).toFixed(1)+','+(24+Math.sin(a)*r).toFixed(1))}return p.join(' ')})();
+const trDefs='<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>'+[['br','#f0b383','#b36528'],['si','#f7f8fa','#a5adb9'],['go','#ffe98f','#dfa100'],['pl','#e2f9ff','#6cc3e8']].map(([k,a,b])=>`<linearGradient id="g${k}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${a}"/><stop offset="1" stop-color="${b}"/></linearGradient>`).join('')+'</defs></svg>';
+const medal=(cls,txt,on)=>`<svg class="mdl ${cls}${on?' on':''}" viewBox="0 0 48 48" aria-hidden="true"><polygon class="rs" points="${ROS}"/><circle class="rg" cx="24" cy="24" r="16"/><text class="mt" x="24" y="24" dy=".36em" text-anchor="middle">${txt}</text></svg>`;
+const stamp=(cls,ic,txt,on,rot)=>`<svg class="stm${on?' on':''}" viewBox="0 0 100 100"${on?` style="--c:${TRC[cls]};transform:rotate(${rot}deg)"`:''} aria-hidden="true"><circle class="s1" cx="50" cy="50" r="46"/><circle class="s2" cx="50" cy="50" r="40"/><circle class="s3" cx="50" cy="50" r="33"/><text class="si" x="50" y="44" dy=".35em">${ic}</text><text class="sn" x="50" y="70" dy=".35em">${txt}</text></svg>`;
+const stampSecret=(on,rot)=>{const P='#ff3f9f';return `<svg class="stm${on?' on':''}" viewBox="0 0 100 100"${on?` style="--c:${P};transform:rotate(${rot==null?-6:rot}deg)"`:''} aria-hidden="true"><circle class="s1" cx="50" cy="50" r="46"/><circle class="s2" cx="50" cy="50" r="40"/><circle class="s3" cx="50" cy="50" r="33"/>`+(on?`<circle cx="50" cy="53" r="21" fill="rgba(255,120,190,.3)" stroke="${P}" stroke-width="2.4"/><path d="M38.5 50q4.5 4.5 9 0M52.5 50q4.5 4.5 9 0" fill="none" stroke="${P}" stroke-width="2.6" stroke-linecap="round"/><ellipse cx="50" cy="61.5" rx="3.8" ry="3.2" fill="${P}"/><circle cx="36" cy="58" r="3" fill="#ff8cc6"/><circle cx="64" cy="58" r="3" fill="#ff8cc6"/><text x="64" y="38" style="font:800 12px system-ui;text-anchor:start;fill:${P}">z</text><text x="70" y="31" style="font:800 9px system-ui;text-anchor:start;fill:${P}">z</text>`:`<text class="sn" x="50" y="50" dy=".35em">?</text>`)+`</svg>`};
+const trAll=()=>{const S=trStats(),L=[];TRG.forEach(G=>{const c=G.f(S);G.t.forEach((x,i)=>L.push({k:G.id+':'+x,G,x,i,c,on:c>=x}))});return {S,L}};
+function trCount(){const {L}=trAll();let g=L.filter(z=>z.on).length,t=L.length;TRS.forEach(q=>{t++;if(D.tr&&D.tr[q.id]!=null)g++});return [g,t]}
+function trAct(S){const sig=S.so+':'+S.sum;if(D.rsg==null){D.rsg=sig;D.rc=S.so;return true}
+  if(sig===D.rsg)return false;
+  if(S.so>=(D.rc||0)){const t=trDay(new Date());D.rd=D.rd||[];if(D.rd[D.rd.length-1]!==t){D.rd.push(t);if(D.rd.length>400)D.rd.shift()}}
+  D.rsg=sig;D.rc=S.so;return true}
+function trCheck(){try{const S=trStats(),first=!D.tr;if(first)D.tr={};let ch=trAct(S);if(ch)S.sk=trStreak();const nw=[],ks=[];
+  TRG.forEach(G=>{const c=G.f(S);G.t.forEach(x=>{const k=G.id+':'+x;if(c>=x&&D.tr[k]==null){D.tr[k]=first?0:Date.now();ch=true;if(!first){nw.push(trN(x)+' '+G.u);ks.push(k)}}})});
+  if(ks.length)D.trn=(D.trn||[]).concat(ks);
+  if(first||ch)save();if(nw.length)toast('🏆 '+(nw.length>1?nw.length+' neue Trophäen':'Neue Trophäe: '+nw[0]))}catch(e){}}
+function trPop(){try{const o=document.createElement('div');o.style.cssText='position:fixed;inset:0;display:grid;place-items:center;z-index:95;pointer-events:none';o.innerHTML='<div style="width:190px;filter:drop-shadow(0 10px 28px rgba(255,63,159,.5))">'+stampSecret(true,0)+'</div>';document.body.appendChild(o);
+  if(matchMedia('(prefers-reduced-motion:reduce)').matches){setTimeout(()=>o.remove(),1500);return}
+  o.firstElementChild.animate([{transform:'scale(2.8) rotate(-28deg)',opacity:0},{transform:'scale(.9) rotate(-6deg)',opacity:1,offset:.3},{transform:'scale(1) rotate(-6deg)',opacity:1,offset:.45},{transform:'scale(1) rotate(-6deg)',opacity:1,offset:.85},{transform:'scale(1) rotate(-6deg)',opacity:0}],{duration:2300,easing:'ease-out'});setTimeout(()=>o.remove(),2400)}catch(e){}}
+function trSecret(v){if(!/(flegmon|slowpoke)/i.test(v||''))return;D.tr=D.tr||{};if(D.tr['sec:slow']!=null)return;D.tr['sec:slow']=Date.now();D.trn=(D.trn||[]).concat('sec:slow');save();toast('🌸 Geheime Trophäe gefunden: Gemächlich');trPop()}
+let trTab='ov',trSel=null,trNew=new Set();
+const trWhen=k=>{const t=(D.tr||{})[k];return t==null?null:t===0?'Schon erreicht, bevor es Trophäen gab.':'Freigeschaltet am '+new Date(t).toLocaleDateString('de-DE')+'.'};
+const trOver=S=>TRG.map(G=>{const c=G.f(S),n=G.t.length,nx=G.t.find(x=>c<x),pv=[0,...G.t].filter(x=>x<=c).pop(),last=G.t.filter(x=>c>=x).map(x=>(D.tr||{})[G.id+':'+x]).filter(x=>x!=null),lt=last.length?Math.max(...last):null;
+  return `<div class="trg"><div class="trh"><b>${G.ic} ${G.n}</b><span class="m">${c.toLocaleString('de-DE')}${G.id==='gt'&&S.gtn?' · '+esc(S.gtn):''}</span></div><div class="trm">${G.t.map((x,i)=>medal(trCls(i,n),trN(x),c>=x)).join('')}</div>`+
+  (nx?`<div class="trb"><i style="width:${Math.round((c-pv)/(nx-pv)*100)}%"></i></div><div class="trt"><span class="m">Nächste Stufe: ${nx.toLocaleString('de-DE')} ${G.u}</span><span class="m">noch ${(nx-c).toLocaleString('de-DE')}</span></div>`:`<div class="trt"><span class="m">Alle Stufen geschafft!</span></div>`)+
+  (lt!=null?`<div class="m" style="margin-top:4px;font-size:13px">${lt===0?'Schon erreicht, bevor es Trophäen gab.':'Zuletzt freigeschaltet am '+new Date(lt).toLocaleDateString('de-DE')+'.'}</div>`:'')+`</div>`}).join('')+
+  `<div class="trg"><div class="trh"><b>🌸 Geheime Trophäen</b><span class="m">${TRS.filter(q=>D.tr&&D.tr[q.id]!=null).length} von ${TRS.length}</span></div><div class="trm">${TRS.map(q=>`<span style="width:50px">${stampSecret(!!(D.tr&&D.tr[q.id]!=null),0)}</span>`).join('')}</div><div class="m" style="font-size:13px">Irgendwo in der App versteckt sich ein besonderes Wort.</div></div>`;
+const trAlbum=(L,S)=>{let h='';
+  if(trSel){const z=L.find(q=>q.k===trSel);
+    if(z)h+=`<div class="trd">${stamp(trCls(z.i,z.G.t.length),z.G.ic,trN(z.x),z.on,0)}<div><b>${z.x.toLocaleString('de-DE')} ${z.G.u}</b><div class="m" style="margin-top:4px">${z.on?trWhen(z.k)||'':'Noch '+(z.x-z.c).toLocaleString('de-DE')+' bis dahin. Dein Stand: '+z.c.toLocaleString('de-DE')+'.'}</div></div></div>`;
+    else{const q=TRS.find(x=>x.id===trSel),on=q&&D.tr&&D.tr[q.id]!=null;if(q)h+=`<div class="trd">${stampSecret(on,0)}<div><b>${on?q.n:'Geheime Trophäe'}</b><div class="m" style="margin-top:4px">${on?q.d+' '+(trWhen(q.id)||''):'Irgendwo in der App versteckt sich ein besonderes Wort.'}</div></div></div>`}}
+  else h+='<p class="m" style="margin:0 0 4px">Tippe auf einen Stempel für Details. Jede erreichte Stufe gibt einen eigenen Stempel.</p>';
+  TRG.forEach((G,gi)=>{h+=`<div class="trgh">${G.ic} ${G.n}</div><div class="stg">${L.filter(z=>z.G===G).map(z=>`<button class="stp${trNew.has(z.k)?' new':''}${trSel===z.k?' sel':''}" data-a="trs" data-i="${z.k}">${trNew.has(z.k)?'<span class="nw">neu</span>':''}${stamp(trCls(z.i,G.t.length),G.ic,trN(z.x),z.on,(z.i*3+gi*5)%9-4)}</button>`).join('')}</div>`});
+  h+=`<div class="trgh">🌸 Geheim</div><div class="stg">${TRS.map(q=>{const on=!!(D.tr&&D.tr[q.id]!=null);return `<button class="stp${trNew.has(q.id)?' new':''}${trSel===q.id?' sel':''}" data-a="trs" data-i="${q.id}">${trNew.has(q.id)?'<span class="nw">neu</span>':''}${stampSecret(on)}</button>`}).join('')}</div>`;return h};
+const trView=()=>{const {S,L}=trAll(),[g,t]=trCount();
+  let h=trDefs+`<button class="back" data-a="tab" data-i="rate">‹ Zurück</button><h1>Trophäen</h1><p class="sub">${g} von ${t} freigeschaltet</p><div class="trb" style="margin:0 2px 14px"><i style="width:${t?Math.round(g/t*100):0}%"></i></div>`;
+  h+=`<div class="tabs"><button class="${trTab==='ov'?'btn':'ghost'}" data-a="trtab" data-i="ov">Übersicht</button><button class="${trTab==='al'?'btn':'ghost'}" data-a="trtab" data-i="al">Stempel-Album</button></div>`;
+  h+=trTab==='al'?trAlbum(L,S):trOver(S);
+  h+=`<p class="m" style="margin-top:14px">Ein Album zählt als bewertet, wenn alle Songs eine Note haben (Singles zählen nicht dazu). „Künstler komplett“ heißt: alle Songs aller Alben haben eine Note. Die Bewertungsserie zählt ab Update 28 und braucht an jedem Tag mindestens eine neue oder geänderte Note. Freigeschaltete Trophäen bleiben erhalten, auch wenn du später etwas löschst.</p>`;return h};
 function R(){
   document.documentElement.dataset.px=D.px||'on';
   saveNote();saveNoteE();
@@ -1006,7 +1101,7 @@ function R(){
 }
 document.addEventListener('click',e=>{
   const t=e.target.closest('[data-a]');if(!t)return;if(t.dataset.a!=='edsave'&&t.dataset.a!=='edit')ed=null;if(t.dataset.a!=='go')hl=null;
-  if(t.dataset.a!=='addk'&&t.dataset.a!=='addAlbK')addK=null;if(t.classList.contains('back'))goingBack=true;const wasN=nedit;saveNote();saveNoteE();if(t.dataset.a!=='nt')nedit=null;if(t.dataset.a!=='undo')hideToast();
+  if(t.dataset.a!=='addk'&&t.dataset.a!=='addAlbK'&&!/^mb/.test(t.dataset.a))addK=null;if(t.classList.contains('back'))goingBack=true;const wasN=nedit;saveNote();saveNoteE();if(t.dataset.a!=='nt')nedit=null;if(t.dataset.a!=='undo')hideToast();
   const a=t.dataset.a,i=t.dataset.i,v=(document.getElementById('in')||{}).value||'';
   msg='';bmsg='';const A=D.artists.find(x=>x.id===st.a),B=A&&A.albums.find(x=>x.id===st.b);
   let und=null;
@@ -1104,7 +1199,9 @@ document.addEventListener('click',e=>{
   else if(a==='rtf'){const c=rsOf(),k=+i;D.rs=c.includes(k)?(c.length>1?c.filter(x=>x!==k):c):[...c,k].sort();D.ry=null}
   else if(a==='dot'){const now=Date.now();dotN=(now-dotT<1500?dotN:0)+1;dotT=now;if(dotN>=5){dotN=0;dotFx(t)}return}
   else if(a==='mq'){D.mq=+i?1:0}
-  else if(a==='mtr'){menuOpen=false;st={t:'tr',a:null,b:null}}
+  else if(a==='mtr'){menuOpen=false;trNew=new Set(D.trn||[]);D.trn=[];trTab=trNew.size?'al':'ov';trSel=null;st={t:'tr',a:null,b:null}}
+  else if(a==='trtab'){trTab=i==='al'?'al':'ov';trSel=null}
+  else if(a==='trs'){trSel=trSel===i?null:i}
   else if(a==='mnt'){menuOpen=false;ntFrom=null;nte=null;st={t:'nt',a:null,b:null}}
   else if(a==='ntgo'){ntFrom={t:st.t,a:st.a,b:st.b};nte=i;D.nf='all';st={t:'nt',a:null,b:null}}
   else if(a==='ntb'){const f=ntFrom;ntFrom=null;nte=null;st=f&&f.t?f:{t:'rate',a:null,b:null}}
@@ -1125,7 +1222,14 @@ document.addEventListener('click',e=>{
   else if(a==='mrv'){menuOpen=false;st={t:'rv',a:null,b:null}}
   else if(a==='mst'){menuOpen=false;st={t:D.stt||'rv',a:null,b:null}}
   else if(a==='stt'){D.stt=i;st={t:i,a:null,b:null}}
-  else if(a==='addk'){addK=addK===+i?null:+i;focusA=1}
+  else if(a==='addk'){addK=addK===+i?null:+i;focusA=1;mbl=null}
+  else if(a==='mbl'){const q=((document.getElementById('ain')||{}).value||'').trim();addK=+i;mbl={k:+i,aid:st.a,q,busy:0,msg:q?'':'Tippe oben zuerst den Titel ein und tippe dann nochmal auf den Knopf.',cands:null,pick:null,vars:null,vi:0,sel:[],nm:''};if(q){mbFind();return}}
+  else if(a==='mbpk'){mbLoad(+i);return}
+  else if(a==='mbv'){if(mbl&&mbl.vars)mbVar(+i)}
+  else if(a==='mbt'){if(mbl&&mbl.sel)mbl.sel[+i]=!mbl.sel[+i]}
+  else if(a==='mbx'){mbl=null;addK=null}
+  else if(a==='mbgo'){const m=mbl;if(m&&m.vars&&A){const v=m.vars[m.vi],songs=v.tr.filter((t,j)=>m.sel[j]).map(t=>({id:uid(),n:t.n,r:null,...(t.d?{d:t.d}:{})}));
+    if(songs.length){const nb={id:uid(),n:(m.nm||'').trim()||m.pick.n,k:m.k,songs,cv:m.pick.id},y=parseInt((m.pick.d||'').slice(0,4));if(y>=1900&&y<=2100)nb.y=y;A.albums.push(nb);mbl=null;addK=null;st.b=nb.id}}}
   else if(a==='addAlbK'){const q=((document.getElementById('ain')||{}).value||'').trim();if(q&&A)A.albums.push({id:uid(),n:q,k:+i,songs:[]});addK=+i;focusA=1}
   else if(a==='cvdel'){if(B)delete B.cu}
   else if(a==='rk'){D.rk=i;D.ry=null}
@@ -1144,7 +1248,7 @@ document.addEventListener('click',e=>{
   if(a!=='edit')armed='';save();R();if(und)toast(und[0],und[1]);
 });
 document.addEventListener('keydown',e=>{if(e.target.id==='ain'&&e.key==='Enter'){e.preventDefault();const b=document.querySelector('[data-a=addAlbK]');if(b)b.click();return}if(e.target.id!=='ed')return;if(e.key==='Enter'){e.preventDefault();document.querySelector('[data-a=edsave]').click()}else if(e.key==='Escape'){ed=null;R()}});
-document.addEventListener('input',e=>{if(e.target.id==='hq'){hq=e.target.value;const P=hlParts(),r=document.getElementById('hres'),u=document.getElementById('hsub');if(r)r.innerHTML=P.h;if(u)u.textContent=P.tot+' Songs · ♥ Herzen und 10 von 10'}if(e.target.id==='nnx'){ntNt=e.target.value}if(e.target.id==='q'){qs=e.target.value;const r=document.getElementById('res');if(r)r.innerHTML=resHtml(qs)}});
+document.addEventListener('input',e=>{if(e.target.id==='q'||e.target.id==='hq')trSecret(e.target.value);if(e.target.id==='mbn'&&mbl)mbl.nm=e.target.value;if(e.target.id==='hq'){hq=e.target.value;const P=hlParts(),r=document.getElementById('hres'),u=document.getElementById('hsub');if(r)r.innerHTML=P.h;if(u)u.textContent=P.tot+' Songs · ♥ Herzen und 10 von 10'}if(e.target.id==='nnx'){ntNt=e.target.value}if(e.target.id==='q'){qs=e.target.value;const r=document.getElementById('res');if(r)r.innerHTML=resHtml(qs)}});
 document.addEventListener('change',e=>{
   if(/^c[pb][ab]$/.test(e.target.id||'')){const k=e.target.id[2],ty=e.target.id[1];D.cmp=D.cmp||{a:null,b:null};const cur=D.cmp[k]||['',''];D.cmp[k]=ty==='p'?(e.target.value?[e.target.value,'']:null):[cur[0],e.target.value];save();R();return}
   if(/^cq[ab]$/.test(e.target.id||'')){const k=e.target.id[2];D.cmpa=D.cmpa||{a:null,b:null};D.cmpa[k]=e.target.value||null;cmx.clear();save();R();return}
