@@ -656,8 +656,9 @@ const designView=()=>{const d=dsg(),m=mode(),ac=D.ac||'off',b=(on,a,i,t)=>`<butt
     const ex=D.artists.slice(0,3);h+=`<h2>Vorschau</h2>`+(ex.length?ex.map(a=>`<div class="row"><div class="grow"><div class="t">${anm(a)}</div><div class="m">${a.albums.length} Alben${genreOf(a)?' · '+esc(genreOf(a)):''}</div></div></div>`).join(''):'<p class="m">Noch keine Künstler.</p>')}
   return h};
 const backupView=()=>`<button class="back" data-a="tab" data-i="rate">‹ Zurück</button><h1>Sicherung</h1><p class="sub">Sichere deine Bewertungen in einer Datei oder spiele eine Sicherung wieder ein.</p>`+backupBlock();
-const VER='28';
+const VER='28.1';
 const UPD=[
+{v:'28.1',t:'Alben kopieren und bessere MusicBrainz-Suche',d:'Alben lassen sich ohne Noten zu einem anderen Künstler kopieren.',n:['Neu: Auf der Album-Seite gibt es „In anderen Künstler kopieren“, auf der Künstlerseite „Alle Alben kopieren“. Das Ziel ist ein anderer oder ein neuer Künstler. Alben und Songs kommen ohne Noten mit, auf Wunsch auch mit Noten und Herzen. Das Original bleibt unverändert.','Die MusicBrainz-Suche probiert nur den Titel, wenn unter dem Künstlernamen nichts zu finden ist, zum Beispiel nach einer Umbenennung. In der Trefferliste steht jetzt der Künstlername dabei.']},
 {v:'28',t:'Songliste aus MusicBrainz und neue Trophäen',d:'Neue Alben lassen sich per Songliste anlegen, und die Trophäen sind jetzt ein Stempel-Album.',n:['Beim Anlegen von Alben, EPs und Singles gibt es den Zusatzknopf „Songs aus MusicBrainz laden“. Du suchst die Veröffentlichung, wählst eine Version (zum Beispiel Standard oder Deluxe) und hakst die Songs an, die du anlegen willst. Das normale Eintippen von Songs bleibt unverändert.','Trophäen: neues Siegel mit mittiger Zahl, ein Stempel-Album mit einem Stempel pro erreichter Stufe und neue Reihen (Künstler komplett bewertet, Genres entdeckt, Genre-Treue, Bewertungsserie).','Eine geheime Trophäe wartet irgendwo in der App.']},
 {v:'27',t:'Künstler-Vergleich',d:'Zwei Künstler direkt vergleichen, mit aufklappbaren Alben.',n:['Im Vergleichs-Tab gibt es oben jetzt den Umschalter Alben | Künstler.','Künstler-Vergleich: Durchschnitt über die Alben, Durchschnitt über alle Songs, Median, beste und schlechteste Note, Zehner, Anteil ab 7, Herzen und Anzahl der Alben und Singles.','Darunter stehen die Alben und Singles beider Künstler paarweise, nach Rang oder nach Reihenfolge. Ein Tipp auf ein Album klappt die Songs auf, es gibt auch „Alle aufklappen“.','Auf der Künstlerseite gibt es den Knopf „Mit anderem Künstler vergleichen“.']},
 {v:'26',t:'Trophäen und mehr Glas',d:'Das Trophäen-System ist da, und Glas sieht jetzt wirklich nach Glas aus.',n:['Neu: Trophäen im Menü. Es gibt Stufen für bewertete Songs (10 bis 10.000), komplett bewertete Alben, Künstler, Herzen, Zehner und Notizen. Was du schon erreicht hast, ist sofort freigeschaltet.','Bei einer neuen Trophäe erscheint eine kurze Meldung.','Glas: Der Hintergrund besteht jetzt aus farbigen Glasformen statt Lichtflecken, die Karten sind echtes Milchglas, und das Menü schwebt als runde Karte mit Pfeilen.']},
@@ -843,12 +844,21 @@ let lastKey='',scrollMap={},popNav=false,goingBack=false,prevMenu=false,histRead
 let addK=null,focusA=0;
 const KN=['Album','EP','Single'];
 
+
+/* ===== Alben kopieren ===== */
+let cpy=null;
+const cpyPanel=(A,B)=>{const c=cpy,arts=[...D.artists].filter(x=>x.id!==A.id).sort((p,q)=>p.n.localeCompare(q.n,'de')),ok=c.t&&(c.t!=='_new'||(c.nn||'').trim());
+  return `<div class="mbp"><p class="m" style="margin:0 0 8px"><b>${B?esc(B.n):'Alle '+A.albums.length+' Alben von '+esc(A.n)}</b> kopieren nach:</p><select id="cpt"><option value="">– Künstler wählen –</option>${arts.map(x=>`<option value="${x.id}" ${c.t===x.id?'selected':''}>${esc(x.n)}</option>`).join('')}<option value="_new" ${c.t==='_new'?'selected':''}>+ Neuer Künstler …</option></select>`+
+  (c.t==='_new'?`<input id="cpn" value="${esc(c.nn||'')}" placeholder="Name des neuen Künstlers" maxlength="200" autocomplete="off" style="margin:8px 0 0">`:'')+
+  `<button class="mbr${c.rt?' on':''}" data-a="cprt" style="margin-top:8px;opacity:1"><span class="ck">${c.rt?'✓':''}</span><span class="t">Noten und Herzen mitnehmen</span></button><p class="m" style="margin:6px 0 0">Ohne Haken kommen nur Alben und Songs, ohne Noten. Notizen werden nicht mitkopiert. Das Original bleibt unverändert.</p><div class="add" style="margin:10px 0 0"><button class="btn" data-a="cpgo" ${ok?'':'disabled'}>Kopieren</button><button class="ghost" data-a="cpx">Abbrechen</button></div></div>`};
 /* ===== Songliste aus MusicBrainz ===== */
 let mbl=null;
 const mbQ=x=>String(x).replace(/["\\]/g,' ').trim();
 async function mbFind(){const m=mbl;if(!m)return;m.busy=1;m.msg='';m.cands=null;m.pick=null;m.vars=null;R();
-  try{const A=D.artists.find(x=>x.id===m.aid),j=await mb('release-group?query='+encodeURIComponent('releasegroup:"'+mbQ(m.q)+'" AND artist:"'+mbQ(A?A.n:'')+'"')+'&limit=8');
-    if(mbl!==m)return;m.cands=(j['release-groups']||[]).map(g=>({id:g.id,n:g.title,t:g['primary-type']||'',s:g['secondary-types']||[],d:g['first-release-date']||''}));
+  try{const A=D.artists.find(x=>x.id===m.aid);let j=await mb('release-group?query='+encodeURIComponent('releasegroup:"'+mbQ(m.q)+'" AND artist:"'+mbQ(A?A.n:'')+'"')+'&limit=8'),gs=j['release-groups']||[];
+    if(mbl!==m)return;
+    if(!gs.length){j=await mb('release-group?query='+encodeURIComponent('releasegroup:"'+mbQ(m.q)+'"')+'&limit=8');if(mbl!==m)return;gs=j['release-groups']||[];if(gs.length)m.msg='Unter dem Namen „'+(A?A.n:'')+'“ gab es keinen Treffer, deshalb habe ich nur nach dem Titel gesucht. Prüfe in der Liste, ob der Künstler stimmt (zum Beispiel ein früherer Name).'}
+    m.cands=gs.map(g=>({id:g.id,n:g.title,t:g['primary-type']||'',s:g['secondary-types']||[],d:g['first-release-date']||'',ac:(g['artist-credit']||[]).map(x=>(x.name||'')+(x.joinphrase||'')).join('')}));
     if(!m.cands.length)m.msg='Nichts gefunden. Prüfe die Schreibweise oder tippe die Songs wie gewohnt von Hand ein.'}
   catch(e){if(mbl!==m)return;m.msg='MusicBrainz ist gerade nicht erreichbar. Versuch es später nochmal oder tippe die Songs wie gewohnt von Hand ein.'}
   m.busy=0;R()}
@@ -864,7 +874,7 @@ const mbLab=(v,g)=>{const r=v.rel,t=r.title&&tk(r.title)!==tk(g.n)?r.title+' · 
 const mbPanel=k=>{const m=mbl;if(!m||m.k!==k||m.aid!==st.a)return '';let h='<div class="mbp">';
   if(m.busy)h+='<p class="m" style="margin:0 0 6px">Einen Moment, MusicBrainz antwortet …</p>';
   if(m.msg)h+=`<p class="m" style="margin:0 0 6px">${esc(m.msg)}</p>`;
-  if(m.cands&&m.cands.length&&!m.pick&&!m.busy)h+='<p class="m" style="margin:0 0 6px">Tippe die passende Veröffentlichung an:</p>'+m.cands.map((g,j)=>`<button class="ghost mbc" data-a="mbpk" data-i="${j}"><b>${esc(g.n)}</b><span class="m">${esc([g.t,...g.s,g.d?g.d.slice(0,4):''].filter(Boolean).join(' · '))}</span></button>`).join('');
+  if(m.cands&&m.cands.length&&!m.pick&&!m.busy)h+='<p class="m" style="margin:0 0 6px">Tippe die passende Veröffentlichung an:</p>'+m.cands.map((g,j)=>`<button class="ghost mbc" data-a="mbpk" data-i="${j}"><b>${esc(g.n)}</b><span class="m">${esc([g.ac,g.t,...g.s,g.d?g.d.slice(0,4):''].filter(Boolean).join(' · '))}</span></button>`).join('');
   if(m.pick&&m.vars){const v=m.vars[m.vi],n=m.sel.filter(Boolean).length;
     h+=`<p class="m" style="margin:0 0 6px"><b>${esc(m.pick.n)}</b> aus MusicBrainz. Die Songs kommen ohne Noten, danach kannst du alles ändern.</p>`;
     if(m.vars.length>1)h+='<p class="m" style="margin:0 0 6px">Version wählen, zum Beispiel Standard oder Deluxe:</p><div class="mbv">'+m.vars.map((x,j)=>`<button class="${j===m.vi?'btn':'ghost'}" data-a="mbv" data-i="${j}">${esc(mbLab(x,m.pick))}</button>`).join('')+'</div>';
@@ -1072,7 +1082,7 @@ function R(){
     else h+=arts.map(x=>row(x,true)).join('');
     h+='<div class="add"><input id="in" placeholder="Neuer Künstler"><button class="btn" data-a="addArt">Hinzufügen</button></div>';
   }else if(!B){
-    h=`<button class="back" data-a="home">‹ Alle Künstler</button>${isEd('art',A.id)?edForm(A.id,A.n):`<h1>${anm(A)} ${pen('art',A.id)}</h1>`}<p class="sub">Durchschnitt ${fmt(artAvg(A))}</p><div class="add" style="margin:0 0 8px"><button class="ghost tgb${A.no?' on':''}" data-a="ntgo" data-i="a:${A.id}::">📝 Notiz</button><button class="ghost" data-a="cmpar">⇄ Mit anderem Künstler vergleichen</button></div>${A.no?`<div class="nt npv" data-a="ntgo" data-i="a:${A.id}::">${esc(A.no)}</div>`:''}`;
+    h=`<button class="back" data-a="home">‹ Alle Künstler</button>${isEd('art',A.id)?edForm(A.id,A.n):`<h1>${anm(A)} ${pen('art',A.id)}</h1>`}<p class="sub">Durchschnitt ${fmt(artAvg(A))}</p><div class="add" style="margin:0 0 8px"><button class="ghost tgb${A.no?' on':''}" data-a="ntgo" data-i="a:${A.id}::">📝 Notiz</button><button class="ghost" data-a="cmpar">⇄ Mit anderem Künstler vergleichen</button><button class="ghost" data-a="cpy" data-i="art">⧉ Alle Alben kopieren</button></div>${cpy&&cpy.k==='art'&&cpy.aid===A.id?cpyPanel(A,null):''}${A.no?`<div class="nt npv" data-a="ntgo" data-i="a:${A.id}::">${esc(A.no)}</div>`:''}`;
     const albRow=(x,i,g,rk,tag)=>`<div class="row tap" data-a="alb" data-i="${x.id}">${rk?`<span class="rk">${i+1}</span>`:`<div class="mv"><button class="ghost" data-a="aup" data-i="${x.id}" ${i?'':'disabled'}>▲</button><button class="ghost" data-a="adn" data-i="${x.id}" ${i<g.length-1?'':'disabled'}>▼</button></div>`}${cvHtml(x,'s')}<div class="grow"><div class="t">${esc(x.n)}</div><div class="m">${tag?tag+' · ':''}${x.tg?TGN[x.tg]+' · ':''}${x.songs.length} Songs${x.y?' · '+x.y:''}</div></div><button class="ghost warn" data-a="dalb" data-i="${x.id}">${armed==='a:'+x.id?'Sicher?':'✕'}</button>${chip(albAvg(x))}</div>`;
     const h0=h;h='';
     h+=`<div class="tabs"><button class="${D.as?'ghost':'btn'}" data-a="as" data-i="0">Nach Reihenfolge</button><button class="${D.as?'btn':'ghost'}" data-a="as" data-i="1">Nach Durchschnitt</button></div>`;
@@ -1083,7 +1093,7 @@ function R(){
     h+=del('art','Künstler löschen');
   }else{
     const row=(s,i,L)=>{if(isEd('song',s.id))return `<div class="row"><span class="rk">${i+1}</span>${edForm(s.id,s.n)}</div>`;const u=i>0&&L[i-1].r===s.r,d=i<L.length-1&&L[i+1].r===s.r;return `<div class="row${s.id===hl?' hl':''}"><span class="rk">${i+1}</span>${D.so?'':`<div class="mv"><button class="ghost" data-a="up" data-i="${s.id}" ${u?'':'disabled'}>▲</button><button class="ghost" data-a="dn" data-i="${s.id}" ${d?'':'disabled'}>▼</button></div>`}<div class="grow t nm mq" data-a="edit" data-k="song" data-i="${s.id}"><span class="mqi">${esc(s.n)}</span></div><button class="ghost hb big ${s.h?'on':''}" data-a="ht" data-i="${s.id}">${s.h?'♥':'♡'}</button><input class="r" style="border-color:${col(s.r)};color:${col(s.r)}" inputmode="decimal" value="${s.r==null?'':fmt(s.r)}" data-i="${s.id}" placeholder="–"><button class="ghost" data-a="rm" data-i="${s.id}">✕</button><button class="nbar${s.no?' on':''}" data-a="nt" data-i="${s.id}" aria-label="Notiz"></button></div>`+noteBlk(s)};
-    h=`<button class="back" data-a="art" data-i="${A.id}">‹ ${esc(A.n)}</button><div class="albh">${cvHtml(B,'l')}<div class="grow"><h1 class="abt">${esc(B.n)} ${pen('alb',B.id)}</h1><p class="sub">Durchschnitt ${fmt(albAvg(B))} · ${B.songs.length} Songs${B.songs.some(s=>s.h)?' · ♥ '+B.songs.filter(s=>s.h).length:''}${B.y?' · '+B.y:''}</p></div><div class="hcol">${(B.k||0)===2?'':`<button class="ghost tgb${B.tg?' on':''}" data-a="tgo">${TGN[B.tg||0]} ${tgo?'▴':'▾'}</button>`}<button class="ghost tgb${B.no?' on':''}" data-a="ntgo" data-i="b:${A.id}:${B.id}:">📝 Notiz</button></div></div>${B.no?`<div class="nt npv" data-a="ntgo" data-i="b:${A.id}:${B.id}:">${esc(B.no)}</div>`:''}${tgo&&(B.k||0)!==2?`<div class="tabs">${TGN.map((n,k)=>`<button class="${(B.tg||0)===k?'btn':'ghost'}" data-a="tgs" data-i="${k}">${n}</button>`).join('')}</div><p class="m" style="margin:-4px 0 10px">Live- und Remix-Alben kannst du im Rückblick ein- und ausblenden.</p>`:''}${isEd('alb',B.id)?albEdPanel(B):''}<div class="tabs"><button class="${D.so?'ghost':'btn'}" data-a="so" data-i="0">Nach Note</button><button class="${D.so?'btn':'ghost'}" data-a="so" data-i="1">Eingabe-Reihenfolge</button></div><div class="add" style="margin:0 0 8px"><button class="ghost" data-a="cmpa">⇄ Mit anderem Album vergleichen</button></div><div class="det"><label class="yl">Jahr <input id="ayr" inputmode="numeric" maxlength="4" placeholder="–" value="${B.y||''}"></label>${(B.k||0)===2?'':`<label class="ghost">${B.cu?'Cover ändern':'Cover wählen'}<input id="cvf" type="file" accept="image/*" hidden></label>`}${B.cu&&(B.k||0)!==2?'<button class="ghost" data-a="cvdel">Cover entfernen</button>':''}</div>`;
+    h=`<button class="back" data-a="art" data-i="${A.id}">‹ ${esc(A.n)}</button><div class="albh">${cvHtml(B,'l')}<div class="grow"><h1 class="abt">${esc(B.n)} ${pen('alb',B.id)}</h1><p class="sub">Durchschnitt ${fmt(albAvg(B))} · ${B.songs.length} Songs${B.songs.some(s=>s.h)?' · ♥ '+B.songs.filter(s=>s.h).length:''}${B.y?' · '+B.y:''}</p></div><div class="hcol">${(B.k||0)===2?'':`<button class="ghost tgb${B.tg?' on':''}" data-a="tgo">${TGN[B.tg||0]} ${tgo?'▴':'▾'}</button>`}<button class="ghost tgb${B.no?' on':''}" data-a="ntgo" data-i="b:${A.id}:${B.id}:">📝 Notiz</button></div></div>${B.no?`<div class="nt npv" data-a="ntgo" data-i="b:${A.id}:${B.id}:">${esc(B.no)}</div>`:''}${tgo&&(B.k||0)!==2?`<div class="tabs">${TGN.map((n,k)=>`<button class="${(B.tg||0)===k?'btn':'ghost'}" data-a="tgs" data-i="${k}">${n}</button>`).join('')}</div><p class="m" style="margin:-4px 0 10px">Live- und Remix-Alben kannst du im Rückblick ein- und ausblenden.</p>`:''}${isEd('alb',B.id)?albEdPanel(B):''}<div class="tabs"><button class="${D.so?'ghost':'btn'}" data-a="so" data-i="0">Nach Note</button><button class="${D.so?'btn':'ghost'}" data-a="so" data-i="1">Eingabe-Reihenfolge</button></div><div class="add" style="margin:0 0 8px"><button class="ghost" data-a="cmpa">⇄ Mit anderem Album vergleichen</button><button class="ghost" data-a="cpy" data-i="alb">⧉ In anderen Künstler kopieren</button></div>${cpy&&cpy.k==='alb'&&cpy.bid===B.id?cpyPanel(A,B):''}<div class="det"><label class="yl">Jahr <input id="ayr" inputmode="numeric" maxlength="4" placeholder="–" value="${B.y||''}"></label>${(B.k||0)===2?'':`<label class="ghost">${B.cu?'Cover ändern':'Cover wählen'}<input id="cvf" type="file" accept="image/*" hidden></label>`}${B.cu&&(B.k||0)!==2?'<button class="ghost" data-a="cvdel">Cover entfernen</button>':''}</div>`;
     const FL=[['','Alle',()=>true],['h','♥',q=>q.h],['lo','Unter 5',q=>q.r!=null&&q.r<5],['no','Notiz',q=>!!q.no],['un','Ohne Note',q=>q.r==null]],fo=FL.find(f=>f[0]===sf)||FL[0];
     h+=`<div class="chips">${FL.map(f=>`<button class="${f[0]===sf?'btn':'ghost'}" data-a="sfl" data-i="${f[0]}">${f[1]}${f[0]?' '+B.songs.filter(f[2]).length:''}</button>`).join('')}</div>`;
     if(sf&&!B.songs.some(fo[2]))h+=`<p class="m">Keine Songs für diesen Filter.</p>`;
@@ -1101,11 +1111,11 @@ function R(){
 }
 document.addEventListener('click',e=>{
   const t=e.target.closest('[data-a]');if(!t)return;if(t.dataset.a!=='edsave'&&t.dataset.a!=='edit')ed=null;if(t.dataset.a!=='go')hl=null;
-  if(t.dataset.a!=='addk'&&t.dataset.a!=='addAlbK'&&!/^mb/.test(t.dataset.a))addK=null;if(t.classList.contains('back'))goingBack=true;const wasN=nedit;saveNote();saveNoteE();if(t.dataset.a!=='nt')nedit=null;if(t.dataset.a!=='undo')hideToast();
+  if(t.dataset.a!=='addk'&&t.dataset.a!=='addAlbK'&&!/^mb/.test(t.dataset.a))addK=null;if(!/^cp/.test(t.dataset.a))cpy=null;if(t.classList.contains('back'))goingBack=true;const wasN=nedit;saveNote();saveNoteE();if(t.dataset.a!=='nt')nedit=null;if(t.dataset.a!=='undo')hideToast();
   const a=t.dataset.a,i=t.dataset.i,v=(document.getElementById('in')||{}).value||'';
   msg='';bmsg='';const A=D.artists.find(x=>x.id===st.a),B=A&&A.albums.find(x=>x.id===st.b);
   let und=null;
-  if(a==='skp'||a==='skal')und=['Ausgeblendet'];else if(a==='rm')und=['Song gelöscht'];else if(a==='rmItem')und=['Eintrag entfernt'];else if(a==='dalb'&&armed==='a:'+i)und=['Album gelöscht'];
+  if(a==='skp'||a==='skal')und=['Ausgeblendet'];else if(a==='rm')und=['Song gelöscht'];else if(a==='rmItem')und=['Eintrag entfernt'];else if(a==='dalb'&&armed==='a:'+i)und=['Album gelöscht'];else if(a==='cpgo')und=['Kopiert'];
   else if(a==='del'&&armed===t.dataset.k)und=[armed.startsWith('g:')?'Genre gelöscht':armed==='art'?'Künstler gelöscht':'Album gelöscht'];
   if(und)und.push(JSON.stringify(D));
   if(a==='home'){st={t:st.t,a:null,b:null}}
@@ -1223,6 +1233,14 @@ document.addEventListener('click',e=>{
   else if(a==='mst'){menuOpen=false;st={t:D.stt||'rv',a:null,b:null}}
   else if(a==='stt'){D.stt=i;st={t:i,a:null,b:null}}
   else if(a==='addk'){addK=addK===+i?null:+i;focusA=1;mbl=null}
+  else if(a==='cpy'){cpy=cpy&&cpy.k===i&&cpy.aid===st.a?null:{k:i,aid:st.a,bid:st.b,t:'',nn:'',rt:false}}
+  else if(a==='cprt'){if(cpy)cpy.rt=!cpy.rt}
+  else if(a==='cpx'){cpy=null}
+  else if(a==='cpgo'){const c=cpy;if(c&&A&&c.t){const src=c.k==='alb'?(B?[B]:[]):A.albums;let T;
+    if(c.t==='_new'){const nm=(c.nn||'').trim();if(nm){T={id:uid(),n:nm,albums:[]};D.artists.push(T)}}else T=D.artists.find(x=>x.id===c.t);
+    if(T&&src.length){const dup=src.filter(b=>T.albums.some(x=>tk(x.n)===tk(b.n))).length;
+      src.forEach(b=>{const nb={id:uid(),n:b.n,k:b.k||0,songs:b.songs.map(g=>({id:uid(),n:g.n,r:c.rt&&g.r!=null?g.r:null,...(c.rt&&g.h?{h:1}:{}),...(c.rt&&g.o!=null?{o:g.o}:{}),...(g.d?{d:g.d}:{})}))};if(b.y)nb.y=b.y;if(b.cv)nb.cv=b.cv;if(b.cu)nb.cu=b.cu;if(b.tg)nb.tg=b.tg;T.albums.push(nb)});
+      und[0]=src.length+(src.length===1?' Album':' Alben')+' nach '+T.n+' kopiert'+(dup?' (Achtung: '+dup+' mit gleichem Namen war schon da)':'');cpy=null;st={t:'rate',a:T.id,b:null}}}}
   else if(a==='mbl'){const q=((document.getElementById('ain')||{}).value||'').trim();addK=+i;mbl={k:+i,aid:st.a,q,busy:0,msg:q?'':'Tippe oben zuerst den Titel ein und tippe dann nochmal auf den Knopf.',cands:null,pick:null,vars:null,vi:0,sel:[],nm:''};if(q){mbFind();return}}
   else if(a==='mbpk'){mbLoad(+i);return}
   else if(a==='mbv'){if(mbl&&mbl.vars)mbVar(+i)}
@@ -1248,10 +1266,11 @@ document.addEventListener('click',e=>{
   if(a!=='edit')armed='';save();R();if(und)toast(und[0],und[1]);
 });
 document.addEventListener('keydown',e=>{if(e.target.id==='ain'&&e.key==='Enter'){e.preventDefault();const b=document.querySelector('[data-a=addAlbK]');if(b)b.click();return}if(e.target.id!=='ed')return;if(e.key==='Enter'){e.preventDefault();document.querySelector('[data-a=edsave]').click()}else if(e.key==='Escape'){ed=null;R()}});
-document.addEventListener('input',e=>{if(e.target.id==='q'||e.target.id==='hq')trSecret(e.target.value);if(e.target.id==='mbn'&&mbl)mbl.nm=e.target.value;if(e.target.id==='hq'){hq=e.target.value;const P=hlParts(),r=document.getElementById('hres'),u=document.getElementById('hsub');if(r)r.innerHTML=P.h;if(u)u.textContent=P.tot+' Songs · ♥ Herzen und 10 von 10'}if(e.target.id==='nnx'){ntNt=e.target.value}if(e.target.id==='q'){qs=e.target.value;const r=document.getElementById('res');if(r)r.innerHTML=resHtml(qs)}});
+document.addEventListener('input',e=>{if(e.target.id==='q'||e.target.id==='hq')trSecret(e.target.value);if(e.target.id==='mbn'&&mbl)mbl.nm=e.target.value;if(e.target.id==='cpn'&&cpy){cpy.nn=e.target.value;const gb=document.querySelector('[data-a=cpgo]');if(gb)gb.disabled=!e.target.value.trim()}if(e.target.id==='hq'){hq=e.target.value;const P=hlParts(),r=document.getElementById('hres'),u=document.getElementById('hsub');if(r)r.innerHTML=P.h;if(u)u.textContent=P.tot+' Songs · ♥ Herzen und 10 von 10'}if(e.target.id==='nnx'){ntNt=e.target.value}if(e.target.id==='q'){qs=e.target.value;const r=document.getElementById('res');if(r)r.innerHTML=resHtml(qs)}});
 document.addEventListener('change',e=>{
   if(/^c[pb][ab]$/.test(e.target.id||'')){const k=e.target.id[2],ty=e.target.id[1];D.cmp=D.cmp||{a:null,b:null};const cur=D.cmp[k]||['',''];D.cmp[k]=ty==='p'?(e.target.value?[e.target.value,'']:null):[cur[0],e.target.value];save();R();return}
   if(/^cq[ab]$/.test(e.target.id||'')){const k=e.target.id[2];D.cmpa=D.cmpa||{a:null,b:null};D.cmpa[k]=e.target.value||null;cmx.clear();save();R();return}
+  if(e.target.id==='cpt'&&cpy){cpy.t=e.target.value;R();return}
   if(e.target.id==='ksort'){D.ks=e.target.value;save();R();return}
   if(e.target.id==='ntx'){saveNote();save();return}
   if(e.target.id==='nteTx'){saveNoteE();save();return}
