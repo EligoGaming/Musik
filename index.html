@@ -312,6 +312,11 @@ html[data-design=glass] .sh .lnk{margin-top:10px}
 .trmd.pl.on{background:linear-gradient(145deg,#dcf8ff,#69c1e8 55%,#b79cff);border-color:#5aa9cf;color:#0f2638}
 .trb{height:6px;border-radius:3px;background:var(--bd);overflow:hidden}.trb i{display:block;height:100%;border-radius:3px;background:var(--ac)}
 .trt{display:flex;justify-content:space-between;gap:10px;margin-top:6px}
+.acell{display:flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:9px 8px;min-height:46px;min-width:0;cursor:pointer}
+.acell.win{border-color:var(--g)}.acell .t{font-size:13px;font-weight:700;flex:1;min-width:0;overflow-wrap:anywhere}.acell .chev{color:var(--mu);font-size:12px;flex:none;width:10px}.acell .chip{min-width:38px;padding:2px 4px;font-size:14px}
+.acell.ph{visibility:hidden}.apair{margin-bottom:8px}.apair .pair{margin:6px 0 0}.apair .pair:last-child{margin-bottom:6px}
+html[data-design=nothing] .acell{border-radius:18px}
+html[data-design=glass] .acell{background:linear-gradient(135deg,rgba(255,255,255,.2),rgba(255,255,255,0) 46%),var(--card);border:1px solid var(--gl);border-radius:16px;-webkit-backdrop-filter:blur(22px) saturate(180%);backdrop-filter:blur(22px) saturate(180%)}
 </style></head><body><div id="glbg"><i></i><i></i><i></i><i></i></div><main id="app"></main>
 <script>
 window.__main=function(){
@@ -625,8 +630,9 @@ const designView=()=>{const d=dsg(),m=mode(),ac=D.ac||'off',b=(on,a,i,t)=>`<butt
     const ex=D.artists.slice(0,3);h+=`<h2>Vorschau</h2>`+(ex.length?ex.map(a=>`<div class="row"><div class="grow"><div class="t">${anm(a)}</div><div class="m">${a.albums.length} Alben${genreOf(a)?' · '+esc(genreOf(a)):''}</div></div></div>`).join(''):'<p class="m">Noch keine Künstler.</p>')}
   return h};
 const backupView=()=>`<button class="back" data-a="tab" data-i="rate">‹ Zurück</button><h1>Sicherung</h1><p class="sub">Sichere deine Bewertungen in einer Datei oder spiele eine Sicherung wieder ein.</p>`+backupBlock();
-const VER='26';
+const VER='27';
 const UPD=[
+{v:'27',t:'Künstler-Vergleich',d:'Zwei Künstler direkt vergleichen, mit aufklappbaren Alben.',n:['Im Vergleichs-Tab gibt es oben jetzt den Umschalter Alben | Künstler.','Künstler-Vergleich: Durchschnitt über die Alben, Durchschnitt über alle Songs, Median, beste und schlechteste Note, Zehner, Anteil ab 7, Herzen und Anzahl der Alben und Singles.','Darunter stehen die Alben und Singles beider Künstler paarweise, nach Rang oder nach Reihenfolge. Ein Tipp auf ein Album klappt die Songs auf, es gibt auch „Alle aufklappen“.','Auf der Künstlerseite gibt es den Knopf „Mit anderem Künstler vergleichen“.']},
 {v:'26',t:'Trophäen und mehr Glas',d:'Das Trophäen-System ist da, und Glas sieht jetzt wirklich nach Glas aus.',n:['Neu: Trophäen im Menü. Es gibt Stufen für bewertete Songs (10 bis 10.000), komplett bewertete Alben, Künstler, Herzen, Zehner und Notizen. Was du schon erreicht hast, ist sofort freigeschaltet.','Bei einer neuen Trophäe erscheint eine kurze Meldung.','Glas: Der Hintergrund besteht jetzt aus farbigen Glasformen statt Lichtflecken, die Karten sind echtes Milchglas, und das Menü schwebt als runde Karte mit Pfeilen.']},
 {v:'25.1',t:'Glas bekommt einen eigenen Charakter',d:'Das Glas-Design ist jetzt ein eigenes Thema, und der Punkt hat neue Effekte.',n:['Glas: schwebende Leiste oben, Songs als gruppierte Liste mit dünnen Trennlinien, ein farbiger, langsam driftender Hintergrund und federnde Knöpfe. Bei Alben mit Cover färbt sich der Hintergrund passend zum Cover.','Der rote Punkt neben Coda hat im Standard-Design jetzt Konfetti mit Ring und im Glas-Design Seifenblasen.']},
 {v:'25',t:'Laufschrift, Glas-Prototyp und eine kleine Überraschung',d:'Lange Songtitel brauchen weniger Platz, und ein erstes Glas-Design ist da.',n:['Songtitel-Option im Design-Tab: „Komplett“ wie bisher oder „Laufschrift“. Bei der Laufschrift steht der Titel in einer Zeile. Ist er zu lang, beginnt er nach etwa zweieinhalb Sekunden langsam nach hinten zu laufen, hält kurz am Ende und springt zurück. Das gilt für Songs im Album, in der Suche, in den Rückblick-Listen und bei den Herzen und Zehnern.','Neues Design „Glas“ (Prototyp): durchscheinende Karten, weiche Farbverläufe, Unschärfe in der Kopfleiste und im Menü, runde Ecken und ein blauer Akzent. Es gibt eine helle und eine dunkle Variante.','Eine kleine Überraschung für Neugierige. Der rote Punkt hat ein Geheimnis.']},
@@ -678,8 +684,37 @@ const cmpSt=B=>{const r=B.songs.map(s=>s.r).filter(x=>x!=null).map(Number).sort(
   return {n,all:B.songs.length,avg:n?r.reduce((t,x)=>t+x,0)/n:null,med:n?(n%2?r[(n-1)/2]:(r[n/2-1]+r[n/2])/2):null,max:n?r[n-1]:null,min:n?r[0]:null,ten:r.filter(x=>x>=10).length,good:n?Math.round(r.filter(x=>x>=7).length/n*100):null,hrt:B.songs.filter(s=>s.h).length}};
 const pickHtml=(k,sl)=>{const aid=(sl&&sl[0])||'',A=D.artists.find(x=>x.id===aid),arts=[...D.artists].sort((p,q)=>p.n.localeCompare(q.n,'de'));
   return `<div class="pick"><div class="m">Album ${k.toUpperCase()}</div><select id="cp${k}"><option value="">– Künstler wählen –</option>${arts.map(x=>`<option value="${x.id}" ${x.id===aid?'selected':''}>${esc(x.n)}</option>`).join('')}</select>${A?`<select id="cb${k}"><option value="">– Album wählen –</option>${A.albums.map(b=>`<option value="${b.id}" ${sl&&b.id===sl[1]?'selected':''}>${esc(b.n)}${b.k===2?' (Singles)':b.k===1?' (EP)':''}</option>`).join('')}</select>`:''}</div>`};
-const compareView=()=>{const C=D.cmp||{a:null,b:null},a=cmpSlot(C.a),b=cmpSlot(C.b);
-  let h=`<button class="back" data-a="tab" data-i="rate">‹ Zurück</button><h1>Vergleich</h1><p class="sub">Zwei Alben nebeneinander, auch von verschiedenen Künstlern.</p>`;
+const cmx=new Set();
+const cmArt=id=>D.artists.find(x=>x.id===id)||null;
+const arSt=A=>{const ss=A.albums.flatMap(b=>b.songs),t=cmpSt({songs:ss});t.aavg=artAvg(A);t.nal=A.albums.length;return t};
+const artPick=(k,id)=>{const arts=[...D.artists].sort((p,q)=>p.n.localeCompare(q.n,'de'));return `<div class="pick"><div class="m">Künstler ${k.toUpperCase()}</div><select id="cq${k}"><option value="">– Künstler wählen –</option>${arts.map(x=>`<option value="${x.id}" ${x.id===id?'selected':''}>${esc(x.n)}</option>`).join('')}</select></div>`};
+const albLab=b=>esc(b.n)+(b.k===2&&!/single/i.test(b.n)?' (Singles)':b.k===1&&!/\bEP\b/i.test(b.n)?' (EP)':'');
+const artCompare=h=>{const C=D.cmpa||{a:null,b:null},A1=cmArt(C.a),A2=cmArt(C.b);
+  h+=`<p class="sub">Zwei Künstler im Vergleich, mit aufklappbaren Alben und Singles.</p>`+artPick('a',C.a)+artPick('b',C.b);
+  h+=`<div class="add" style="margin-top:0"><button class="ghost" data-a="cmsw" ${A1||A2?'':'disabled'}>⇄ Tauschen</button><button class="ghost" data-a="cmclr" ${A1||A2?'':'disabled'}>Leeren</button></div>`;
+  if(!A1||!A2)return h+'<p class="m">Wähle zwei Künstler, dann siehst du den Vergleich.</p>';
+  if(A1.id===A2.id)return h+'<p class="m">Wähle zwei verschiedene Künstler.</p>';
+  const sa=arSt(A1),sb=arSt(A2),d=(sa.aavg??-1)-(sb.aavg??-1),wa=d>0.004?'win':'',wb=d<-0.004?'win':'';
+  const card=(A,s,w)=>`<div class="cmc ${w}"><div class="t">${anm(A)}</div><div class="big" style="color:${col(s.aavg)}">${fmt(s.aavg)}</div><div class="m">${s.nal} Alben &amp; Singles · ${s.all} Songs</div></div>`;
+  h+=`<div class="cmp">${card(A1,sa,wa)}${card(A2,sb,wb)}</div>`;
+  h+=`<p class="verd">${sa.aavg==null||sb.aavg==null?'Noch zu wenige Noten':Math.abs(d)<=0.004?'Gleichstand im Durchschnitt':esc((d>0?A1:A2).n)+' liegt '+fmt(Math.abs(d))+' Punkte vorne'}</p>`;
+  const rows=[['Ø Alben',sa.aavg,sb.aavg,fmt],['Ø Songs',sa.avg,sb.avg,fmt],['Median',sa.med,sb.med,fmt],['Beste Note',sa.max,sb.max,fmt],['Schlechteste Note',sa.min,sb.min,fmt],['Songs mit 10',sa.ten,sb.ten,String],['Anteil ab 7',sa.good,sb.good,v=>v==null?'–':v+' %'],['Herzen ♥',sa.hrt,sb.hrt,String],['Alben &amp; Singles',sa.nal,sb.nal,String],['Bewertet',sa.n+' / '+sa.all,sb.n+' / '+sb.all,null]];
+  h+=rows.map(([l,x,y,f])=>{const w=f&&x!=null&&y!=null&&x!==y;return `<div class="srow"><div class="v ${w&&x>y?'w':''}">${f?f(x):x}</div><div class="l">${l}</div><div class="v ${w&&y>x?'w':''}">${f?f(y):y}</div></div>`}).join('');
+  const M=D.cm==='t'?'t':'r',LA=M==='t'?A1.albums:sortBy(A1.albums,albAvg),LB=M==='t'?A2.albums:sortBy(A2.albums,albAvg),n=Math.max(LA.length,LB.length);
+  h+=`<h2>Alben &amp; Singles</h2><div class="tabs"><button class="${M==='r'?'btn':'ghost'}" data-a="cmm" data-i="r">Nach Rang</button><button class="${M==='t'?'btn':'ghost'}" data-a="cmm" data-i="t">Nach Reihenfolge</button></div><p class="m" style="margin:0 0 8px">${M==='r'?'Bestes Album gegen bestes Album, zweitbestes gegen zweitbestes und so weiter.':'Erstes Album gegen erstes Album und so weiter, in der Reihenfolge der Künstlerseite.'} Tippe auf ein Album, um die Songs zu vergleichen.</p>`;
+  h+=`<div class="tabs"><button class="ghost" data-a="cmxall" data-i="1">Alle aufklappen</button><button class="ghost" data-a="cmxall" data-i="0">Alle zuklappen</button></div>`;
+  const cell=(s,o,i)=>s?`<div class="cell ${o!=null&&s.r!=null&&+s.r>+o?'win':''}"><span class="n">${i+1}</span><span class="t">${esc(s.n)}</span>${s.h?'<span style="color:var(--r)">♥</span>':''}${chip(s.r)}</div>`:'<div></div>';
+  for(let i=0;i<n;i++){const x=LA[i],y=LB[i],ax=x?albAvg(x):null,ay=y?albAvg(y):null,o=cmx.has(i),wx=ax!=null&&ay!=null&&ax>ay+.004?'win':'',wy=ax!=null&&ay!=null&&ay>ax+.004?'win':'';
+    const ac=(b,av,w)=>b?`<div class="acell ${w}" data-a="cmx" data-i="${i}"><span class="chev">${o?'▾':'▸'}</span><span class="t">${albLab(b)}</span>${chip(av)}</div>`:'<div class="acell ph"></div>';
+    h+=`<div class="apair"><div class="pair">${ac(x,ax,wx)}${ac(y,ay,wy)}</div>`;
+    if(o){const la=x?(M==='t'?x.songs:sortS(x.songs)):[],lb=y?(M==='t'?y.songs:sortS(y.songs)):[],m=Math.max(la.length,lb.length);
+      for(let j=0;j<m;j++){const p=la[j],q=lb[j];h+=`<div class="pair">${cell(p,q&&q.r,j)}${cell(q,p&&p.r,j)}</div>`}}
+    h+='</div>'}
+  return h};
+const compareView=()=>{const C=D.cmp||{a:null,b:null},a=cmpSlot(C.a),b=cmpSlot(C.b),ar=D.cmk==='ar';
+  let h=`<button class="back" data-a="tab" data-i="rate">‹ Zurück</button><h1>Vergleich</h1><div class="tabs"><button class="${ar?'ghost':'btn'}" data-a="cmk" data-i="al">Alben</button><button class="${ar?'btn':'ghost'}" data-a="cmk" data-i="ar">Künstler</button></div>`;
+  if(ar)return artCompare(h);
+  h+=`<p class="sub">Zwei Alben nebeneinander, auch von verschiedenen Künstlern.</p>`;
   h+=pickHtml('a',C.a)+pickHtml('b',C.b);
   h+=`<div class="add" style="margin-top:0"><button class="ghost" data-a="cmsw" ${C.a||C.b?'':'disabled'}>⇄ Tauschen</button><button class="ghost" data-a="cmclr" ${C.a||C.b?'':'disabled'}>Leeren</button></div>`;
   if(!a||!b)return h+'<p class="m">Wähle zwei Alben, dann siehst du den Vergleich.</p>';
@@ -942,7 +977,7 @@ function R(){
     else h+=arts.map(x=>row(x,true)).join('');
     h+='<div class="add"><input id="in" placeholder="Neuer Künstler"><button class="btn" data-a="addArt">Hinzufügen</button></div>';
   }else if(!B){
-    h=`<button class="back" data-a="home">‹ Alle Künstler</button>${isEd('art',A.id)?edForm(A.id,A.n):`<h1>${anm(A)} ${pen('art',A.id)}</h1>`}<p class="sub">Durchschnitt ${fmt(artAvg(A))}</p><div class="add" style="margin:0 0 8px"><button class="ghost tgb${A.no?' on':''}" data-a="ntgo" data-i="a:${A.id}::">📝 Notiz</button></div>${A.no?`<div class="nt npv" data-a="ntgo" data-i="a:${A.id}::">${esc(A.no)}</div>`:''}`;
+    h=`<button class="back" data-a="home">‹ Alle Künstler</button>${isEd('art',A.id)?edForm(A.id,A.n):`<h1>${anm(A)} ${pen('art',A.id)}</h1>`}<p class="sub">Durchschnitt ${fmt(artAvg(A))}</p><div class="add" style="margin:0 0 8px"><button class="ghost tgb${A.no?' on':''}" data-a="ntgo" data-i="a:${A.id}::">📝 Notiz</button><button class="ghost" data-a="cmpar">⇄ Mit anderem Künstler vergleichen</button></div>${A.no?`<div class="nt npv" data-a="ntgo" data-i="a:${A.id}::">${esc(A.no)}</div>`:''}`;
     const albRow=(x,i,g,rk,tag)=>`<div class="row tap" data-a="alb" data-i="${x.id}">${rk?`<span class="rk">${i+1}</span>`:`<div class="mv"><button class="ghost" data-a="aup" data-i="${x.id}" ${i?'':'disabled'}>▲</button><button class="ghost" data-a="adn" data-i="${x.id}" ${i<g.length-1?'':'disabled'}>▼</button></div>`}${cvHtml(x,'s')}<div class="grow"><div class="t">${esc(x.n)}</div><div class="m">${tag?tag+' · ':''}${x.tg?TGN[x.tg]+' · ':''}${x.songs.length} Songs${x.y?' · '+x.y:''}</div></div><button class="ghost warn" data-a="dalb" data-i="${x.id}">${armed==='a:'+x.id?'Sicher?':'✕'}</button>${chip(albAvg(x))}</div>`;
     const h0=h;h='';
     h+=`<div class="tabs"><button class="${D.as?'ghost':'btn'}" data-a="as" data-i="0">Nach Reihenfolge</button><button class="${D.as?'btn':'ghost'}" data-a="as" data-i="1">Nach Durchschnitt</button></div>`;
@@ -965,7 +1000,7 @@ function R(){
   if(focusA){focusA=0;const q=document.getElementById('ain');if(q)q.focus()}
   if(focusQ){focusQ=0;const q=document.getElementById('q');if(q)q.focus()}
   {const nx=document.getElementById('ntx')||document.getElementById('nteTx');if(nx)nx.focus()}
-  if(D.cv){if(A&&!B)A.albums.forEach(b=>cvAsk(A,b));else if(A&&B)cvAsk(A,B);else if(st.t==='cm'&&D.cmp)[D.cmp.a,D.cmp.b].map(cmpSlot).forEach(x=>x&&cvAsk(x.A,x.B))}
+  if(D.cv){if(A&&!B)A.albums.forEach(b=>cvAsk(A,b));else if(A&&B)cvAsk(A,B);else if(st.t==='cm'&&D.cmk!=='ar'&&D.cmp)[D.cmp.a,D.cmp.b].map(cmpSlot).forEach(x=>x&&cvAsk(x.A,x.B))}
   if(left&&!hl){if(popNav||goingBack)window.scrollTo(0,scrollMap[key]||0);else window.scrollTo(0,0)}
   lastKey=key;prevMenu=menuOpen;popNav=false;goingBack=false;
 }
@@ -1014,9 +1049,13 @@ document.addEventListener('click',e=>{
   else if(a==='axall'){if(+i)UPD.forEach(u=>arx.add(u.v));else arx.clear()}
   else if(a==='mcm'){menuOpen=false;st={t:'cm',a:null,b:null}}
   else if(a==='cmpa'){D.cmp=D.cmp||{a:null,b:null};D.cmp.a=[A.id,B.id];st={t:'cm',a:null,b:null}}
-  else if(a==='cmsw'){const c=D.cmp||{};D.cmp={a:c.b||null,b:c.a||null}}
-  else if(a==='cmclr'){D.cmp={a:null,b:null}}
-  else if(a==='cmm'){D.cm=i}
+  else if(a==='cmsw'){if(D.cmk==='ar'){const c=D.cmpa||{};D.cmpa={a:c.b||null,b:c.a||null};cmx.clear()}else{const c=D.cmp||{};D.cmp={a:c.b||null,b:c.a||null}}}
+  else if(a==='cmclr'){if(D.cmk==='ar'){D.cmpa={a:null,b:null};cmx.clear()}else D.cmp={a:null,b:null}}
+  else if(a==='cmm'){D.cm=i;cmx.clear()}
+  else if(a==='cmk'){D.cmk=i==='ar'?'ar':'al';cmx.clear()}
+  else if(a==='cmx'){const k=+i;if(cmx.has(k))cmx.delete(k);else cmx.add(k)}
+  else if(a==='cmxall'){if(+i){const C=D.cmpa||{},A1=cmArt(C.a),A2=cmArt(C.b);const n=Math.max(A1?A1.albums.length:0,A2?A2.albums.length:0);for(let k=0;k<n;k++)cmx.add(k)}else cmx.clear()}
+  else if(a==='cmpar'){D.cmpa=D.cmpa||{a:null,b:null};D.cmpa.a=A.id;if(D.cmpa.b===A.id)D.cmpa.b=null;D.cmk='ar';cmx.clear();st={t:'cm',a:null,b:null}}
   else if(a==='as'){D.as=+i}
   else if(a==='mbk'){menuOpen=false;st={t:'bk',a:null,b:null}}
   else if(a==='sm'){D.sm=+i}
@@ -1108,6 +1147,7 @@ document.addEventListener('keydown',e=>{if(e.target.id==='ain'&&e.key==='Enter')
 document.addEventListener('input',e=>{if(e.target.id==='hq'){hq=e.target.value;const P=hlParts(),r=document.getElementById('hres'),u=document.getElementById('hsub');if(r)r.innerHTML=P.h;if(u)u.textContent=P.tot+' Songs · ♥ Herzen und 10 von 10'}if(e.target.id==='nnx'){ntNt=e.target.value}if(e.target.id==='q'){qs=e.target.value;const r=document.getElementById('res');if(r)r.innerHTML=resHtml(qs)}});
 document.addEventListener('change',e=>{
   if(/^c[pb][ab]$/.test(e.target.id||'')){const k=e.target.id[2],ty=e.target.id[1];D.cmp=D.cmp||{a:null,b:null};const cur=D.cmp[k]||['',''];D.cmp[k]=ty==='p'?(e.target.value?[e.target.value,'']:null):[cur[0],e.target.value];save();R();return}
+  if(/^cq[ab]$/.test(e.target.id||'')){const k=e.target.id[2];D.cmpa=D.cmpa||{a:null,b:null};D.cmpa[k]=e.target.value||null;cmx.clear();save();R();return}
   if(e.target.id==='ksort'){D.ks=e.target.value;save();R();return}
   if(e.target.id==='ntx'){saveNote();save();return}
   if(e.target.id==='nteTx'){saveNoteE();save();return}
