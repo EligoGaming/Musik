@@ -362,9 +362,9 @@ html[data-ev="1"] #gmbg,html[data-ev="1"] #glbg,html[data-ev="1"] #grain{display
 .evp{position:relative;min-height:100vh;min-height:100dvh;margin:-16px -14px -48px;overflow:hidden;background:linear-gradient(180deg,#0b0613 0%,#1a0b2e 46%,#2e1249 74%,#4a1d52 100%);color:#e9e0f2}
 .evsky{position:absolute;inset:0;width:100%;height:100%}
 .evstar{animation:evtw 3.2s ease-in-out infinite}@keyframes evtw{50%{opacity:.25}}
-.evbat{animation:evfly 14s linear infinite}.evwing{animation:evflap .35s ease-in-out infinite alternate;transform-origin:0 0;transform-box:fill-box}
+.evbat{animation:evfly 14s linear infinite}.evwing{animation:evflap .35s ease-in-out infinite alternate;transform-origin:0 0}
 @keyframes evflap{to{transform:scaleY(.45)}}@keyframes evfly{0%{transform:translate(-60px,0)}100%{transform:translate(460px,-40px)}}
-.evghost{animation:evbob 5s ease-in-out infinite}@keyframes evbob{50%{transform:translateY(-16px)}}
+.evghost{animation:evroute 48s ease-in-out infinite}@keyframes evroute{0%{transform:translate(0,0)}20%{transform:translate(120px,-70px)}40%{transform:translate(250px,-30px)}60%{transform:translate(170px,-150px)}80%{transform:translate(60px,-90px)}100%{transform:translate(0,0)}}
 .evfog{animation:evdrift 22s ease-in-out infinite alternate}@keyframes evdrift{to{transform:translateX(50px)}}
 .evflame{animation:evfl .22s ease-in-out infinite alternate;transform-origin:50% 100%;transform-box:fill-box}@keyframes evfl{to{transform:scale(1.07,.93) rotate(1.4deg);opacity:.92}}
 .evglowp{animation:evgl 2.6s ease-in-out infinite}@keyframes evgl{50%{opacity:.55}}
@@ -515,7 +515,7 @@ html[data-design=retro] h2.hp{font-size:12px;color:var(--tx)}html[data-design=re
 html[data-design=retro] .sub,html[data-design=retro] .m{font-size:20px;line-height:1.1}
 html[data-design=retro] .t{font-weight:400;font-size:24px}
 html[data-design=retro] .row,html[data-design=retro] .imp,html[data-design=retro] .kp,html[data-design=retro] .vl,html[data-design=retro] .fold,html[data-design=retro] .disc,html[data-design=retro] .edp,html[data-design=retro] .mem,html[data-design=retro] .pick,html[data-design=retro] .cmc,html[data-design=retro] .subu,html[data-design=retro] .bn,html[data-design=retro] .mbp,html[data-design=retro] .trg,html[data-design=retro] .trd,html[data-design=retro] .cell,html[data-design=retro] .acell,html[data-design=retro] .hmc{background:var(--card);border:2px solid var(--bd);border-radius:var(--rrad);box-shadow:var(--rsh);-webkit-backdrop-filter:none;backdrop-filter:none}
-html[data-design=retro] .bn{border-left:6px solid var(--o)}html[data-design=retro] .disc{border-left:6px solid var(--ac)}
+html[data-design=retro] .add,html[data-design=retro] .bn .add{flex-wrap:wrap}html[data-design=retro] .add .btn,html[data-design=retro] label.ghost,html[data-design=retro] .bn .btn{white-space:normal;min-width:0;max-width:100%}html[data-design=retro] .sh,html[data-design=retro] .sh *{min-width:0}html[data-design=retro] .sh .mi{gap:10px;padding:8px 10px;overflow:hidden}html[data-design=retro] .sh .mi span{overflow-wrap:anywhere}html[data-design=retro] .sh .mi span:first-child{flex:1 1 auto}html[data-design=retro] .sh .mi .m{flex:0 1 46%;text-align:right;font-size:18px}html[data-design=retro] .sh{overflow-x:hidden}html[data-design=retro] .bn{border-left:6px solid var(--o)}html[data-design=retro] .disc{border-left:6px solid var(--ac)}
 html[data-design=retro] .chip{font-family:"VT323",monospace;font-size:26px;font-weight:400;border-width:2px;border-radius:var(--rrad);min-width:50px;padding:0 8px}
 html[data-design=retro] .btn{background:var(--ac);color:var(--ractx);border:2px solid var(--ac);border-radius:var(--rrad);font-family:"VT323",monospace;font-size:22px;font-weight:400;text-transform:uppercase;text-shadow:none;padding:6px 12px;box-shadow:var(--rsh)}
 html[data-design=retro] .ghost{border:2px solid var(--bd);border-radius:var(--rrad);font-family:"VT323",monospace;font-size:21px;text-transform:uppercase;color:var(--tx);padding:4px 10px}
@@ -910,8 +910,9 @@ const designView=()=>{const d=dsg(),m=mode(),ac=D.ac||'off',b=(on,a,i,t)=>`<butt
     const ex=D.artists.slice(0,3);h+=`<h2>Vorschau</h2>`+(ex.length?ex.map(a=>`<div class="row"><div class="grow"><div class="t">${anm(a)}</div><div class="m">${a.albums.length} Alben${genreOf(a)?' · '+esc(genreOf(a)):''}</div></div></div>`).join(''):'<p class="m">Noch keine Künstler.</p>')}
   return h};
 const backupView=()=>`<button class="back" data-a="tab" data-i="rate">‹ Zurück</button><h1>Sicherung</h1><p class="sub">Sichere deine Bewertungen in einer Datei oder spiele eine Sicherung wieder ein.</p>`+backupBlock();
-const VER='30.3.5';
+const VER='30.4';
 const UPD=[
+{v:'30.4',t:'Retro und Event-Tab aufgeräumt',d:'Retro passt jetzt auf schmale Handys, im Event-Tab fliegen Fledermäuse und Geist wieder richtig.',n:['Behoben: Im Retro-Design wurden Buttons im Sicherungs-Hinweis, auf der Sicherungs-Seite und Zeilen im Menü am rechten Rand abgeschnitten. Sie brechen jetzt um und passen auch bei schmalen Bildschirmen.','Behoben: Die Fledermäuse im Event-Tab haben wieder beide Flügel und schlagen richtig.','Behoben: Die Spinne hat wieder ihre Beine (und rote Augen).','Geändert: Der Geist schwebt nicht mehr auf und ab, sondern fliegt langsam eine feste Route über den Himmel.','Geprüft: Im Gemächlich-Design steht kein Gras oder keine Blume mehr im Fluss, auch bei sehr schmalen und breiten Bildschirmen.']},
 {v:'30.3.5',t:'Weitere Farben schon ab 45 Punkten',d:'Die zehn zusätzlichen Retro-Farben sind jetzt leichter zu erreichen.',n:['Geändert: Die zehn weiteren Retro-Farben (Türkis, Cyan, Eisweiß, Alarmrot, Violett, Pink, Arcade, Blaupause, Sepia, Bernstein) schaltest du jetzt schon ab 45 Punkten in Snake frei statt ab 50. Wer schon mehr als 45 Punkte hatte, hat sie sofort.']},
 {v:'30.3.4',t:'Snake: Steuerkreuz nach unten',d:'Das Steuerkreuz liegt am unteren Rand und das blaue Aufleuchten ist weg.',n:['Geändert: Das Steuerkreuz sitzt jetzt ganz unten am Bildschirm, damit man beim Wischen nicht mehr versehentlich darauf kommt.','Behoben: Beim Tippen auf die Tasten leuchtete der Bildschirm kurz blau auf. Das Antipp-Leuchten des Browsers ist in Snake jetzt aus.','Behoben: Ist das Feld ganz voll (253 Punkte), erscheint „Geschafft!“ statt dass das Spiel einfriert.']},
 {v:'30.3.3',t:'Zehn weitere Retro-Farben',d:'Wer in Snake 50 Punkte erreicht, schaltet alle übrigen Retro-Farben frei.',n:['Neu: Ab 50 Punkten in Snake gibt es zehn weitere Farben für das Retro-Design: Türkis, Cyan, Eisweiß, Alarmrot, Violett, Pink, Arcade, Blaupause, Sepia und Bernstein.','Geändert: Bis dahin zeigt das Design-Menü eine gesperrte Zeile „10 weitere Farben · ab 50“. Die Schwellen 10, 20 und 30 für Terminal, Papier und Handheld bleiben gleich.']},
@@ -1572,19 +1573,19 @@ const EVSVG=()=>`<svg class="evsky" viewBox="0 0 390 760" preserveAspectRatio="x
         <g class="evflame"><path d="M-17 -6l9 -10 6 10zM17 -6l-9 -10-6 10zM-18 10q18 17 36 0l-6 -4-6 6-6-6-6 6-6-6z" fill="#ffd36a"/></g>
       </g>
       <!-- Geist -->
-      <g class="evghost" transform="translate(70 330)">
+      <g transform="translate(60 340)"><g class="evghost">
         <circle cx="0" cy="0" r="52" fill="#cfd9ff" opacity=".12"/>
         <path d="M-26 28V-4a26 26 0 0 1 52 0v32l-9-7-9 7-8-7-8 7-9-7z" fill="#eef1ff" opacity=".92"/>
         <ellipse cx="-9" cy="-4" rx="4" ry="6" fill="#2a1240"/><ellipse cx="9" cy="-4" rx="4" ry="6" fill="#2a1240"/>
         <ellipse cx="0" cy="12" rx="4" ry="5" fill="#2a1240"/>
-      </g>
+      </g></g>
       <!-- Fledermäuse -->
-      <g class="evbat" style="animation-duration:15s"><g transform="translate(0 90)"><g class="evwing"><path d="M0 0q-14-14-26-4q6 2 8 8q6-6 12 0z" fill="#06030c"/></g><g class="evwing" style="transform:scaleX(-1)"><path d="M0 0q-14-14-26-4q6 2 8 8q6-6 12 0z" fill="#06030c"/></g><circle r="4.5" fill="#06030c"/></g></g>
-      <g class="evbat" style="animation-duration:19s;animation-delay:-8s"><g transform="translate(0 200) scale(.8)"><g class="evwing"><path d="M0 0q-14-14-26-4q6 2 8 8q6-6 12 0z" fill="#06030c"/></g><g class="evwing" style="transform:scaleX(-1)"><path d="M0 0q-14-14-26-4q6 2 8 8q6-6 12 0z" fill="#06030c"/></g><circle r="4.5" fill="#06030c"/></g></g>
-      <g class="evbat" style="animation-duration:23s;animation-delay:-14s"><g transform="translate(0 140) scale(.6)"><g class="evwing"><path d="M0 0q-14-14-26-4q6 2 8 8q6-6 12 0z" fill="#06030c"/></g><g class="evwing" style="transform:scaleX(-1)"><path d="M0 0q-14-14-26-4q6 2 8 8q6-6 12 0z" fill="#06030c"/></g><circle r="4.5" fill="#06030c"/></g></g>
+      <g class="evbat" style="animation-duration:15s"><g transform="translate(0 90)"><g class="evwing"><path d="M0 0q-14-14-26-4q6 2 8 8q6-6 12 0z" fill="#06030c"/></g><g transform="scale(-1 1)"><g class="evwing"><path d="M0 0q-14-14-26-4q6 2 8 8q6-6 12 0z" fill="#06030c"/></g></g><circle r="4.5" fill="#06030c"/></g></g>
+      <g class="evbat" style="animation-duration:19s;animation-delay:-8s"><g transform="translate(0 200) scale(.8)"><g class="evwing"><path d="M0 0q-14-14-26-4q6 2 8 8q6-6 12 0z" fill="#06030c"/></g><g transform="scale(-1 1)"><g class="evwing"><path d="M0 0q-14-14-26-4q6 2 8 8q6-6 12 0z" fill="#06030c"/></g></g><circle r="4.5" fill="#06030c"/></g></g>
+      <g class="evbat" style="animation-duration:23s;animation-delay:-14s"><g transform="translate(0 140) scale(.6)"><g class="evwing"><path d="M0 0q-14-14-26-4q6 2 8 8q6-6 12 0z" fill="#06030c"/></g><g transform="scale(-1 1)"><g class="evwing"><path d="M0 0q-14-14-26-4q6 2 8 8q6-6 12 0z" fill="#06030c"/></g></g><circle r="4.5" fill="#06030c"/></g></g>
       <!-- Spinnennetz oben links -->
       <g stroke="#cdbfe0" stroke-opacity=".35" fill="none" stroke-width="1"><path d="M0 0L150 150M0 0L90 170M0 0L170 80M0 0L30 190M0 0L190 20"/><path d="M0 40Q30 40 40 0M0 85Q60 85 85 0M0 130Q95 120 130 0M0 175Q130 150 175 0"/></g>
-      <g stroke="#cdbfe0" stroke-opacity=".5" stroke-width="1"><path d="M96 0V54"/></g><ellipse cx="96" cy="58" rx="5" ry="6" fill="#06030c"/>
+      <g stroke="#cdbfe0" stroke-opacity=".5" stroke-width="1"><path d="M96 0V54"/></g><g class="evspider"><g stroke="#06030c" stroke-width="1.4" fill="none" stroke-linecap="round"><path d="M93 56l-8 -6l-4 4M93 59l-10 0l-5 6M93 62l-9 6l-3 6M94 64l-5 9M99 56l8 -6l4 4M99 59l10 0l5 6M99 62l9 6l3 6M98 64l5 9"/></g><ellipse cx="96" cy="58" rx="5" ry="6" fill="#06030c"/><circle cx="94.5" cy="57" r="1" fill="#ff5a5a"/><circle cx="97.5" cy="57" r="1" fill="#ff5a5a"/></g>
     </svg>`;
 /* Update 30.2: Event-Tab */
 const EV0=new Date(2026,9,20).getTime(),EV1=new Date(2026,10,1).getTime();
